@@ -30,9 +30,13 @@ while True:
 #while bytes to send
     while(l):
         c.send(l)
+	print "sent chunk"
 	l = file.read(1024)
+	print "read another chunk"
+	print l
     #read the next bytes
-f.close()
+    file.close()
+    print "closed"
         #file.write(l)
         #l = c.recv(1024)
     #file.close()
