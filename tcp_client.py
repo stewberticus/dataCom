@@ -3,7 +3,12 @@ import socket               # Import socket module
 import select
 s = socket.socket()         # Create a socket object
 host = socket.gethostname() # Get local machine name
-port = 12345                 # Reserve a port for your service.
+port = raw_input("Enter port number: ")
+try:
+        port = int(port)
+except Exception:
+        print "not a number"
+        quit()                     # Reserve a port for your service.
 
 s.connect((host, port))
 filename = raw_input("Enter the file's name: ")
@@ -11,8 +16,10 @@ b=bytes(filename)
 print 'Sending...'
 s.send(b)
 l = s.recv(1024)
-
-s.setblocking(0)
+if l=="404 motha fucka":
+	print("file not available")
+	quit()
+s.settimeout(1.0)
 print "rec 1st"
 newfile = open(filename, 'ab')
 while(l):
@@ -24,8 +31,11 @@ while(l):
     try:
         l = s.recv(1024)
     except Exception: 
-        l = False
-	newfile.write(l)
+       
+#	newfile.write(l)
+#	print "inexpection"
+#	print l
+	l = False
 	pass
 #f.close()
 print "Done Recieving"

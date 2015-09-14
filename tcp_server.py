@@ -4,7 +4,13 @@ import socket               # Import socket module
 
 serv_sock = socket.socket()         # Create a socket object
 this_machine_name = socket.gethostname() # Get local machine ip
-port = 12345                 # Reserve the passed port for your service.
+
+port = raw_input("Enter port number: ")
+try:
+	port = int(port)
+except Exception:
+	print "not a number"
+	quit()                # Reserve the passed port for your service.
 serv_sock.bind((this_machine_name, port))        # Bind to the port
    # Open a temp file to store the data
 serv_sock.listen(1)                 # Now wait for client connection.
@@ -21,10 +27,17 @@ while True:
 	
 #open the file request 
 #TODO Error checking
-    file = open(filename,'r')
-    print "opened"
+    try:
+        file = open(filename,'r')
+    
+	
 #reda the file from disk in 1024 byte chunks 
-    l = file.read(1024)
+        l = file.read(1024)
+    except Exception:
+        print "404 mutha fucka"
+        c.send("404 motha fucka")
+	l = False
+	file = False
     print l 
     print "read"
 #while bytes to send
@@ -35,7 +48,9 @@ while True:
 	print "read another chunk"
 	print l
     #read the next bytes
-    file.close()
+    if file:
+	print file
+        file.close()
     print "closed"
         #file.write(l)
         #l = c.recv(1024)
