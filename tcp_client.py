@@ -6,13 +6,21 @@ host = socket.gethostname() # Get local machine name
 port = 12345                 # Reserve a port for your service.
 
 s.connect((host, port))
-filename = input("Enter the file's name: ")
-b=bytes(filename,'utf')
+filename = raw_input("Enter the file's name: ")
+b=bytes(filename)
 print 'Sending...'
-b.send(b)
-#while(True):
+s.send(b)
+l = s.recv(1024)
+print "rec 1st"
+while(l):
     
-f.close()
+    newfile = open(filename, 'ab')
+    newfile.write(l)
+    print "wrote a chunk"
+    l = s.recv(1024)
+    print l
+
+#f.close()
 print "Done Sending"
-print s.recv(1024)
+#print s.recv(1024)
 s.close        
