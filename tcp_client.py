@@ -6,13 +6,12 @@ host = socket.gethostname() # Get local machine name
 port = 12345                 # Reserve a port for your service.
 
 s.connect((host, port))
-f = open('tosend.png','rb')
+filename = input("Enter the file's name: ")
+b=bytes(filename,'utf')
 print 'Sending...'
-l = f.read(1024)
-while (l):
-    print 'Sending...'
-    s.send(l)
-    l = f.read(1024)
+b.send(b)
+#while(True):
+    
 f.close()
 print "Done Sending"
 print s.recv(1024)
