@@ -2,15 +2,27 @@ __author__ = 'alex.stuart'
 import socket               # Import socket module
 import select
 s = socket.socket()         # Create a socket object
-host = socket.gethostname() # Get local machine name
+
+try:
+	host = raw_input("Enter IP address: ")
+	#host = socket.gethostname()
+	#print host
+except Exception:
+        print "not an IP address"
+        quit()                     # Reserve a port for your service.
+#host = socket.gethostname() # Get local machine name
+
 port = raw_input("Enter port number: ")
 try:
         port = int(port)
 except Exception:
-        print "not a number"
+        print "Not a port number"
         quit()                     # Reserve a port for your service.
-
-s.connect((host, port))
+try:
+	s.connect((host, port))
+except Exception:
+	print "problem connecting to that IP address"
+	quit()
 filename = raw_input("Enter the file's name: ")
 b=bytes(filename)
 print 'Sending...'
@@ -20,14 +32,14 @@ if l=="404 motha fucka":
 	print("file not available")
 	quit()
 s.settimeout(1.0)
-print "rec 1st"
+#print "rec 1st"
 newfile = open(filename, 'ab')
 while(l):
     
     
     newfile.write(l)
-    print "wrote a chunk"
-    print l
+    #print "wrote a chunk"
+    #print l
     try:
         l = s.recv(1024)
     except Exception: 
