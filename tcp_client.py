@@ -1,4 +1,4 @@
-__author__ = 'alex.stuart'
+__author__ = 'alex.stuart,lauren.mills'
 import socket               # Import socket module
 import select
 s = socket.socket()         # Create a socket object
