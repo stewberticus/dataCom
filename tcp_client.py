@@ -26,36 +26,37 @@ try:
 except Exception:
 	print "problem connecting to that IP address"
 	quit()
-filename = raw_input("Enter the file's name: ")
-b=bytes(filename)
-if not b:
-    print "Exiting"
-    quit()
-print 'Sending...'
-s.send(b)
-l = s.recv(1024)
-if l=="404 motha fucka":
-	print("file not available")
-	quit()
-s.settimeout(1.0)
-#print "rec 1st"
-newfile = open(filename, 'ab')
-while(l):
-    
-    
-    newfile.write(l)
-    #print "wrote a chunk"
-    #print l
-    try:
-        l = s.recv(1024)
-    except Exception: 
-       
-#	newfile.write(l)
-#	print "inexpection"
-#	print l
-	l = False
-	pass
+while True:
+    filename = raw_input("Enter the file's name or press ENTER to exit: ")
+    b=bytes(filename)
+    if not b:
+        print "Exiting"
+        quit()
+    print 'Sending...'
+    s.send(b)
+    l = s.recv(1024)
+    if l=="404 motha fucka!!!":
+        print("file not available")
+        quit()
+    s.settimeout(1.0)
+    #print "rec 1st"
+    newfile = open(filename, 'ab')
+    while(l):
+        
+        
+        newfile.write(l)
+        #print "wrote a chunk"
+        #print l
+        try:
+            l = s.recv(1024)
+        except Exception: 
+           
+    #	newfile.write(l)
+    #	print "inexpection"
+    #	print l
+            l = False
+            pass
 #f.close()
 print "Done Recieving"
 #print s.recv(1024)
-s.close        
+       
