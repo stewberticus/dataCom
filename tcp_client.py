@@ -14,10 +14,13 @@ except Exception:
 
 port = raw_input("Enter port number: ")
 try:
-        port = int(port)
+    port = int(port)
+    # throw Exception if port < 0 or > 352983752 whatever
+    if(port < 0 or port > 65535):
+        raise Exception;
 except Exception:
-        print "Not a port number"
-        quit()                     # Reserve a port for your service.
+    print "Not a port number"
+    quit()                     # Reserve a port for your service.
 try:
 	s.connect((host, port))
 except Exception:
@@ -25,6 +28,9 @@ except Exception:
 	quit()
 filename = raw_input("Enter the file's name: ")
 b=bytes(filename)
+if not b:
+    print "Exiting"
+    quit()
 print 'Sending...'
 s.send(b)
 l = s.recv(1024)
