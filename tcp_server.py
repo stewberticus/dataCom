@@ -54,7 +54,7 @@ while True:
     try:
         #returns a socket and the adress we are connected to
         c, addr = serv_sock.accept()     # Establish connection with client.
-        print 'Connected to', addr       # Confirm correct client
+        #print 'Connected to', addr       # Confirm correct client
         thread.start_new_thread(clientconnection, (c, addr))
     except Exception as e:
         print e
