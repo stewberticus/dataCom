@@ -20,7 +20,7 @@ def clientconnection(c, addr):
             l = file.read(1024)
         except Exception:
             #something went wrong with the file need to tell the client 
-            c.send("404 motha fucka!!!")
+            c.send("*****")
             l = False
             file = False
         #while bytes to send
