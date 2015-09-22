@@ -1,4 +1,4 @@
-__author__ = 'alex.stuart'
+__author__ = 'alex.stuart,Lauren.mills,Caleb Stevenson'
 import socket               # Import socket module
 import thread
 
