@@ -35,7 +35,7 @@ while True:
     print 'Sending...'
     s.send(b)
     l = s.recv(1024)
-    if l=="404 motha fucka!!!":
+    if l=="*****":
         print("file not available")
         quit()
     s.settimeout(1.0)
