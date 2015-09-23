@@ -21,6 +21,7 @@ while True:
     print 'connected to', str(addr)       # Confirm correct client
     print 'typeof: ' + str(type(data))
     binary =  binascii.hexlify(data)
+    print data
     i = 0
     print len(binary)
 
@@ -44,8 +45,25 @@ while True:
 		
 	if i/4 == 5:
 	    print 'AR count'
+	
+	if i/4 == 6:
+	    print 'Questions Start'
+	    words = []
+	    while True:
+		num_octets = int(binary[i:i+2],16)
+		i = i + 2
+		if num_octets == 0:
+		    break
+		word = ''		  
+		for j in range(num_octets):
 
-
+		    this_char = binary[i:i+2]
+		    word = word + chr(int(this_char,16))
+		    i = i + 2
+		print word
+		words.append(word)
+	    print str(words)
+		
         print(binary[i:i+4])
 	i = i + 4
 c.close()
