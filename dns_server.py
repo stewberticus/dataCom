@@ -19,13 +19,13 @@ while True:
     data, addr = serv_sock.recvfrom(1024)     # Establish connection with client.
 
     print 'connected to', str(addr)       # Confirm correct client
-    print 'typeof: ' + str(type(data))
+    #print 'typeof: ' + str(type(data))
     binary =  binascii.hexlify(data)
-    print data
+    #print data
     i = 0
-    print len(binary)
+    #print len(binary)
 
-    print binary
+    #print binary
     i = 0
     while i < len(binary):
 	
@@ -33,8 +33,16 @@ while True:
 	    print 'ID is:' 
 	
 	if i/4 == 1:
-	    print 'OP code bit things'
-		
+		#print 'OP code bit things'
+		string = format(int(binary[i:i+4]),'016b')
+		print "response  :"+ string[0]
+		print "OP code :" + string[1:5]
+		print "Auth Answer: "+ string[5]	
+		print "Trun Resp: " +string[6]
+		print "Recusion Desired: "+ string[7]
+		print "Recursion Available: " + string[8]
+		print "Z (unused): " +string[9:12]
+		print "R Code: " +string[12:16]
 	if i/4 == 2:
 	    print 'DQcount'
 	if i/4 == 3:
