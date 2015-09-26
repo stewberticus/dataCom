@@ -10,7 +10,6 @@ def parse_name(data,index,rdata):
         if num_octets == 0:
             break
         if num_octets == 192:
-            print "pointer"
             byte = bin(real_bin[index-1])[2:].rjust(8, '0')
             byte += bin(real_bin[index])[2:].rjust(8, '0')
             pointer_to = int(byte[2:],2)
@@ -19,13 +18,11 @@ def parse_name(data,index,rdata):
             index+=1
             if not rdata:
                 byte = bin(real_bin[index])[2:].rjust(8, '0')
-
                 byte += bin(real_bin[index+1])[2:].rjust(8, '0')
                 type = byte
                 print "type:"+type
                 index +=2
                 byte = bin(real_bin[index])[2:].rjust(8, '0')
-
                 byte += bin(real_bin[index+1])[2:].rjust(8, '0')
                 ns_class = byte
                 print "class" + ns_class
@@ -38,31 +35,25 @@ def parse_name(data,index,rdata):
                 index+=4
                 print "ttl:"+str(ttl)
                 byte = bin(real_bin[index])[2:].rjust(8, '0')
-
                 byte += bin(real_bin[index+1])[2:].rjust(8, '0')
                 rdata_len = int(byte,2)
-
                 print "rdata len:" + str(rdata_len)
                 index+=2
-
                 rdata_words,not_needed= parse_name(real_bin,index,True)
                 index+=rdata_len
                 return (rdata_words,index)
-                print words
                 break
             else:
                 break
         word = ''
         if not num_octets == 192:
             for j in range(num_octets):
-
                 this_char = real_bin[index]
                 word = word + chr(this_char)
                 index += 1
-        print word
         if len(word)> 0:
             words.append(word)
-        
+    print words
     return (words,index)
 def parse_data(data):
      i = 0
@@ -71,22 +62,16 @@ def parse_data(data):
      for k in real_bin:
         raw_bytes.append(bin(k)[2:].rjust(8, '0'))
      while i < len(real_bin):
-        
         if i/2 == 0:
-            print 'ID is:' 
-        
+            print 'ID is:'
         if i/2 == 1:
-            #print 'OP code bit things'
-        #       string = format(int(binary[i:i+2]),'016b')
             byte = bin(real_bin[i])[2:].rjust(8, '0')
-            
             byte += bin(real_bin[i+1])[2:].rjust(8, '0')
             print byte
             print "response  :"+ byte[0]
             print "OP code :" + byte[1:5]
             print "Auth Answer: "+ byte[5]
             if byte[5] == '1':
-
                 return "Send to Client"
             print "Trun Resp: " +byte[6]
             print "Recusion Desired: "+ byte[7]
@@ -95,26 +80,18 @@ def parse_data(data):
             print "R Code: " +byte[12:16]
         if i/2 == 2:
             byte = bin(real_bin[i])[2:].rjust(8, '0')
-
             byte += bin(real_bin[i+1])[2:].rjust(8, '0')
             num_DQ = int (byte,2)
             print 'DQcount: '+ str(num_DQ)
         if i/2 == 3:
             print 'AN Count'
-
         if i/2 == 4:
             byte = bin(real_bin[i])[2:].rjust(8, '0')
-
             byte += bin(real_bin[i+1])[2:].rjust(8, '0')
             num_NS = int (byte,2)
-
-
-
             print 'NS count: '+ str(num_NS)
-
         if i/2 == 5:
             print 'AR count'
-
         if i/2 == 6:
             print 'Questions Start'
             for num in range(num_DQ):
@@ -130,40 +107,29 @@ def parse_data(data):
             print "Answers start:"
             places_to_ask_next = []
             for num in range(num_NS):
-
                 words, index = parse_name(real_bin,i,False)
                 places_to_ask_next.append(words)
                 if index>i:
                     i = index
-                # else:
-                #     i += 2
         i = i + 2
      print places_to_ask_next
      return places_to_ask_next
 serv_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)         # Create a socket object
 this_machine_name = socket.gethostname() # Get local machine ip
 print this_machine_name
-# port = raw_input("Enter port number: ")
-# try:
-#         port = int(port)
-# except Exception:
-#         print "not a number"
-#         quit()                # Reserve the passed port for your service.
+port = raw_input("Enter port number: ")
+try:
+        port = int(port)
+except Exception:
+        print "not a number"
+        quit()                # Reserve the passed port for your service.
 serv_sock.bind((this_machine_name, 9999))        # Bind to the port
-   # Open a temp file to store the data
-#serv_sock.listen(1)                 # Now wait for client connection.
 while True:
-#returns a socket and the adress we are connected to
     data, client_addr = serv_sock.recvfrom(1024)     # Establish connection with client.
-
     print 'connected to', str(client_addr)       # Confirm correct client
-    #print 'typeof: ' + str(type(data))
-
-    #parse_data(data)
     real_bin  = bytearray(data)
     dns_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     dns_sock.sendto(real_bin,("192.112.36.4",53))
-
     data, addr = dns_sock.recvfrom(1024)
     next = parse_data(data)
     next_ip = ''
@@ -185,18 +151,3 @@ while True:
             next_ip = next_ip[0:-1]
     to_send = bytearray(origdata)
     serv_sock.sendto(to_send,client_addr)
-
-
-
-   # byte = ord(real_bin[0])
-# now convert to string of 1s and 0s
-
-#    byte = bin(real_bin[2])[2:].rjust(8, '0')
-
-#    print byte
- #   byte = bin(real_bin[3])[2:].rjust(8, '0')
-  #  print byte
-
-    #print len(binary)
-
-    #print binary
