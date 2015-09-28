@@ -20,12 +20,12 @@ def parse_name(data,index,rdata):
                 byte = bin(real_bin[index])[2:].rjust(8, '0')
                 byte += bin(real_bin[index+1])[2:].rjust(8, '0')
                 type = byte
-                print "type:"+type
+                print "type: "+type
                 index +=2
                 byte = bin(real_bin[index])[2:].rjust(8, '0')
                 byte += bin(real_bin[index+1])[2:].rjust(8, '0')
                 ns_class = byte
-                print "class" + ns_class
+                print "class: " + ns_class
                 index+=2
                 byte = bin(real_bin[index])[2:].rjust(8, '0')
                 byte += bin(real_bin[index+1])[2:].rjust(8, '0')
@@ -33,16 +33,15 @@ def parse_name(data,index,rdata):
                 byte += bin(real_bin[index+3])[2:].rjust(8, '0')
                 ttl = int(byte,2)
                 index+=4
-                print "ttl:"+str(ttl)
+                print "ttl: "+str(ttl)
                 byte = bin(real_bin[index])[2:].rjust(8, '0')
                 byte += bin(real_bin[index+1])[2:].rjust(8, '0')
                 rdata_len = int(byte,2)
-                print "rdata len:" + str(rdata_len)
+                print "rdata length:" + str(rdata_len)
                 index+=2
                 rdata_words,not_needed= parse_name(real_bin,index,True)
                 index+=rdata_len
                 return (rdata_words,index)
-                break
             else:
                 break
         word = ''
@@ -83,18 +82,25 @@ def parse_data(data):
             byte += bin(real_bin[i+1])[2:].rjust(8, '0')
             num_DQ = int (byte,2)
             print 'DQcount: '+ str(num_DQ)
-        if i/2 == 3:
-            print 'AN Count'
+        if i/2 == 3: 
+            byte = bin(real_bin[i])[2:].rjust(8, '0')
+            byte += bin(real_bin[i+1])[2:].rjust(8, '0')
+            num_AN = int (byte,2)
+            print 'AN count: '+ str(num_AN)
         if i/2 == 4:
             byte = bin(real_bin[i])[2:].rjust(8, '0')
             byte += bin(real_bin[i+1])[2:].rjust(8, '0')
             num_NS = int (byte,2)
             print 'NS count: '+ str(num_NS)
-        if i/2 == 5:
-            print 'AR count'
+        if i/2 == 5: 
+            byte = bin(real_bin[i])[2:].rjust(8, '0')
+            byte += bin(real_bin[i+1])[2:].rjust(8, '0')
+            num_AR = int (byte,2)
+            print 'AR count: '+ str(num_AR)
         if i/2 == 6:
             print 'Questions Start'
             for num in range(num_DQ):
+                print "Question address: "
                 words, i = parse_name(real_bin,i,False)
                 byte = bin(real_bin[i])[2:].rjust(8, '0')
                 byte += bin(real_bin[i+1])[2:].rjust(8, '0')
@@ -107,11 +113,14 @@ def parse_data(data):
             print "Answers start:"
             places_to_ask_next = []
             for num in range(num_NS):
+                print "Question: " + str(num+1)
+                
                 words, index = parse_name(real_bin,i,False)
                 places_to_ask_next.append(words)
                 if index>i:
                     i = index
         i = i + 2
+     print "Places We Could Look:"
      print places_to_ask_next
      return places_to_ask_next
 serv_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)         # Create a socket object
@@ -123,7 +132,7 @@ try:
 except Exception:
         print "not a number"
         quit()                # Reserve the passed port for your service.
-serv_sock.bind((this_machine_name, 9999))        # Bind to the port
+serv_sock.bind((this_machine_name, port))        # Bind to the port
 while True:
     data, client_addr = serv_sock.recvfrom(1024)     # Establish connection with client.
     print 'connected to', str(client_addr)       # Confirm correct client
@@ -140,6 +149,7 @@ while True:
         dns_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         dns_sock.sendto(real_bin,(next_ip,53))
         origdata, dns_addr = dns_sock.recvfrom(1024)
+        print 'connected to', str(dns_addr)       # Confirm correct client
         data = origdata
         next = parse_data(data)
         if(next=="Send to Client"):
@@ -149,5 +159,6 @@ while True:
             for i in next[0]:
                 next_ip+=i+'.'
             next_ip = next_ip[0:-1]
-    to_send = bytearray(origdata)
+    to_send = bytearray(origdata) 
+    print 'Sending response to: ', str(client_addr)       # Confirm correct client
     serv_sock.sendto(to_send,client_addr)
