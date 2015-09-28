@@ -74,7 +74,12 @@ def parse_data(data):
             if byte[5] == '1':
                 return "Send to Client"
             print "Trun Resp: " +byte[6]
+            # TODO: flip recursion desired
             print "Recusion Desired: "+ byte[7]
+            if(byte[7] == '1'):
+                # if the recursion is desired, unset that bit
+                # 128 = 0b10000000
+                real_bin[i] = 128
             print "Recursion Available: " + byte[8]
             print "Z (unused): " +byte[9:12]
             print "R Code: " +byte[12:16]
