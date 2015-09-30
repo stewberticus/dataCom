@@ -8,6 +8,7 @@ no_recursion_data = None
 def parse_name(data,index,rdata):
     real_bin = bytearray(data)
     words = []
+    cache = []
     while True:
         num_octets = real_bin[index]
         index += 1
@@ -46,6 +47,7 @@ def parse_name(data,index,rdata):
                 byte += bin(real_bin[index+2])[2:].rjust(8, '0')
                 byte += bin(real_bin[index+3])[2:].rjust(8, '0')
                 ttl = int(byte,2)
+                cache.append(ttl)
                 index+=4
                 print "ttl: "+str(ttl)
                 byte = bin(real_bin[index])[2:].rjust(8, '0')
@@ -281,4 +283,5 @@ while True:
         else:
             to_send = bytearray(origdata) 
     print 'Sending response to: ', str(client_addr)       # Confirm correct client
+    cache
     serv_sock.sendto(to_send,client_addr)
