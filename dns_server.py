@@ -2,6 +2,9 @@ __author__ = 'alex.stuart'
 import socket               # Import socket module
 import binascii
 
+ttl =0
+looking = ''
+cache = {}
 recursion_desired = True
 no_recursion_data = None
 
@@ -68,6 +71,9 @@ def parse_name(data,index,rdata):
             words.append(word)
     print words
     return (words,index)
+
+
+
 def parse_data(data):
      i = 0
      real_bin  = bytearray(data)
@@ -157,14 +163,18 @@ def parse_data(data):
                 byte += bin(real_bin[i+1])[2:].rjust(8, '0')
                 print "QClass: " + byte
                 i = i + 2
-            print "Answers start:"
+            print "Answers start*******************************************:"
             places_to_ask_next = []
             for num in range(num_NS):
                 print "Question: " + str(num+1)
                 
                 words, index = parse_name(real_bin,i,False)
                 print "index:", index
-                print words
+                print "*******words ", words
+                looking = ''.join(str(e) for e in words)
+               # cache[looking] = 'blub'
+                print "*****looking: " ,looking
+                print "above are words"
                 #if(index == 255):
                 #    return "type*incorrect*error"
                 #    #return words
@@ -233,7 +243,9 @@ except Exception:
 serv_sock.bind((this_machine_name, port))        # Bind to the port
 while True:
     data, client_addr = serv_sock.recvfrom(1024)     # Establish connection with client.
-    print 'connected to', str(client_addr)       # Confirm correct client
+    print 'connected to', str(client_addr)
+
+    # Confirm correct client
     real_bin  = bytearray(data)
     dns_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     dns_sock.sendto(real_bin,("192.112.36.4",53))
@@ -257,7 +269,10 @@ while True:
             dns_sock  = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             dns_sock.sendto(real_bin,(next_ip,53))
             origdata, dns_addr = dns_sock.recvfrom(1024)
-            print 'connected to', str(dns_addr)       # Confirm correct client
+           
+            cache[looking]= str(dns_addr)
+
+            print 'connected to*********', str(dns_addr)       # Confirm correct client
             if recursion_desired:
                 print "recursion is on"
                 data = origdata
@@ -280,5 +295,7 @@ while True:
             to_send = bytearray(origdata)
         else:
             to_send = bytearray(origdata) 
+    print looking
+    print cache
     print 'Sending response to: ', str(client_addr)       # Confirm correct client
     serv_sock.sendto(to_send,client_addr)
