@@ -2,8 +2,9 @@ __author__ = 'alex.stuart,Lauren Mills'
 import socket               # Import socket module
 import binascii
 
+lookings = []
 ttl =0
-looking = ''
+looking = ""
 cache = {}
 recursion_desired = True
 no_recursion_data = None
@@ -171,8 +172,12 @@ def parse_data(data):
                 words, index = parse_name(real_bin,i,False)
                 print "index:", index
                 print "*******words ", words
+
+
+                #cache[looking] = 'blub'
+               
                 looking = ''.join(str(e) for e in words)
-               # cache[looking] = 'blub'
+                lookings.append(looking)
                 print "*****looking: " ,looking
                 print "above are words"
                 #if(index == 255):
@@ -184,10 +189,12 @@ def parse_data(data):
         i = i + 2
      print "Places We Could Look:"
      print places_to_ask_next
+     print "*********lookin at end:",looking
      return places_to_ask_next
 
 def check_errors(error_message, real_bin):
-    have_errors = "no errors" 
+    have_errors = "no errors"
+    print "loooooking before true******:" , looking
     if error_message == "1*format*error":
         print "Format error - Unable to interpret query"
         have_errors = "Format error - Unable to interpret query"
@@ -270,8 +277,10 @@ while True:
             dns_sock.sendto(real_bin,(next_ip,53))
             origdata, dns_addr = dns_sock.recvfrom(1024)
            
-            cache[looking]= str(dns_addr)
-
+            print "*****looking before dict: ",looking
+            #cache{}= str(dns_addr)
+            print  "***lookings ",lookings[len(lookings)-1]
+            cache[lookings[len(lookings)-1]]=str(dns_addr)
             print 'connected to*********', str(dns_addr)       # Confirm correct client
             if recursion_desired:
                 print "recursion is on"
@@ -296,6 +305,6 @@ while True:
         else:
             to_send = bytearray(origdata) 
     print looking
-    print cache
+    print "cacheeeeeeeeeeeee",cache
     print 'Sending response to: ', str(client_addr)       # Confirm correct client
     serv_sock.sendto(to_send,client_addr)
