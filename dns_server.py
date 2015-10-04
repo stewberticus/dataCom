@@ -171,15 +171,12 @@ def parse_data(data):
                 
                 words, index = parse_name(real_bin,i,False)
                 print "index:", index
-                print "*******words ", words
+                print "words ", words
 
 
-                #cache[looking] = 'blub'
                
                 looking = ''.join(str(e) for e in words)
                 lookings.append(looking)
-                print "*****looking: " ,looking
-                print "above are words"
                 #if(index == 255):
                 #    return "type*incorrect*error"
                 #    #return words
@@ -189,7 +186,6 @@ def parse_data(data):
         i = i + 2
      print "Places We Could Look:"
      print places_to_ask_next
-     print "*********lookin at end:",looking
      return places_to_ask_next
 
 def check_errors(error_message, real_bin):
@@ -268,18 +264,16 @@ while True:
         to_send = bytearray(data)
     else:
         for i in next[0]:
-            next_ip+=i+'.'
+          next_ip+=i+'.'
         next_ip = next_ip[0:-1]
+        print "NEXT IP*************************************************",next_ip
         error = False
         error_message = "No error"
-        while True:
+        iwhile True:
             dns_sock  = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             dns_sock.sendto(real_bin,(next_ip,53))
             origdata, dns_addr = dns_sock.recvfrom(1024)
            
-            print "*****looking before dict: ",looking
-            #cache{}= str(dns_addr)
-            print  "***lookings ",lookings[len(lookings)-1]
             cache[lookings[len(lookings)-1]]=str(dns_addr)
             print 'connected to*********', str(dns_addr)       # Confirm correct client
             if recursion_desired:
