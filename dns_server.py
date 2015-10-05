@@ -176,6 +176,8 @@ def parse_data(data):
 
                
                 looking = ''.join(str(e) for e in words)
+               
+               #KEYYYYSSSSS
                 lookings.append(looking)
                 #if(index == 255):
                 #    return "type*incorrect*error"
@@ -273,7 +275,7 @@ while True:
             dns_sock  = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             dns_sock.sendto(real_bin,(next_ip,53))
             origdata, dns_addr = dns_sock.recvfrom(1024)
-           
+#sets cache################################################           
             cache[lookings[len(lookings)-1]]=str(dns_addr)
             print 'connected to*********', str(dns_addr)       # Confirm correct client
             if recursion_desired:
