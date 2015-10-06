@@ -1,4 +1,4 @@
-__author__ = 'alex.stuart,Lauren Mills'
+__author__ = 'alex.stuart,Lauren Mills, Caleb Stevenson'
 import socket               # Import socket module
 import binascii
 import time
@@ -94,7 +94,7 @@ def parse_data(data):
         if i/2 == 1:
             byte = bin(real_bin[i])[2:].rjust(8, '0')
             byte += bin(real_bin[i+1])[2:].rjust(8, '0')
-            print byte
+            #print byte
             print "response  :"+ byte[0]
             print "OP code :" + byte[1:5]
             print "Auth Answer: "+ byte[5]
@@ -160,7 +160,7 @@ def parse_data(data):
             for num in range(num_DQ):
                 print "Question address: "
                 words, i = parse_name(real_bin,i,False)
-                print "i:", i
+                #print "i:", i
                 #if(i == 255):
                 #    return words
                 byte = bin(real_bin[i])[2:].rjust(8, '0')
@@ -171,14 +171,14 @@ def parse_data(data):
                 byte += bin(real_bin[i+1])[2:].rjust(8, '0')
                 print "QClass: " + byte
                 i = i + 2
-            print "Answers start*******************************************:"
+            #print "Answers start*******************************************:"
             places_to_ask_next = []
             for num in range(num_NS):
                 print "Question: " + str(num+1)
                 
                 words, index = parse_name(real_bin,i,False)
-                print "index:", index
-                print "words ", words
+                #print "index:", index
+                #print "words ", words
 
 
                
@@ -200,7 +200,7 @@ def parse_data(data):
 
 def check_errors(error_message, real_bin):
     have_errors = "no errors"
-    print "loooooking before true******:" , looking
+    #print "loooooking before true******:" , looking
     if error_message == "1*format*error":
         print "Format error - Unable to interpret query"
         have_errors = "Format error - Unable to interpret query"
@@ -238,8 +238,8 @@ def check_errors(error_message, real_bin):
         # there was some error message. send it to the client
         #serv_sock.sendto(have_errors,client_addr)
         copy_bin = real_bin
-        print "Errors! copy_bin:"
-        print real_bin
+        print "There were some errors!"
+        #print real_bin
         #return (True, have_errors)  # errors
 
     return (False, "No error") # no errors
@@ -261,24 +261,15 @@ def get_byte_array(data, qdcount, ancount, nscount, arcount):
             byte += bin(real_bin[i+1])[2:].rjust(8, '0')
             print byte
 
-            print "*****"
             # need to turn AA-Authoritative Answer on?
             new_bin += (byte);
-            print "new_bin AuthAnswer: " + new_bin[5]
+            #print "new_bin AuthAnswer: " + new_bin[5]
             #new_bin[5] = '1'
-            print new_bin
-            
-            print "****"
+            #print new_bin
 
-            print "response  :"+ byte[0]
-            print "OP code :" + byte[1:5]
-            print "Auth Answer: "+ byte[5]
             if byte[5] == '1':
                 return "Send to Client"
-            print "Trun Resp: " +byte[6]
-            print "Recusion Desired: "+ byte[7]
             if(byte[7] == '1'):
-                print "Flip the recursion desired bit"
                 real_bin[i] = 128
                 global recursion_desired
                 global no_recursion_data
@@ -286,11 +277,7 @@ def get_byte_array(data, qdcount, ancount, nscount, arcount):
                 # TODO: figure out how to change data that's sent back
                 data = real_bin
                 no_recursion_data = data
-            print "Recursion Available: " + byte[8]
-            print "Z (unused): " +byte[9:12]
-            print "R Code: " +byte[12:16]
             rcode = int(byte[12:16], 2)
-            print "Integer R Code: ", rcode
             #TODO: send error to client
             #idea: send a code, then have these long messages in function
             if rcode == 0:
@@ -315,91 +302,34 @@ def get_byte_array(data, qdcount, ancount, nscount, arcount):
             byte += bin(real_bin[i+1])[2:].rjust(8, '0')
 
 
-            print "*****\ni/2==2 new_bin:"
-            print "new qdcount =", qdcount
             #new_bin += bin(qdcount)[2:].rjust(8, '0')
             new_bin += byte
-            print new_bin
-            print "*****"
 
             num_DQ = int (byte,2)
-            print 'DQcount: '+ str(num_DQ)
         if i/2 == 3: 
             byte = bin(real_bin[i])[2:].rjust(8, '0')
             byte += bin(real_bin[i+1])[2:].rjust(8, '0')
 
-            print "*****\ni/2==3 new_bin:"
-            print "new ancount =", ancount
             #new_bin += bin(ancount)[2:].rjust(8, '0')
             new_bin += byte
-            print new_bin
-            print "*****"
 
             num_AN = int (byte,2)
-            print 'AN count: '+ str(num_AN)
         if i/2 == 4:
             byte = bin(real_bin[i])[2:].rjust(8, '0')
             byte += bin(real_bin[i+1])[2:].rjust(8, '0')
 
-            print "*****\ni/2==4 new_bin:"
-            print "new nscount =", nscount
             #new_bin += bin(nscount)[2:].rjust(8, '0')
             new_bin += byte
-            print new_bin
-            print "*****"
 
             num_NS = int (byte,2)
-            print 'NS count: '+ str(num_NS)
         if i/2 == 5: 
             byte = bin(real_bin[i])[2:].rjust(8, '0')
             byte += bin(real_bin[i+1])[2:].rjust(8, '0')
 
-            print "*****\ni/2==5 new_bin:"
-            print "new arcount =", arcount
             #new_bin += bin(1)[2:].rjust(8, '0')
             new_bin += byte
-            print new_bin
-            print "*****"
 
             num_AR = int (byte,2)
-            print 'AR count: '+ str(num_AR)
-        #if i/2 == 6:
-        #    print 'Questions Start'
-        #    for num in range(num_DQ):
-        #        print "Question address: "
-        #        words, i = parse_name(real_bin,i,False)
-        #        print "i:", i
-        #        #if(i == 255):
-        #        #    return words
-        #        byte = bin(real_bin[i])[2:].rjust(8, '0')
-        #        byte += bin(real_bin[i+1])[2:].rjust(8, '0')
-        #        print "Qtype:" + byte
-        #        i = i + 2
-        #        byte = bin(real_bin[i])[2:].rjust(8, '0')
-        #        byte += bin(real_bin[i+1])[2:].rjust(8, '0')
-        #        print "QClass: " + byte
-        #        i = i + 2
-        #    print "Answers start*******************************************:"
-        #    places_to_ask_next = []
-        #    for num in range(num_NS):
-        #        print "Question: " + str(num+1)
-        #        
-        #        words, index = parse_name(real_bin,i,False)
-        #        print "index:", index
-        #        print "words ", words
-
-
-        #       
-        #        looking = ''.join(str(e) for e in words)
-        #       
-        #       #KEYYYYSSSSS
-        #        lookings.append(looking)
-        #        #if(index == 255):
-        #        #    return "type*incorrect*error"
-        #        #    #return words
-        #        places_to_ask_next.append(words)
-        #        if index>i:
-        #            i = index
         i = i + 2
     return new_bin 
 
@@ -419,7 +349,6 @@ while True:
     print 'connected to', str(client_addr)
 
     new_byte_array = get_byte_array(data, 1, 2, 3, 1)
-    print "~~~~~\n new_byte_array:\n", new_byte_array, "\n~~~~~~"
 
     # Confirm correct client
     real_bin  = bytearray(data)
@@ -429,9 +358,8 @@ while True:
 
     old_data = data
     new_data_from_array = get_byte_array(data, 0, 0, 0, 0)
-    ttl_list_2 = ttl_list
 
-    timer = time.time()
+    #timer = time.time()
 
     recursion_data = data
     next = parse_data(data)
@@ -440,14 +368,18 @@ while True:
     if(new_data_from_array in new_cache):
         print "This was in the cache before!"
         curr_time = time.time()
-        print "curr_time: ", curr_time
-        print "ttl set time: ", ttl_dict[new_data_from_array][2]
-        print "ttl time: ", ttl_dict[new_data_from_array][1]
-        print "curr - set: ", curr_time - ttl_dict[new_data_from_array][2] 
+        #print "curr_time: ", curr_time
+        #print "ttl set time: ", ttl_dict[new_data_from_array][2]
+        #print "ttl time: ", ttl_dict[new_data_from_array][1]
+        #print "curr - set: ", curr_time - ttl_dict[new_data_from_array][2] 
         
+        dns_sock.settimeout(1.0)        
+
         if( curr_time - ttl_dict[new_data_from_array][2] > ttl_dict[new_data_from_array][1]):
             print "You are out of time! Get updated stuff."
             #TODO: remove the value from the dictionary
+            del ttl_dict[new_data_from_array]
+            #print ttl_dict
         else:
             print "Just in time! Use previous data"
             next = "Send to Client"
@@ -468,7 +400,6 @@ while True:
         for i in next[0]:
           next_ip+=i+'.'
         next_ip = next_ip[0:-1]
-        print "NEXT IP*************************************************",next_ip
         error = False
         error_message = "No error"
         while True:
@@ -476,12 +407,12 @@ while True:
             dns_sock.sendto(real_bin,(next_ip,53))
             origdata, dns_addr = dns_sock.recvfrom(1024)
             
-            print "Check values in the ttl list"
-            print ttl_list
+            #print "Check values in the ttl list"
+            #print ttl_list
 
 #sets cache################################################           
             cache[lookings[len(lookings)-1]]=str(dns_addr)
-            print 'connected to*********', str(dns_addr)       # Confirm correct client
+            #print 'connected to*********', str(dns_addr)       # Confirm correct client
             if recursion_desired:
                 print "recursion is on"
                 data = origdata
@@ -495,9 +426,9 @@ while True:
                 if(not new_data_from_array in new_cache):
                     #new_cache[bin(bytearray(old_data))] = bin(bytearray(origdata))
                     new_cache[new_data_from_array] = bytearray(origdata)
-                    print "This is an answer! Store it in the cache - in the loop"
+                    print "This is an answer! Store it in the cache"
                 else:
-                    print "Found this before in the cache. Break out"
+                    print "Found this before in the cache."
                 break
             elif(error):
                 break
@@ -512,24 +443,21 @@ while True:
             #to_send = new_cache[bin(bytearray(origdata))]
             to_send = new_cache[new_data_from_array]
             print "You just added this to the cache"
-            print to_send
-            print "~~~~~"
+            #print to_send
             print "update the ttl list for the ones from data_from_array"
             for ttl in ttl_list:
                 if ttl[0] == "**":
                     #ttl[0] = new_data_from_array
                     ttl_dict[new_data_from_array] = ttl
-            ttl_dict[new_data_from_array] = ("**", 15, time.time())
+            #ttl_dict[new_data_from_array] = ("**", 15, time.time())
             del ttl_list[:]
             #ttl_dict[new_data_from_array] = ttl_list[
             #byte = bin(real_bin[i])[2:].rjust(8, '0')
         else:
             to_send = bytearray(origdata) 
 
-    print looking
-    print "cacheeeeeeeeeeeee",cache
     new_timer = time.time()
-    print "Timer difference = ", new_timer - timer
+    #print "Timer difference = ", new_timer - timer
     print 'Sending response to: ', str(client_addr)       # Confirm correct client
     serv_sock.sendto(to_send,client_addr)
 
