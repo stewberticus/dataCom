@@ -353,7 +353,9 @@ while True:
     # Confirm correct client
     real_bin  = bytearray(data)
     dns_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    dns_sock.settimeout(10)
     dns_sock.sendto(real_bin,("192.112.36.4",53))
+    dns_sock.settimeout(None)
     data, addr = dns_sock.recvfrom(1024)
 
     old_data = data
@@ -373,17 +375,21 @@ while True:
         #print "ttl time: ", ttl_dict[new_data_from_array][1]
         #print "curr - set: ", curr_time - ttl_dict[new_data_from_array][2] 
         
-        dns_sock.settimeout(1.0)        
+        #dns_sock.settimeout(1.0)        
 
-        if( curr_time - ttl_dict[new_data_from_array][2] > ttl_dict[new_data_from_array][1]):
-            print "You are out of time! Get updated stuff."
-            #TODO: remove the value from the dictionary
-            del ttl_dict[new_data_from_array]
-            #print ttl_dict
+        if(new_data_from_array in ttl_dict):
+            if( curr_time - ttl_dict[new_data_from_array][2] > 
+                    ttl_dict[new_data_from_array][1]):
+                print "You are out of time! Get updated stuff."
+                #TODO: remove the value from the dictionary
+                del ttl_dict[new_data_from_array]
+                #print ttl_dict
+            else:
+                print "Just in time! Use previous data"
+                next = "Send to Client"
+                to_send = new_cache[new_data_from_array] 
         else:
-            print "Just in time! Use previous data"
-            next = "Send to Client"
-            to_send = new_cache[new_data_from_array] 
+            print "This entry is not found in the ttl_dictionary. Sorry."
     else:
         print "Not in the cache. Keep searching"
     
