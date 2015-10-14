@@ -1,0 +1,17 @@
+1.) Setup libpcap (./configure and make)
+2.) Download jNetPcap (http://slytechs.com/downloads/dist/a130819os/jnetpcap-1.4.r1425-1.linux64.x86_64.tgz)
+3.) tar -xzvf jnetpcap-1.4.r1425-1.linux64.x86_64.tgz
+4.) mv jnetpcap-1.4.r1425/* libpcap-1.7.4
+5.) cd libpcap-1.7.4 
+    (or some other directory. whichever has all the libpcap files)
+6.) ln -s libpcap.so.1.7.4 libpcap.so
+7.) ls *.so (I just do this to make sure all 3 .so files exist here)
+8.) export LD_LIBRARY_PATH=$(pwd)
+9.) export CLASSPATH="$CLASSPATH:jnetpcap.jar"
+10.) Move sample.pcap file into the 'tests' folder 
+    in your current directory 
+11.) Move ClassicPcapExampleOfflineCapture.java into current directory
+12.) javac ClassicPcapExampleOfflineCapture.java
+13.) java ClassicPcapExampleOfflineCapture
+
+And this *should* work...
