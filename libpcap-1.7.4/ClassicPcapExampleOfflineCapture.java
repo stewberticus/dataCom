@@ -76,7 +76,7 @@ public class ClassicPcapExampleOfflineCapture {
         
          PcapPacketHandler<String> percent = new PcapPacketHandler<String>() {  
             //if greater eth II else 802.3
-            int count =0;
+            int count;
             public void nextPacket(PcapPacket packet, String user) {  
                     if (packet.getCaptureHeader().wirelen() > 1536){
                       counteth();
