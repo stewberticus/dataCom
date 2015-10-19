@@ -101,7 +101,7 @@ public class ClassicPcapExampleOfflineCapture {
         try {  
             
             pcap.loop(500, percent, "jNetPcap rocks!"); 
-            System.out.println(count);
+            System.out.println("percent of Ethernet II" + (count/500)*100);
             //pcap.loop(500, jpacketHandler, "jNetPcap rocks!"); 
         } finally {  
         /*************************************************************************** 
