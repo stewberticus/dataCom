@@ -452,6 +452,7 @@ while True:
             #print to_send
             print "update the ttl list for the ones from data_from_array"
             for ttl in ttl_list:
+                #print ttl
                 if ttl[0] == "**":
                     #ttl[0] = new_data_from_array
                     ttl_dict[new_data_from_array] = ttl

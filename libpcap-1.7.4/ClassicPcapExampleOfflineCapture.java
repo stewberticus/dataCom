@@ -3,6 +3,10 @@ import java.util.Date;
 import org.jnetpcap.Pcap;  
 import org.jnetpcap.packet.PcapPacket;  
 import org.jnetpcap.packet.PcapPacketHandler;  
+import org.jnetpcap.packet.PcapPacket;
+import org.jnetpcap.protocol.network.Ip4;
+import org.jnetpcap.protocol.lan.Ethernet;
+import org.jnetpcap.packet.JPacket;
   
 /** 
  * This example is similar to the classic libpcap example shown in nearly every 
@@ -74,6 +78,8 @@ public class ClassicPcapExampleOfflineCapture {
             }  
         };  
         
+        Ethernet eth = new Ethernet();
+        Ip4 ip = new Ip4();
         
          PcapPacketHandler<String> percent = new PcapPacketHandler<String>() {  
             //if greater eth II else 802.3
@@ -82,7 +88,15 @@ public class ClassicPcapExampleOfflineCapture {
                     if (packet.getCaptureHeader().wirelen() > 1536){
                       count++;
                     }
-                    
+
+                    System.out.println("Packet:");
+                    if(packet.hasHeader(eth)) {
+                        System.out.printf("ethernet.type=%X\n", eth.type());
+                    }
+                    if(packet.hasHeader(ip)) {
+                        System.out.printf("ip.version=%d\n", ip.version());
+                    } 
+
             }  
             
             
