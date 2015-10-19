@@ -42,7 +42,7 @@ public class ClassicPcapExampleOfflineCapture {
          **************************************************************************/  
         final StringBuilder errbuf = new StringBuilder(); // For any error msgs  
         //final String file = "tests/test-l2tp.pcap";  
-        final String file = "tests/sample.pcap";
+        final String file = "tests/test_wireshark.pcap";
   
         System.out.printf("Opening file for reading: %s%n", file);  
   
@@ -73,6 +73,15 @@ public class ClassicPcapExampleOfflineCapture {
                     );  
             }  
         };  
+        
+        
+      PcapPacketHandler<String> two = new PcapPacketHandler<String>() {
+              public void nextPacket(PcapPacket packet, String user) {
+                    if (packet.getCaptureHeader().wirelen() > 1536){
+                      System.out.println("802.3);
+                } }
+};
+
   
         /*************************************************************************** 
          * Fourth we enter the loop and tell it to capture 10 packets. The loop 
@@ -83,7 +92,8 @@ public class ClassicPcapExampleOfflineCapture {
          * which protocol ID to use as the data link type for this pcap interface. 
          **************************************************************************/  
         try {  
-            pcap.loop(10, jpacketHandler, "jNetPcap rocks!");  
+            pcap.loop(500, jpacketHandler, "jNetPcap rocks!"); 
+            pcap.loop(500,percent);
         } finally {  
         /*************************************************************************** 
          * Last thing to do is close the pcap handle 
