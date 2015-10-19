@@ -84,7 +84,7 @@ public class ClassicPcapExampleOfflineCapture {
                     System.out.println(count);
             }  
             
-            public int counteth(){
+            public void counteth(){
               System.out.println("in count");
               count = count ++;
               //return count;
