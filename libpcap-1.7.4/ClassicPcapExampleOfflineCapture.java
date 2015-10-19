@@ -92,7 +92,8 @@ public class ClassicPcapExampleOfflineCapture {
          * which protocol ID to use as the data link type for this pcap interface. 
          **************************************************************************/  
         try {  
-            pcap.loop(500, percent, "jNetPcap rocks!");  
+            pcap.loop(500, percent, "jNetPcap rocks!"); 
+            pcap.loop(500, jpacketHandler, "jNetPcap rocks!"); 
         } finally {  
         /*************************************************************************** 
          * Last thing to do is close the pcap handle 
