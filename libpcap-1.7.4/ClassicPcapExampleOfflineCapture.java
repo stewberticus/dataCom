@@ -81,9 +81,9 @@ public class ClassicPcapExampleOfflineCapture {
                     if (packet.getCaptureHeader().wirelen() > 1536){
                       count++;
                     }
-                    System.out.println(count);
+                    
             }  
-            
+            System.out.println(count);
             
         };
   
