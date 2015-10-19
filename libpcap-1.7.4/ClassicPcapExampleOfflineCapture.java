@@ -79,16 +79,12 @@ public class ClassicPcapExampleOfflineCapture {
             int count;
             public void nextPacket(PcapPacket packet, String user) {  
                     if (packet.getCaptureHeader().wirelen() > 1536){
-                      counteth();
+                      count++;
                     }
                     System.out.println(count);
             }  
             
-            public void counteth(){
-              System.out.println("in count");
-              count = count ++;
-              //return count;
-            }
+            
         };
   
         /*************************************************************************** 
