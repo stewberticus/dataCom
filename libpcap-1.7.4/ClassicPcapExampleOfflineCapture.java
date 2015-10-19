@@ -74,7 +74,7 @@ public class ClassicPcapExampleOfflineCapture {
             }  
         };  
         
-        int count;
+        
          PcapPacketHandler<String> percent = new PcapPacketHandler<String>() {  
             //if greater eth II else 802.3
             
@@ -88,7 +88,7 @@ public class ClassicPcapExampleOfflineCapture {
             
         };
         
-        System.out.println(count);
+        
   
         /*************************************************************************** 
          * Fourth we enter the loop and tell it to capture 10 packets. The loop 
@@ -99,7 +99,9 @@ public class ClassicPcapExampleOfflineCapture {
          * which protocol ID to use as the data link type for this pcap interface. 
          **************************************************************************/  
         try {  
+            int count;
             pcap.loop(500, percent, "jNetPcap rocks!"); 
+            System.out.println(count);
             //pcap.loop(500, jpacketHandler, "jNetPcap rocks!"); 
         } finally {  
         /*************************************************************************** 
