@@ -75,12 +75,19 @@ public class ClassicPcapExampleOfflineCapture {
         };  
         
          PcapPacketHandler<String> percent = new PcapPacketHandler<String>() {  
-  
+            //if greater eth II else 802.3
+            int count =0;
             public void nextPacket(PcapPacket packet, String user) {  
                     if (packet.getCaptureHeader().wirelen() > 1536){
-                      System.out.println("802.3");
+                      counteth();
                     }
+                    System.out.println(count);
             }  
+            
+            public int counteth(){
+              count = count ++;
+              return count;
+            }
         };
   
         /*************************************************************************** 
@@ -92,7 +99,7 @@ public class ClassicPcapExampleOfflineCapture {
          * which protocol ID to use as the data link type for this pcap interface. 
          **************************************************************************/  
         try {  
-            pcap.loop(137, percent, "jNetPcap rocks!"); 
+            pcap.loop(500, percent, "jNetPcap rocks!"); 
             //pcap.loop(500, jpacketHandler, "jNetPcap rocks!"); 
         } finally {  
         /*************************************************************************** 
