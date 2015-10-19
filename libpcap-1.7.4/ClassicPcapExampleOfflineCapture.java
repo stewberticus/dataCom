@@ -29,7 +29,7 @@ import org.jnetpcap.packet.PcapPacketHandler;
  * @author Sly Technologies, Inc. 
  */  
 public class ClassicPcapExampleOfflineCapture {  
-  int count = 0;
+  static int count = 0;
     /** 
      * Main startup method 
      *  
