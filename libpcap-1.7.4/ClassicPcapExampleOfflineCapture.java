@@ -74,18 +74,21 @@ public class ClassicPcapExampleOfflineCapture {
             }  
         };  
         
+        int count;
          PcapPacketHandler<String> percent = new PcapPacketHandler<String>() {  
             //if greater eth II else 802.3
-            int count;
+            
             public void nextPacket(PcapPacket packet, String user) {  
                     if (packet.getCaptureHeader().wirelen() > 1536){
                       count++;
                     }
                     
             }  
-            System.out.println(count);
+            
             
         };
+        
+        System.out.println(count);
   
         /*************************************************************************** 
          * Fourth we enter the loop and tell it to capture 10 packets. The loop 
