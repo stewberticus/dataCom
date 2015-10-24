@@ -210,8 +210,8 @@ public class ClassicPcapExampleOfflineCapture {
                //if(p.count > 1)
               //  System.out.printf("Count %d\n", p.count);
          //  }
-            //pcap.loop(500, jpacketHandler, "jNetPcap rocks!"); 
-        //} 
+            pcap.loop(500, jpacketHandler, "jNetPcap rocks!"); 
+        } 
         finally {  
         /*************************************************************************** 
          * Last thing to do is close the pcap handle 
