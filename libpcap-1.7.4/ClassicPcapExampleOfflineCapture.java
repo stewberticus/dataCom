@@ -93,7 +93,7 @@ public class ClassicPcapExampleOfflineCapture {
         HashMap<byte[], HashMap<byte[], Integer>> mapSourceDest = new
             HashMap<byte[], HashMap<byte[], Integer>>();
 
-        ArrayList<IP4Pair> ip4pairs = new ArrayList<IP4Pair>();
+        //ArrayList<IP4Pair> ip4pairs = new ArrayList<IP4Pair>();
         
         PcapPacketHandler<String> percent = new PcapPacketHandler<String>() {  
             //if greater eth II else 802.3
@@ -153,18 +153,18 @@ public class ClassicPcapExampleOfflineCapture {
                         int sourceArray = ip.sourceToInt();
                         int destArray = ip.destinationToInt();
                         //if this source is already in the map
-                        IP4Pair newpair = 
-                            new IP4Pair(sourceArray, destArray); 
+                       // IP4Pair newpair = 
+                          //  new IP4Pair(sourceArray, destArray); 
                         boolean addIt = true;
-                        for(IP4Pair p: ip4pairs) {
+                      //  for(IP4Pair p: ip4pairs) {
                             if(p.match(newpair))
                                 addIt = false;
                                 break;
-                        } 
-                        if(addIt) {
+                      //  } 
+                       // if(addIt) {
                             newpair.count = 1;
                             ip4pairs.add(newpair);    
-                        }
+                      //  }
                     } 
 
             }  
