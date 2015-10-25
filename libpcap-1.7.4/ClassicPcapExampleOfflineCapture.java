@@ -93,7 +93,7 @@ public class ClassicPcapExampleOfflineCapture {
         HashMap<byte[], HashMap<byte[], Integer>> mapSourceDest = new
             HashMap<byte[], HashMap<byte[], Integer>>();
 
-        //ArrayList<IP4Pair> ip4pairs = new ArrayList<IP4Pair>();
+        ArrayList<IP4Pair> ip4pairs = new ArrayList<IP4Pair>();
         
         PcapPacketHandler<String> percent = new PcapPacketHandler<String>() {  
             //if greater eth II else 802.3
