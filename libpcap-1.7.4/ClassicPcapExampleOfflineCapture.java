@@ -153,8 +153,8 @@ public class ClassicPcapExampleOfflineCapture {
                         int sourceArray = ip.sourceToInt();
                         int destArray = ip.destinationToInt();
                         //if this source is already in the map
-                       // IP4Pair newpair = 
-                          //  new IP4Pair(sourceArray, destArray); 
+                        IP4Pair newpair = 
+                           new IP4Pair(sourceArray, destArray); 
                         boolean addIt = true;
                       //  for(IP4Pair p: ip4pairs) {
                            /** if(p.match(newpair))
@@ -206,10 +206,10 @@ public class ClassicPcapExampleOfflineCapture {
             }
            System.out.printf("Number of IPv4 packets: %d\n", countIP4);
 
-           //for(IP4Pair p: ip4pairs) {
-               //if(p.count > 1)
-              //  System.out.printf("Count %d\n", p.count);
-         //  }
+           for(IP4Pair p: ip4pairs) {
+               if(p.count > 1)
+              System.out.printf("Count %d\n", p.count);
+           }
             pcap.loop(500, jpacketHandler, "jNetPcap rocks!"); 
         } 
         finally {  
