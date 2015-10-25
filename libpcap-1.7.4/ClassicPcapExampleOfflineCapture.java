@@ -157,7 +157,7 @@ public class ClassicPcapExampleOfflineCapture {
                            new IP4Pair(sourceArray, destArray); 
                         boolean addIt = true;
                       //  for(IP4Pair p: ip4pairs) {
-                           /** if(p.match(newpair))
+                           // if(p.match(newpair))
                                 addIt = false;
                                 break;
                       //  } 
@@ -165,9 +165,9 @@ public class ClassicPcapExampleOfflineCapture {
                           //  newpair.count = 1;
                            // ip4pairs.add(newpair);    
                       //  }
-                    } 
+                    //} 
 
-            }  
+           // }  
             
         };
         
