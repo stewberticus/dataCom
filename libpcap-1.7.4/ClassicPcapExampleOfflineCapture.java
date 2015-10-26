@@ -160,9 +160,11 @@ public class ClassicPcapExampleOfflineCapture {
                         for(IP4Pair p: ip4pairs) {
                             if(p.match(newpair))
                                 addIt = false;
+                                System.out.println("counttt: " + p.getcount());
                                 break;
                        } 
                         if(addIt) {
+                            System.out.println("This is a new pair: " +String.valueOf(newpair));
                             newpair.count = 1;
                            ip4pairs.add(newpair);    
                         }
@@ -186,7 +188,8 @@ public class ClassicPcapExampleOfflineCapture {
          **************************************************************************/  
         try {  
             
-            pcap.loop(500, percent, "jNetPcap rocks!"); 
+            pcap.loop(20, percent, "jNetPcap rocks!");
+             
             System.out.println("percent of Ethernet II: " + (count/500.0)*100);
             System.out.println("Percentages of ethernet types:");
             for(int k: typeCounts.keySet()) {
