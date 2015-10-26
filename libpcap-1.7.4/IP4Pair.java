@@ -54,30 +54,15 @@ public class IP4Pair {
         this.count ++;
     }
     public boolean match(IP4Pair other) {
-        System.out.println("This: " + this.printbytearray(this.tobyte(sourceArray)) + "      " + this.printbytearray(this.tobyte(destArray)));
-       System.out.println("Other: " + other.printbytearray(other.tobyte(other.destArray)) + "      " + other.printbytearray(other.tobyte(other.sourceArray)));
-       System.out.println("inIP4PAIRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
-       System.out.println("source match " + Arrays.equals(this.tobyte(sourceArray),other.tobyte(other.destArray)));
       if(Arrays.equals(this.tobyte(sourceArray),other.tobyte(other.destArray))){
-           System.out.println("MATCHHHHHHHHH");
+           //System.out.println("MATCH");
+           //System.out.println("This: " + this.printbytearray(this.tobyte(sourceArray)) + "      " + this.printbytearray(this.tobyte(destArray)));
+           //System.out.println("Other: " + other.printbytearray(other.tobyte(other.destArray)) + "      " + other.printbytearray(other.tobyte(other.sourceArray)));
            
            return true;
        } 
-       //if(other.sourceArray.equals(sourceArray) &&
-        //        other.destArray.equals(destArray)) {
-       // if(other.sourceArray == sourceArray && 
-         //       other.destArray == destArray){
-           // count ++;
-
-            //System.out.println("MATHHHHHHHHH");
-            //return true;
-        //}
-        System.out.println("No match");
         return false;
     }
-
-//    public boolean match_array(IP4Pair other) {
-  //      Sytem.out.println("This arrays: 
 
     @Override
     public boolean equals(Object object){

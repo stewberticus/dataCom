@@ -54,8 +54,8 @@ static double totalBytesTransferred = 0.0;
          **************************************************************************/  
         final StringBuilder errbuf = new StringBuilder(); // For any error msgs  
         //final String file = "tests/test-l2tp.pcap";  
-        final String file = "tests/test_wireshark.pcap";
-        //final String file = "tests/sample.pcap";
+        //final String file = "tests/test_wireshark.pcap";
+        final String file = "tests/sample.pcap";
   
         System.out.printf("Opening file for reading: %s%n", file);  
   
@@ -102,8 +102,13 @@ static double totalBytesTransferred = 0.0;
         HashMap<byte[], HashMap<byte[], Integer>> mapSourceDest = new
             HashMap<byte[], HashMap<byte[], Integer>>();
         
-
-       ArrayList<IP4Pair> ip4pairs = new ArrayList<IP4Pair>();
+        
+        ArrayList<IP4Pair> ip4pairs = new ArrayList<IP4Pair>();
+        ArrayList<Integer> tcpSourcePorts = new ArrayList<Integer>();
+        ArrayList<Integer> tcpDestPorts = new ArrayList<Integer>();
+        ArrayList<Integer> udpSourcePorts = new ArrayList<Integer>();
+        ArrayList<Integer> udpDestPorts = new ArrayList<Integer>();
+        
         
         PcapPacketHandler<String> percent = new PcapPacketHandler<String>() {  
             //if greater eth II else 802.3
@@ -113,7 +118,7 @@ static double totalBytesTransferred = 0.0;
                     //  count++;
                     //}
 
-                    System.out.println("Packet:");
+                    //System.out.println("Packet:");
                     //add the size of the packet to totalBytes
                     totalBytesTransferred += packet.getTotalSize();
 
@@ -147,7 +152,7 @@ static double totalBytesTransferred = 0.0;
                         }
 
                         //print the (protocol?) type of this packet in hex
-                        System.out.printf("ethernet.type=%X\n", eth.type());
+                        //System.out.printf("ethernet.type=%X\n", eth.type());
                         // add 1 to the count of this type
                         
                     }
@@ -155,18 +160,18 @@ static double totalBytesTransferred = 0.0;
                         //increment count of ip4 packets
                         countIP4++;
                         //print the ip version of this packet
-                        System.out.printf("ip.version=%d\n", ip.version());
+                        //System.out.printf("ip.version=%d\n", ip.version());
                                                 //byte[] sourceArray = ip.source();
                         //byte[] destArray = ip.destination();
                         int sourceArray = ip.sourceToInt();
-                        System.out.println("Source is: " + sourceArray +"\n");
+                        //System.out.println("Source is: " + sourceArray +"\n");
                         int destArray = ip.destinationToInt();
                         //if this source is already in the map
                         IP4Pair newpair = 
                            new IP4Pair(sourceArray, destArray); 
                         boolean addIt = false;
-                        System.out.printf("Destination=%s\nSource=%s\n",
-                               newpair.printbytearray(newpair.tobyte(newpair.sourceArray)),newpair.printbytearray(newpair.tobyte(newpair.destArray)));
+                        //System.out.printf("Destination=%s\nSource=%s\n",
+                        //       newpair.printbytearray(newpair.tobyte(newpair.sourceArray)),newpair.printbytearray(newpair.tobyte(newpair.destArray)));
                         if(!(ip4pairs.contains(newpair))){
                                 ip4pairs.add(newpair);
                             }
@@ -175,7 +180,7 @@ static double totalBytesTransferred = 0.0;
                                 
                                 p.incrementcount();
                                 
-                                System.out.println("counttt: " + p.getcount());
+                                //System.out.println("counttt: " + p.getcount());
                                 break;
                                 }
                             
@@ -185,13 +190,32 @@ static double totalBytesTransferred = 0.0;
                     if(packet.hasHeader(tcp)) { 
                         countTcp  ++ ;
 
+                        tcpSourcePorts.add(tcp.source());
+                        tcpDestPorts.add(tcp.destination());
+                        
+                        //print some interesting Checksum information for the first 10 tcp packets
+                        if(countTcp == 1)
+                            System.out.println("Print some interesting checksum information for the first 10 tcp packets");
+                        if(countTcp <= 10) {
+                            System.out.printf("Checksum Description: %s\n", tcp.checksumDescription());
+                            System.out.printf("Checksum value: %d\n", tcp.checksum());
+                            if(!tcp.isChecksumValid()) {
+                                System.out.printf("****INTERESTING INFORMATION****\n");
+                                System.out.println("oh no! the checksum is ded");
+                            }
+                            System.out.printf("****                       ****\n");
+
+                        } 
                    }
+
                    if(packet.hasHeader(icmp)) { 
                         countIcmp  ++ ;
 
                    }
                    if(packet.hasHeader(udp)) { 
                         countUdp  ++ ;
+                        udpSourcePorts.add(udp.source());
+                        udpDestPorts.add(udp.destination());
 
                    }
            }  
@@ -212,30 +236,35 @@ static double totalBytesTransferred = 0.0;
          **************************************************************************/  
         try {  
             
-            pcap.loop(20, percent, "jNetPcap rocks!");
+            pcap.loop(500, percent, "jNetPcap rocks!");
              
-            System.out.println("percent of Ethernet II: " + (count/500.0)*100);
+            System.out.println("Percent of 802.3 Ethernet: " + (100 - (count / 500.0) * 100));
+            System.out.println("Percent of Ethernet II: " + (count/500.0)*100);
             System.out.println("Percentages of ethernet types:");
             for(int k: typeCounts.keySet()) {
-                System.out.printf("Number of packets of type 0x%X is %d\n",
+                System.out.printf("\tNumber of packets of type 0x%X is %d\n",
                         k, typeCounts.get(k));
-                System.out.printf("Percent of type 0x%X is %f\n", k,
+                System.out.printf("\tPercent of type 0x%X is %f\n", k,
                        typeCounts.get(k) / 500.0 * 100); 
             }
 
             System.out.printf("Total bytes transferred %e\n",
               totalBytesTransferred);
             for(int k: bytesTransferred.keySet()) {
-                System.out.printf("Bytes transferred of type 0x%X is %d\n",
+                System.out.printf("\tBytes transferred of type 0x%X is %d\n",
                     k, bytesTransferred.get(k));
-                System.out.printf("Percent of bytes transferred of type " + 
+                System.out.printf("\tPercent of bytes transferred of type " + 
                     "0x%X is %f\n", k, bytesTransferred.get(k) /
                     totalBytesTransferred * 100.0);
             }
+           System.out.println();
            System.out.printf("Number of IPv4 packets: %d\n", countIP4);
+            
            for(IP4Pair p: ip4pairs) {
-                 System.out.printf("Destination=%s\nSource=%s\nCount percetage =%.2f\n",
+                 System.out.printf("Destination=%s\tSource=%s\nCount percetage =%.2f\n\n",
                                p.printbytearray(p.tobyte(p.sourceArray)),p.printbytearray(p.tobyte(p.destArray)),(p.getcount()/(double)countIP4)*100);
+
+                
 
                
            } 
@@ -243,6 +272,83 @@ static double totalBytesTransferred = 0.0;
             System.out.printf("percent UDP: %.2f\n", ((countUdp / (double) countIP4)*100));
             System.out.printf("percent ICMP: %.2f\n",((countIcmp / (double) countIP4)*100));
 
+            HashMap<Integer, Integer> tcpSourceCount = new HashMap<Integer, Integer>();
+            HashMap<Integer, Integer> tcpDestCount = new HashMap<Integer, Integer>();
+            HashMap<Integer, Integer> udpSourceCount = new HashMap<Integer, Integer>();
+            HashMap<Integer, Integer> udpDestCount = new HashMap<Integer, Integer>();
+            
+            for(Integer t: tcpSourcePorts) {
+                //System.out.println(t);
+                if(tcpSourceCount.get(t) != null) 
+                    tcpSourceCount.put(t, tcpSourceCount.get(t)+ 1);
+                else
+                    tcpSourceCount.put(t,1);
+            } 
+            for(Integer t: tcpDestPorts) {
+                if(tcpDestCount.get(t) != null) 
+                    tcpDestCount.put(t, tcpDestCount.get(t)+ 1);
+                else
+                    tcpDestCount.put(t,1);
+            } 
+            for(Integer t: udpSourcePorts) {
+                if(udpSourceCount.get(t) != null) 
+                    udpSourceCount.put(t, udpSourceCount.get(t)+ 1);
+                else
+                    udpSourceCount.put(t,1);
+            } 
+            for(Integer t: udpDestPorts) {
+                if(udpDestCount.get(t) != null) 
+                    udpDestCount.put(t, udpDestCount.get(t)+ 1);
+                else
+                    udpDestCount.put(t,1);
+            } 
+
+            for(int i = 0; i < 5; i++) {
+                System.out.println("TCP/UDP max " + i);
+                int tcpSourceKey = -1; //= tcpDestKey = udpSourceKey = udpDestKey = -1;
+                int tcpDestKey = -1; 
+                int udpSourceKey = -1; 
+                int udpDestKey = -1; 
+                int tcpSourceMax = 0; 
+                int tcpDestMax = 0; 
+                int udpSourceMax = 0; 
+                int udpDestMax = 0; 
+                for(Integer tcps: tcpSourceCount.keySet()) {
+                    if(tcpSourceCount.get(tcps)   >= tcpSourceMax) {
+                        tcpSourceKey = tcps;
+                        tcpSourceMax = tcpSourceCount.get(tcps); 
+                    }
+                }
+                System.out.printf("TCP Source Port:%d number of times: %d  Percent of traffic %.2f\n", tcpSourceKey,tcpSourceMax,((double) tcpSourceMax/tcpSourcePorts.size())*100);
+                tcpSourceCount.remove(tcpSourceKey);  
+
+                for(Integer tcps: tcpDestCount.keySet()) {
+                    if(tcpDestCount.get(tcps)   >= tcpDestMax) {
+                        tcpDestKey = tcps;
+                        tcpDestMax = tcpDestCount.get(tcps); 
+                    }
+                }
+                System.out.printf("TCP Destination Port:%d number of times: %d  Percent of traffic %.2f\n", tcpDestKey,tcpDestMax,((double) tcpDestMax/tcpDestPorts.size())*100);
+                tcpDestCount.remove(tcpDestKey);  
+
+                for(Integer tcps: udpSourceCount.keySet()) {
+                    if(udpSourceCount.get(tcps)   >= udpSourceMax) {
+                        udpSourceKey = tcps;
+                        udpSourceMax = udpSourceCount.get(tcps); 
+                    }
+                }
+                System.out.printf("UDP Source Port:%d number of times: %d  Percent of traffic %.2f\n", udpSourceKey,udpSourceMax,((double) udpSourceMax/udpSourcePorts.size())*100);
+                udpSourceCount.remove(udpSourceKey);  
+
+                for(Integer tcps: udpDestCount.keySet()) {
+                    if(udpDestCount.get(tcps)   >= udpDestMax) {
+                        udpDestKey = tcps;
+                        udpDestMax = udpDestCount.get(tcps); 
+                    }
+                }
+                System.out.printf("UDP Destination Port:%d number of times: %d  Percent of traffic %.2f\n", udpDestKey,udpDestMax,((double) udpDestMax/udpDestPorts.size())*100);
+                udpDestCount.remove(udpDestKey);  
+            }
 
           // for(IP4Pair p: ip4pairs) {
             //   if(p.count > 1)
