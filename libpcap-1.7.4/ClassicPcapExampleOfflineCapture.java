@@ -93,7 +93,7 @@ public class ClassicPcapExampleOfflineCapture {
         HashMap<byte[], HashMap<byte[], Integer>> mapSourceDest = new
             HashMap<byte[], HashMap<byte[], Integer>>();
 
-        ArrayList<IP4Pair> ip4pairs = new ArrayList<IP4Pair>();
+       ArrayList<IP4Pair> ip4pairs = new ArrayList<IP4Pair>();
         
         PcapPacketHandler<String> percent = new PcapPacketHandler<String>() {  
             //if greater eth II else 802.3
@@ -146,28 +146,29 @@ public class ClassicPcapExampleOfflineCapture {
                         countIP4++;
                         //print the ip version of this packet
                         System.out.printf("ip.version=%d\n", ip.version());
-                        //System.out.printf("Destination=%d\nSource=%d\n",
-                        //       ip.destinationToInt(),ip.sourceToInt());
+                        System.out.printf("Destination=%d\nSource=%d\n",
+                               ip.destinationToInt(),ip.sourceToInt());
                         //byte[] sourceArray = ip.source();
                         //byte[] destArray = ip.destination();
                         int sourceArray = ip.sourceToInt();
+                        System.out.println("Source is: " + sourceArray +"\n");
                         int destArray = ip.destinationToInt();
                         //if this source is already in the map
                         IP4Pair newpair = 
                            new IP4Pair(sourceArray, destArray); 
                         boolean addIt = true;
-                      //  for(IP4Pair p: ip4pairs) {
-                           // if(p.match(newpair))
+                        for(IP4Pair p: ip4pairs) {
+                            if(p.match(newpair))
                                 addIt = false;
-                              //  break;
-                      //  } 
-                       // if(addIt) {
-                          //  newpair.count = 1;
-                           // ip4pairs.add(newpair);    
-                      //  }
-                    //} 
+                                break;
+                       } 
+                        if(addIt) {
+                            newpair.count = 1;
+                           ip4pairs.add(newpair);    
+                        }
+                    } 
 
-           //}  
+           }  
             
         };
         
@@ -206,11 +207,11 @@ public class ClassicPcapExampleOfflineCapture {
             }
            System.out.printf("Number of IPv4 packets: %d\n", countIP4);
 
-           for(IP4Pair p: ip4pairs) {
-               if(p.count > 1)
-              System.out.printf("Count %d\n", p.count);
-           }
-            pcap.loop(500, jpacketHandler, "jNetPcap rocks!"); 
+          // for(IP4Pair p: ip4pairs) {
+            //   if(p.count > 1)
+             // System.out.printf("Count %d\n", p.count);
+          // }
+           // pcap.loop(500, percent, "jNetPcap rocks!"); 
         } 
         finally {  
         /*************************************************************************** 
@@ -219,4 +220,4 @@ public class ClassicPcapExampleOfflineCapture {
            pcap.close();  
         }  
             }
-};}}  
+} 
