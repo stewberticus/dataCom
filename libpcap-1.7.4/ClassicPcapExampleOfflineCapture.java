@@ -7,6 +7,9 @@ import org.jnetpcap.packet.PcapPacket;
 import org.jnetpcap.protocol.network.Ip4;
 import org.jnetpcap.protocol.lan.Ethernet;
 import org.jnetpcap.packet.JPacket;
+import org.jnetpcap.protocol.tcpip.*;
+import org.jnetpcap.protocol.network.*;
+
 
 /** 
  * This example is similar to the classic libpcap example shown in nearly every 
@@ -35,7 +38,10 @@ import org.jnetpcap.packet.JPacket;
 public class ClassicPcapExampleOfflineCapture {  
   static int count = 0;
   static int countIP4 = 0;
-  static double totalBytesTransferred = 0.0;
+  static int countUdp = 0;
+  static int countTcp = 0;
+  static int countIcmp = 0; 
+static double totalBytesTransferred = 0.0;
     /** 
      * Main startup method 
      *  
@@ -83,6 +89,9 @@ public class ClassicPcapExampleOfflineCapture {
         
         Ethernet eth = new Ethernet();
         Ip4 ip = new Ip4();
+        Tcp tcp = new Tcp();
+        Udp udp = new Udp();
+        Icmp icmp = new Icmp();
         // make a HashMap mapping int type (in hex) to 
         // the # of packets (int) of that type
         HashMap<Integer, Integer> typeCounts =  new 
@@ -92,6 +101,7 @@ public class ClassicPcapExampleOfflineCapture {
             HashMap<Integer, Integer>();
         HashMap<byte[], HashMap<byte[], Integer>> mapSourceDest = new
             HashMap<byte[], HashMap<byte[], Integer>>();
+        
 
        ArrayList<IP4Pair> ip4pairs = new ArrayList<IP4Pair>();
         
@@ -146,9 +156,7 @@ public class ClassicPcapExampleOfflineCapture {
                         countIP4++;
                         //print the ip version of this packet
                         System.out.printf("ip.version=%d\n", ip.version());
-                        System.out.printf("Destination=%d\nSource=%d\n",
-                               ip.destinationToInt(),ip.sourceToInt());
-                        //byte[] sourceArray = ip.source();
+                                                //byte[] sourceArray = ip.source();
                         //byte[] destArray = ip.destination();
                         int sourceArray = ip.sourceToInt();
                         System.out.println("Source is: " + sourceArray +"\n");
@@ -156,20 +164,36 @@ public class ClassicPcapExampleOfflineCapture {
                         //if this source is already in the map
                         IP4Pair newpair = 
                            new IP4Pair(sourceArray, destArray); 
-                        boolean addIt = true;
+                        boolean addIt = false;
+                        System.out.printf("Destination=%s\nSource=%s\n",
+                               newpair.printbytearray(newpair.tobyte(newpair.sourceArray)),newpair.printbytearray(newpair.tobyte(newpair.destArray)));
+                        if(!(ip4pairs.contains(newpair))){
+                                ip4pairs.add(newpair);
+                            }
                         for(IP4Pair p: ip4pairs) {
-                            if(p.match(newpair))
-                                addIt = false;
+                            if((p.match(newpair)&&newpair.match(p))){
+                                
+                                p.incrementcount();
+                                
                                 System.out.println("counttt: " + p.getcount());
                                 break;
+                                }
+                            
                        } 
-                        if(addIt) {
-                            System.out.println("This is a new pair: " +String.valueOf(newpair));
-                            newpair.count = 1;
-                           ip4pairs.add(newpair);    
-                        }
-                    } 
+                       
+                    }
+                    if(packet.hasHeader(tcp)) { 
+                        countTcp  ++ ;
 
+                   }
+                   if(packet.hasHeader(icmp)) { 
+                        countIcmp  ++ ;
+
+                   }
+                   if(packet.hasHeader(udp)) { 
+                        countUdp  ++ ;
+
+                   }
            }  
             
         };
@@ -209,6 +233,16 @@ public class ClassicPcapExampleOfflineCapture {
                     totalBytesTransferred * 100.0);
             }
            System.out.printf("Number of IPv4 packets: %d\n", countIP4);
+           for(IP4Pair p: ip4pairs) {
+                 System.out.printf("Destination=%s\nSource=%s\nCount percetage =%.2f\n",
+                               p.printbytearray(p.tobyte(p.sourceArray)),p.printbytearray(p.tobyte(p.destArray)),(p.getcount()/(double)countIP4)*100);
+
+               
+           } 
+            System.out.printf("percent TCP: %.2f\n", ((countTcp / (double) countIP4)*100));
+            System.out.printf("percent UDP: %.2f\n", ((countUdp / (double) countIP4)*100));
+            System.out.printf("percent ICMP: %.2f\n",((countIcmp / (double) countIP4)*100));
+
 
           // for(IP4Pair p: ip4pairs) {
             //   if(p.count > 1)
