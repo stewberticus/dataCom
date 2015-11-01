@@ -13,13 +13,16 @@
 //and to process the request accordingly
 //- forward to correct address?
 //- use look up tables r1-table.txt and r2-table.txt
-void process_arp_packet(struct sockaddr_ll * recvaddr, int * count) {
+bool process_arp_packet(struct sockaddr_ll * recvaddr, int * count) {
     printf("processing arp packet\n");
+    bool is_arp = false;
     if(recvaddr->sll_protocol == 1544) {
         (*count) += 1;
         printf("ARP: YES\n");
+        is_arp = true;
     }else 
         printf("ARP: NO\n"); 
+    return is_arp;
 }
 
 //this method is meant to check if the packet is ICMP 
@@ -29,14 +32,21 @@ void process_arp_packet(struct sockaddr_ll * recvaddr, int * count) {
 //- ICMP echo response should be almost copied from ICMP echo request
 //- "The IP source address in an ICMP Echo Reply MUST be the same as the 
 // specific-destination address of the ICMP Echo Request message "
-void process_icmp_packet(struct sockaddr_ll * recvaddr, int * count) {
+bool process_icmp_packet(struct sockaddr_ll * recvaddr, int * count) {
     printf("processing icmp packet\n");
+    bool is_icmp = false;
     if(recvaddr->sll_protocol == 8) {
         printf("ICMP: YES\n");
         (*count) += 1;
+        is_icmp = true;
+
+        //type should be cleared to 0
+        recvaddr->type = 0;
+        
     } else {
         printf("ICMP: NO\n");
     } 
+    return is_icmp;
 }
 
 int main(){
@@ -157,8 +167,21 @@ int main(){
     printf("sll_protocol: %x\n", recvaddr.sll_protocol);
     //printf("arp hardware type: %d\n", recvaddr.sll_hatype);
     
-    process_arp_packet(&recvaddr, &arpcount);
-    process_icmp_packet(&recvaddr, &icmpcount);
+    bool is_arp = process_arp_packet(&recvaddr, &arpcount);
+    bool is_icmp = process_icmp_packet(&recvaddr, &icmpcount);
+
+    if(is_arp) {
+       //send appropriate response, or forward it to others
+       //
+       //Just realized! we may get a ARP response back from other router
+       //which we'd have to forward to the host who asked
+       //example: h1 ping h3
+       //   - we forward request from h1 to r2, r2 > h3
+       //   - h3 sends response to r2, r2 >response> r1, r1 > h1 
+    }
+    if(is_icmp) {
+        // send appropriate ICMP response
+    }
 
     printf("arp count = %d\n", arpcount);
     printf("icmp count = %d\n", icmpcount);
