@@ -244,10 +244,27 @@ int main(){
         new_ah->arp_dpa = ah->arp_spa;
         new_ah->arp_op = 2;
         
-        ah->arp_sha = new_ah->arp_sha;
-        ah->arp_dha = new_ah->arp_dha;
-        ah->arp_spa = new_ah->arp_spa;
-        ah->arp_dpa = new_ah->arp_dpa;
+        ah->arp_sha[0] = new_ah->arp_sha[0];
+        ah->arp_sha[1] = new_ah->arp_sha[1];
+        ah->arp_sha[2] = new_ah->arp_sha[2];
+        ah->arp_sha[3] = new_ah->arp_sha[3];
+        ah->arp_sha[4] = new_ah->arp_sha[4];
+        ah->arp_sha[5] = new_ah->arp_sha[5];
+        ah->arp_dha[0] = new_ah->arp_dha[0];
+        ah->arp_dha[1] = new_ah->arp_dha[1];
+        ah->arp_dha[2] = new_ah->arp_dha[2];
+        ah->arp_dha[3] = new_ah->arp_dha[3];
+        ah->arp_dha[4] = new_ah->arp_dha[4];
+        ah->arp_dha[5] = new_ah->arp_dha[5];
+        ah->arp_spa[0] = new_ah->arp_spa[0];
+        ah->arp_spa[1] = new_ah->arp_spa[1];
+        ah->arp_spa[2] = new_ah->arp_spa[2];
+        ah->arp_spa[3] = new_ah->arp_spa[3];
+        ah->arp_dpa[0] = new_ah->arp_dpa[0];
+        ah->arp_dpa[1] = new_ah->arp_dpa[1];
+        ah->arp_dpa[2] = new_ah->arp_dpa[2];
+        ah->arp_dpa[3] = new_ah->arp_dpa[3];
+        
         
 			
 			
