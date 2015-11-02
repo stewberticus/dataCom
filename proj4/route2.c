@@ -251,7 +251,7 @@ int main(){
         
 			
 			
-		sendto(packet_socket ,buffer,1500,0,(struct sockaddr *) &recvaddr, &recvaddrlen)
+		send(packet_socket ,buffer,1500,0);
 			
 		
        //send appropriate response, or forward it to others
