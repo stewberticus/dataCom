@@ -22,7 +22,7 @@ void getmac(char * mac, char * interface)
 {
   struct ifreq s;
   int fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
-
+	printf("%s",interface);
   strcpy(s.ifr_name, interface);
   if (0 == ioctl(fd, SIOCGIFHWADDR, &s)) {
     int i;
@@ -31,9 +31,9 @@ void getmac(char * mac, char * interface)
       mac[i] = s.ifr_addr.sa_data[i];
     }
     puts("\n");
-    return 0;
+    //return 0;
   }
-  return 1;
+  //return 1;
 }
 struct __attribute__((packed)) arp_header
 {
@@ -115,10 +115,11 @@ int main(){
     if(tmp->ifa_addr->sa_family==AF_PACKET){
 	  char * mac[6];
       printf("Interface: %s\n",tmp->ifa_name);
-      getmac(tmp->ifa_name,mac);
-      printf("Mac: %s\n",mac);
+      
       //create a packet socket on interface r?-eth1
       if(!strncmp(&(tmp->ifa_name[3]),"eth1",4)){
+	  getmac(tmp->ifa_name,mac);
+      printf("Mac: %s\n",mac);
 	printf("Creating Socket on interface %s\n",tmp->ifa_name);
 	//create a packet socket
 	//AF_PACKET makes it a packet socket
