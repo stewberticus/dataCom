@@ -162,7 +162,7 @@ int main(){
     //is not necessary, since the headers, including all addresses,
     //need to be in the buffer you are sending)
     //
-	ah =(struct arp_header *) etherhead+14;
+	ah =(struct arp_header *) (etherhead+14);
 								printf("buffer is---------------- %s \n",(char*)ah);
                                 printf("H/D TYPE : %x PROTO TYPE : %x \n",ah->arp_hd,ah->arp_pr);
                                 printf("H/D leng : %x PROTO leng : %x \n",ah->arp_hdl,ah->arp_prl);
