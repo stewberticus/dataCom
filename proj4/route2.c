@@ -251,8 +251,9 @@ int main(){
         
 			
 			
+		printf("Setting up buffer to send...");
 		send(packet_socket ,buffer,1500,0);
-			
+		printf("Sent the packet back.");	
 		
        //send appropriate response, or forward it to others
        //
@@ -265,8 +266,8 @@ int main(){
     if(is_icmp == 1) {
         // send appropriate ICMP response
         //send(packet_socket,(struct sockaddr*)&recvaddr,&recvaddrlen,0);
-        int nsize = sendto(packet_socket, buffer, 1500,0,
-                (struct sockaddr*)&recvaddr, &recvaddrlen);
+        //int nsize = sendto(packet_socket, buffer, 1500,0,
+        //        (struct sockaddr*)&recvaddr, &recvaddrlen);
  
         printf("ICMP response: sending something back?\n");
     }
