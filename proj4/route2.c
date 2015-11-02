@@ -238,10 +238,10 @@ int main(){
         // temp header struct for storing the fucking shit
         struct arp_header * new_ah;
         new_ah = ah;
-        new_ah->arp_sha = ah->arp_dha;
-        new_ah->arp_spa = ah->arp_dpa;
-        new_ah->arp_dha = ah->arp_sha;
-        new_ah->arp_dpa = ah->arp_spa;
+        new_ah->arp_sha = &ah->arp_dha;
+        new_ah->arp_spa = &ah->arp_dpa;
+        new_ah->arp_dha = &ah->arp_sha;
+        new_ah->arp_dpa = &ah->arp_spa;
         new_ah->arp_op = 2;
         
         ah->arp_sha[0] = new_ah->arp_sha[0];
