@@ -22,7 +22,7 @@ void getmac(char * mac, char * interface)
 {
   struct ifreq s;
   int fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
-	printf("%s",interface);
+	printf("in get mac: %s",interface);
   strcpy(s.ifr_name, interface);
   if (0 == ioctl(fd, SIOCGIFHWADDR, &s)) {
     int i;
@@ -113,7 +113,7 @@ int main(){
     //AF_INET6(?) = ipv6
     //AF_PACKET = eth mac addr
     if(tmp->ifa_addr->sa_family==AF_PACKET){
-	  char * mac[6];
+	  char mac[6];
       printf("Interface: %s\n",tmp->ifa_name);
       
       //create a packet socket on interface r?-eth1
