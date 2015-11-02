@@ -137,7 +137,7 @@ int main(){
   int arpcount = 0;
   int icmpcount = 0;
   while(1){
-    char buf[1500];
+    
     struct sockaddr_ll recvaddr;
     int recvaddrlen=sizeof(struct sockaddr_ll);
     //we can use recv, since the addresses are in the packet, but we
@@ -148,7 +148,7 @@ int main(){
     //
     //recvfrom - ensure only looking at incoming packet
     //skip all outgoing packets
-    int n = recvfrom(packet_socket, buf, 1500,0,(struct sockaddr*)&recvaddr, &recvaddrlen);
+    int n = recvfrom(packet_socket, buffer, 1500,0,(struct sockaddr*)&recvaddr, &recvaddrlen);
     //ignore outgoing packets (we can't disable some from being sent
     //by the OS automatically, for example ICMP port unreachable
     //messages, so we will just ignore them here)
@@ -215,7 +215,7 @@ int main(){
     if(is_icmp == 1) {
         // send appropriate ICMP response
         //send(packet_socket,(struct sockaddr*)&recvaddr,&recvaddrlen,0);
-        int nsize = sendto(packet_socket, buf, 1500,0,
+        int nsize = sendto(packet_socket, buffer, 1500,0,
                 (struct sockaddr*)&recvaddr, &recvaddrlen);
  
         printf("ICMP response: sending something back?\n");
