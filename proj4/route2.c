@@ -276,7 +276,7 @@ int main(){
        // &new_ah->arp_spa = (ah->arp_dpa);
        // &new_ah->arp_dha = (ah->arp_sha);
        // &new_ah->arp_dpa = (ah->arp_spa);
-       // new_ah->arp_op = 2;
+        new_ah->arp_op = 2;
         
         ah->arp_sha[0] = new_ah->arp_sha[0];
         ah->arp_sha[1] = new_ah->arp_sha[1];
