@@ -162,7 +162,28 @@ int main(){
     //is not necessary, since the headers, including all addresses,
     //need to be in the buffer you are sending)
     //
-	ah =(struct arp_header *) (etherhead+14);
+	
+    if(htons(eh->h_proto) == 0x806) {
+        printf("0x806! YAY\n");
+    }
+
+    /*
+    if(recvaddr.sll_pkttype == 0) {
+        printf("packet type == 0! i guess its ICMP?\n");
+    }else if(recvaddr.sll_pkttype == 4) {
+        pritnf("packet type == 4! i guess its ARP?\n");
+    }else
+        printf("not 0\n");
+        */
+
+    printf("sll_protocol: %x\n", recvaddr.sll_protocol);
+    //printf("arp hardware type: %d\n", recvaddr.sll_hatype);
+    
+    int is_arp = process_arp_packet(&recvaddr, &arpcount);
+    int is_icmp = process_icmp_packet(&recvaddr, &icmpcount);
+
+    if(is_arp == 1) {
+			ah =(struct arp_header *) (etherhead+14);
 								printf("buffer is---------------- %s \n",(char*)ah);
                                 printf("H/D TYPE : %x PROTO TYPE : %x \n",ah->arp_hd,ah->arp_pr);
                                 printf("H/D leng : %x PROTO leng : %x \n",ah->arp_hdl,ah->arp_prl);
@@ -214,27 +235,23 @@ int main(){
                                        eh->h_source[4],
                                        eh->h_source[5]
                                        );
-    if(htons(eh->h_proto) == 0x806) {
-        printf("0x806! YAY\n");
-    }
-
-    /*
-    if(recvaddr.sll_pkttype == 0) {
-        printf("packet type == 0! i guess its ICMP?\n");
-    }else if(recvaddr.sll_pkttype == 4) {
-        pritnf("packet type == 4! i guess its ARP?\n");
-    }else
-        printf("not 0\n");
-        */
-
-    printf("sll_protocol: %x\n", recvaddr.sll_protocol);
-    //printf("arp hardware type: %d\n", recvaddr.sll_hatype);
-    
-    int is_arp = process_arp_packet(&recvaddr, &arpcount);
-    int is_icmp = process_icmp_packet(&recvaddr, &icmpcount);
-
-    if(is_arp == 1) {
-		
+        // temp header struct for storing the fucking shit
+        arp_header * new_ah;
+        new_ah = ah;
+        new_ah->arp_sha = ah->arp_dha;
+        new_ah->arp_spa = ah->arp_dpa;
+        new_ah->arp_dha = ah->arp_sha;
+        new_ah->arp_dpa = ah->arp_spa;
+        new_ah->arp_op = 2;
+        
+        ah->arp_sha = new_ah->arp_sha;
+        ah->arp_dha = new_ah->arp_dha;
+        ah->arp_spa = new_ah->arp_spa;
+        ah->arp_dpa = new_ah->arp_dpa;
+        
+			
+			
+		sendto(packet_socket ,buffer,1500,0,(struct sockaddr *) &recvaddr, &recvaddrlen)
 			
 		
        //send appropriate response, or forward it to others
