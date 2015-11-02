@@ -115,7 +115,7 @@ int main(){
     if(tmp->ifa_addr->sa_family==AF_PACKET){
 	  char * mac[6];
       printf("Interface: %s\n",tmp->ifa_name);
-      getmac(tmp-ifa_name,mac);
+      getmac(tmp->ifa_name,mac);
       printf("Mac: %s\n",mac);
       //create a packet socket on interface r?-eth1
       if(!strncmp(&(tmp->ifa_name[3]),"eth1",4)){
