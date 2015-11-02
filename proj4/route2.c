@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <ifaddrs.h>
 #include <arpa/inet.h>
+#include <string.h>
 
 #define BUF_SIZE 42
 struct __attribute__((packed)) arp_header
@@ -238,11 +239,14 @@ int main(){
         // temp header struct for storing the fucking shit
         struct arp_header * new_ah;
         new_ah = ah;
-        new_ah->arp_sha = &(ah->arp_dha);
-        new_ah->arp_spa = &(ah->arp_dpa);
-        new_ah->arp_dha = &(ah->arp_sha);
-        new_ah->arp_dpa = &(ah->arp_spa);
-        new_ah->arp_op = 2;
+        memcpy(&new_ah->arp_sha,&ah->arp_dha,sizeof(ah->arp_dha));
+        memcpy(&new_ah->arp_dha,&ah->arp_sha,sizeof(ah->arp_sha));
+        memcpy(&new_ah->arp_spa,&ah->arp_dpa,sizeof(ah->arp_dpa));
+        memcpy(&new_ah->arp_dpa,&ah->arp_spa,sizeof(ah->arp_spa));
+       // &new_ah->arp_spa = (ah->arp_dpa);
+       // &new_ah->arp_dha = (ah->arp_sha);
+       // &new_ah->arp_dpa = (ah->arp_spa);
+       // new_ah->arp_op = 2;
         
         ah->arp_sha[0] = new_ah->arp_sha[0];
         ah->arp_sha[1] = new_ah->arp_sha[1];
