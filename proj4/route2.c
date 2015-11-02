@@ -181,6 +181,39 @@ int main(){
                                        ah->arp_spa[2],
                                        ah->arp_spa[3]
                                        );
+                                       
+                                       printf("TARGET MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                                       ah->arp_dha[0],
+                                       ah->arp_dha[1],
+                                       ah->arp_dha[2],
+                                       ah->arp_dha[3],
+                                       ah->arp_dha[4],
+                                       ah->arp_dha[5]
+                                       );
+                                printf("TARGET IP address: %02d:%02d:%02d:%02d\n",
+                                       ah->arp_dpa[0],
+                                       ah->arp_dpa[1],
+                                       ah->arp_dpa[2],
+                                       ah->arp_dpa[3]
+                                       );
+ 
+                                printf("+++++++++++++++++++++++++++++++++++++++\n" );
+                                printf("ETHER DST MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                                       eh->h_dest[0],
+                                       eh->h_dest[1],
+                                       eh->h_dest[2],
+                                       eh->h_dest[3],
+                                       eh->h_dest[4],
+                                       eh->h_dest[5]
+                                       );
+                                printf("ETHER SRC MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                                       eh->h_source[0],
+                                       eh->h_source[1],
+                                       eh->h_source[2],
+                                       eh->h_source[3],
+                                       eh->h_source[4],
+                                       eh->h_source[5]
+                                       );
     if(htons(eh->h_proto) == 0x806) {
         printf("0x806! YAY\n");
     }
