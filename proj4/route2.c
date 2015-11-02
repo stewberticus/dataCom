@@ -236,7 +236,7 @@ int main(){
                                        eh->h_source[5]
                                        );
         // temp header struct for storing the fucking shit
-        arp_header * new_ah;
+        struct arp_header * new_ah;
         new_ah = ah;
         new_ah->arp_sha = ah->arp_dha;
         new_ah->arp_spa = ah->arp_dpa;
