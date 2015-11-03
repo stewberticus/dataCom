@@ -225,9 +225,9 @@ int main(){
 
     //trying to check the ip header checksum
     //do we check the IP checksum, or the ICMP checksum
-    void * ttl_location = etherhead  + 9;
+    void * ttl_location = etherhead  + 28;
     //void * hdr_checksum = etherhead + 11;
-    void * hdr_checksum = ttl_location + 2;
+    void * hdr_checksum = ttl_location + 32;
     char * ttl = (char * ) ttl_location;
     char * checksum = (char *) hdr_checksum;
 
