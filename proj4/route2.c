@@ -93,7 +93,7 @@ int process_icmp_packet(struct sockaddr_ll * recvaddr, int * count) {
 }
 
 int main(){
-
+  char mac[6];
   void* buffer = NULL;
   int packet_socket;
   //get list of interfaces (actually addresses)
@@ -118,7 +118,7 @@ int main(){
     //AF_INET6(?) = ipv6
     //AF_PACKET = eth mac addr
     if(tmp->ifa_addr->sa_family==AF_PACKET){
-	  char mac[6];
+	  
       printf("Interface: %s\n",tmp->ifa_name);
       
       //create a packet socket on interface r?-eth1
