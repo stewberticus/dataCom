@@ -395,7 +395,7 @@ int main(){
 			memcpy(&icmp->src , &icmp->dst, sizeof(icmp->src));
 			memcpy(&icmp->dst,&tmp_pnt,sizeof(tmp_pnt));
 			//icmp->dst =  (char *) tmp_pnt;
-		void * icmp_type = etherhead + 40;
+		void * icmp_type = etherhead + 34;
 		char * k = (char *) icmp_type;
 		*k = 0;
 		send(packet_socket ,buffer,BUF_SIZE,0);
