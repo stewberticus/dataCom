@@ -93,7 +93,7 @@ int process_icmp_packet(struct sockaddr_ll * recvaddr, int * count) {
 }
 
 int main(){
-  char mac[6];
+  unsigned char mac[6];
 
   void* buffer = NULL;
   int packet_socket;
