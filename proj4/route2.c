@@ -28,7 +28,7 @@ void getmac(char * mac, char * interface)
     int i;
     for (i = 0; i < 6; ++i){
       printf(" %02x", (unsigned char) s.ifr_addr.sa_data[i]);
-      mac[i] = s.ifr_addr.sa_data[i];
+      mac[i] = (unsigned char)s.ifr_addr.sa_data[i];
     }
     puts("\n");
     //return 0;
@@ -184,7 +184,7 @@ int main(){
     //
     //recvfrom - ensure only looking at incoming packet
     //skip all outgoing packets
-    int n = recvfrom(packet_socket, buffer, 1500,0,(struct sockaddr*)&recvaddr, &recvaddrlen);
+    int n = recvfrom(packet_socket, buffer,BUF_SIZE,0,(struct sockaddr*)&recvaddr, &recvaddrlen);
     //ignore outgoing packets (we can't disable some from being sent
     //by the OS automatically, for example ICMP port unreachable
     //messages, so we will just ignore them here)
@@ -274,7 +274,7 @@ int main(){
                                        eh->h_source[5]
                                        );
         // temp header struct for storing the fucking shit
-        struct arp_header new_ah;
+        struct arp_header * new_ah;
         
         memcpy(&new_ah->arp_sha,&ah->arp_dha,sizeof(ah->arp_dha));
         memcpy(&new_ah->arp_dha,&ah->arp_sha,sizeof(ah->arp_sha));
@@ -283,7 +283,7 @@ int main(){
        // &new_ah->arp_spa = (ah->arp_dpa);
        // &new_ah->arp_dha = (ah->arp_sha);
        // &new_ah->arp_dpa = (ah->arp_spa);
-        ah->arp_op = 2;
+        //ah->arp_op = 2;
         
         ah->arp_sha[0] = new_ah->arp_sha[0];
         ah->arp_sha[1] = new_ah->arp_sha[1];
@@ -291,12 +291,12 @@ int main(){
         ah->arp_sha[3] = new_ah->arp_sha[3];
         ah->arp_sha[4] = new_ah->arp_sha[4];
         ah->arp_sha[5] = new_ah->arp_sha[5];
-        ah->arp_dha[0] = new_ah->arp_dha[0];
-        ah->arp_dha[1] = new_ah->arp_dha[1];
-        ah->arp_dha[2] = new_ah->arp_dha[2];
-        ah->arp_dha[3] = new_ah->arp_dha[3];
-        ah->arp_dha[4] = new_ah->arp_dha[4];
-        ah->arp_dha[5] = new_ah->arp_dha[5];
+        ah->arp_dha[0] = mac[0];
+        ah->arp_dha[1] = mac[1];
+        ah->arp_dha[2] = mac[2];
+        ah->arp_dha[3] = mac[3];
+        ah->arp_dha[4] = mac[4];
+        ah->arp_dha[5] = mac[5];
         ah->arp_spa[0] = new_ah->arp_spa[0];
         ah->arp_spa[1] = new_ah->arp_spa[1];
         ah->arp_spa[2] = new_ah->arp_spa[2];
