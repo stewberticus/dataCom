@@ -215,8 +215,10 @@ int main(){
     printf("sll_protocol: %x\n", recvaddr.sll_protocol);
     //printf("arp hardware type: %d\n", recvaddr.sll_hatype);
     
-    int is_arp = process_arp_packet(&recvaddr, &arpcount);
-    int is_icmp = process_icmp_packet(&recvaddr, &icmpcount);
+    int is_arp = 0;
+    is_arp = process_arp_packet(&recvaddr, &arpcount);
+    int is_icmp = 0;
+    is_icmp = process_icmp_packet(&recvaddr, &icmpcount);
 
     if(is_arp == 1) {
 			ah =(struct arp_header *) (etherhead+14);
