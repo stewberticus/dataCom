@@ -187,7 +187,7 @@ int main(){
     //
     //recvfrom - ensure only looking at incoming packet
     //skip all outgoing packets
-    int n = recvfrom(packet_socket, buffer, BUF_SIZE,0,(struct sockaddr*)&recvaddr, &recvaddrlen);
+    int n = recvfrom(packet_socket, buffer, 1500,0,(struct sockaddr*)&recvaddr, &recvaddrlen);
     //ignore outgoing packets (we can't disable some from being sent
     //by the OS automatically, for example ICMP port unreachable
     //messages, so we will just ignore them here)
