@@ -315,6 +315,19 @@ int main(){
        //   - h3 sends response to r2, r2 >response> r1, r1 > h1 
     }
     if(is_icmp == 1) {
+		
+		void * start_data = etherhead + 26
+		
+		char * sip[4] = (char *) start_data;
+		char * dip[4] = (char *) (start_data +4);
+		short len = (short) (etherhead + 2)
+		printf("packet size %hu", len);
+		for(int i =0; i<4;i++){
+			buffer[26+i] = dip[i];
+			buffer[30+i] = sip[i];
+			
+		}
+		
         // send appropriate ICMP response
         //send(packet_socket,(struct sockaddr*)&recvaddr,&recvaddrlen,0);
         //int nsize = sendto(packet_socket, buffer, 1500,0,
