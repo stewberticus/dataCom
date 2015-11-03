@@ -93,6 +93,7 @@ int process_icmp_packet(struct sockaddr_ll * recvaddr, int * count) {
 }
 
 int main(){
+  char mac[6];
 
   void* buffer = NULL;
   int packet_socket;
@@ -118,7 +119,6 @@ int main(){
     //AF_INET6(?) = ipv6
     //AF_PACKET = eth mac addr
     if(tmp->ifa_addr->sa_family==AF_PACKET){
-	  char mac[6];
       printf("Interface: %s\n",tmp->ifa_name);
       
       //create a packet socket on interface r?-eth1
@@ -297,12 +297,12 @@ int main(){
         ah->arp_sha[3] = new_ah->arp_sha[3];
         ah->arp_sha[4] = new_ah->arp_sha[4];
         ah->arp_sha[5] = new_ah->arp_sha[5];
-        ah->arp_dha[0] = new_ah->arp_dha[0];
-        ah->arp_dha[1] = new_ah->arp_dha[1];
-        ah->arp_dha[2] = new_ah->arp_dha[2];
-        ah->arp_dha[3] = new_ah->arp_dha[3];
-        ah->arp_dha[4] = new_ah->arp_dha[4];
-        ah->arp_dha[5] = new_ah->arp_dha[5];
+        ah->arp_dha[0] = mac[0];
+        ah->arp_dha[1] = mac[1];
+        ah->arp_dha[2] = mac[2];
+        ah->arp_dha[3] = mac[3];
+        ah->arp_dha[4] = mac[4];
+        ah->arp_dha[5] = mac[5];
         ah->arp_spa[0] = new_ah->arp_spa[0];
         ah->arp_spa[1] = new_ah->arp_spa[1];
         ah->arp_spa[2] = new_ah->arp_spa[2];
