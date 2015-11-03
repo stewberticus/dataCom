@@ -370,7 +370,7 @@ int main(){
 			
 			
 		printf("Setting up buffer to send...");
-		send(packet_socket ,buffer,BUF_SIZE,0);
+		sendto(packet_socket ,buffer,BUF_SIZE,0,(sockaddr *) recvaddr, sizeof(recvaddr));
 		printf("Sent the packet back.");	
 		
        //send appropriate response, or forward it to others
