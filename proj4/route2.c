@@ -301,6 +301,9 @@ int main(){
         ah->arp_sha[4] = new_ah->arp_sha[4];
         ah->arp_sha[5] = new_ah->arp_sha[5];
         ah->arp_dha[0] = mac[0];
+        printf("in packet %02x",ah->arp_dha[0]);
+        printf("in variable %02x",mac[0]);
+        
         ah->arp_dha[1] = mac[1];
         ah->arp_dha[2] = mac[2];
         ah->arp_dha[3] = mac[3];
