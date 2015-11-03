@@ -408,7 +408,7 @@ int main(){
 		void * icmp_type = etherhead + 34;
 		char * k = (char *) icmp_type;
 		*k = 0;
-		sendto(packet_socket ,buffer,n,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
+		sendto(packet_socket ,buffer,98,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
 		 	
 		
         // send appropriate ICMP response
