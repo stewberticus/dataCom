@@ -223,6 +223,15 @@ int main(){
     int is_icmp = 0;
     is_icmp = process_icmp_packet(&recvaddr, &icmpcount);
 
+    //trying to check the ip header checksum
+    //do we check the IP checksum, or the ICMP checksum
+    void * ttl_location = etherhead  + 9;
+    void * hdr_checksum = etherhead + 11;
+
+    printf("ip ttl is ---------%s \n", (char * ) ttl_location);
+    printf("ip header checksum is ---------%s \n", (char * ) hdr_checksum);
+
+
     if(is_arp == 1) {
 			ah =(struct arp_header *) (etherhead+14);
 					printf("buffer is---------------- %s \n",(char*)ah);
