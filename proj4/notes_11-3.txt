@@ -1,0 +1,19 @@
+look at address
+decide if its an addr you know how to get to it
+sub 1 from ttl
+fix checksums
+make new link layer header
+send it according to routing table
+
+for ones you can't forward
+    > either ttl is exceeded, or can't get to destination
+need to send ICMP message stating specific problem
+
+networksorcery.com
+
+initialize unused bits to 0 (ex: 32b in 'time exceeded' msg)
+
+    ipheader + first 64b of data
+    ^ first 28 bytes (20 for ipheader, 8 for 64b of data)
+
+
