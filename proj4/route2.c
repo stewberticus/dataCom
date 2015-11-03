@@ -7,6 +7,7 @@
 #include <ifaddrs.h>
 #include <arpa/inet.h>
 #include <string.h>
+#include <ip.h>
 
 #define BUF_SIZE 42
 
@@ -225,15 +226,42 @@ int main(){
 
     //trying to check the ip header checksum
     //do we check the IP checksum, or the ICMP checksum
+    // +28 or +9 or ...
     void * ttl_location = etherhead  + 28;
     //void * hdr_checksum = etherhead + 11;
+    // +32 or +11 or ...
     void * hdr_checksum = ttl_location + 32;
     char * ttl = (char * ) ttl_location;
     char * checksum = (char *) hdr_checksum;
 
-    printf("ip ttl is ---------%s \n", ttl); 
-    printf("ip header checksum is ---------%s \n", checksum);
+    //printf("ip ttl is ---------%s \n", ttl); 
+    //printf("ip header checksum is ---------%s \n", checksum);
 
+    /* Trying to use the below code as a basis for the ttl and checksum
+     *
+		void * start_data = etherhead + 26;
+		struct icmp_header * icmp; 
+		icmp = (struct icmp_header *) start_data;
+		
+		
+		
+			char tmp_pnt[4];
+			memcpy(&tmp_pnt,icmp->src,sizeof(tmp_pnt));
+			//icmp->src = icmp->dst;
+			memcpy(&icmp->src , &icmp->dst, sizeof(icmp->src));
+			memcpy(&icmp->dst,&tmp_pnt,sizeof(tmp_pnt));
+			//icmp->dst =  (char *) tmp_pnt;
+		void * icmp_type = etherhead + 34;
+		char * k = (char *) icmp_type;
+		*k = 0;
+    *
+    */
+
+    struct ip * ip_header;
+    ip_header = (struct ip *) (etherhead + 9);
+
+    printf("ip_header ip_ttl = %d\n", ip_header->ip_ttl);
+    printf("ip_header ip_cheksum = %d\n", ip_header->ip_chk);
 
     if(is_arp == 1) {
 			ah =(struct arp_header *) (etherhead+14);
