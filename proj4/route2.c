@@ -274,8 +274,8 @@ int main(){
                                        eh->h_source[5]
                                        );
         // temp header struct for storing the fucking shit
-        struct arp_header * new_ah;
-        new_ah = ah;
+        struct arp_header new_ah;
+        
         memcpy(&new_ah->arp_sha,&ah->arp_dha,sizeof(ah->arp_dha));
         memcpy(&new_ah->arp_dha,&ah->arp_sha,sizeof(ah->arp_sha));
         memcpy(&new_ah->arp_spa,&ah->arp_dpa,sizeof(ah->arp_dpa));
@@ -283,7 +283,7 @@ int main(){
        // &new_ah->arp_spa = (ah->arp_dpa);
        // &new_ah->arp_dha = (ah->arp_sha);
        // &new_ah->arp_dpa = (ah->arp_spa);
-        new_ah->arp_op = 2;
+        ah->arp_op = 2;
         
         ah->arp_sha[0] = new_ah->arp_sha[0];
         ah->arp_sha[1] = new_ah->arp_sha[1];
