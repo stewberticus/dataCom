@@ -28,7 +28,7 @@ void getmac(char * mac, char * interface)
     int i;
     for (i = 0; i < 6; ++i){
       printf(" %02x", (unsigned char) s.ifr_addr.sa_data[i]);
-      mac[i] = (unsigned char)s.ifr_addr.sa_data[i];
+      mac[i] = s.ifr_addr.sa_data[i];
     }
     puts("\n");
     //return 0;
@@ -93,7 +93,7 @@ int process_icmp_packet(struct sockaddr_ll * recvaddr, int * count) {
 }
 
 int main(){
-  char mac[6];
+
   void* buffer = NULL;
   int packet_socket;
   //get list of interfaces (actually addresses)
@@ -118,7 +118,7 @@ int main(){
     //AF_INET6(?) = ipv6
     //AF_PACKET = eth mac addr
     if(tmp->ifa_addr->sa_family==AF_PACKET){
-	  
+	  char mac[6];
       printf("Interface: %s\n",tmp->ifa_name);
       
       //create a packet socket on interface r?-eth1
@@ -184,7 +184,7 @@ int main(){
     //
     //recvfrom - ensure only looking at incoming packet
     //skip all outgoing packets
-    int n = recvfrom(packet_socket, buffer,BUF_SIZE,0,(struct sockaddr*)&recvaddr, &recvaddrlen);
+    int n = recvfrom(packet_socket, buffer, BUF_SIZE,0,(struct sockaddr*)&recvaddr, &recvaddrlen);
     //ignore outgoing packets (we can't disable some from being sent
     //by the OS automatically, for example ICMP port unreachable
     //messages, so we will just ignore them here)
@@ -222,7 +222,7 @@ int main(){
 
     if(is_arp == 1) {
 			ah =(struct arp_header *) (etherhead+14);
-								printf("buffer is---------------- %s \n",(char*)ah);
+					printf("buffer is---------------- %s \n",(char*)ah);
                                 printf("H/D TYPE : %x PROTO TYPE : %x \n",ah->arp_hd,ah->arp_pr);
                                 printf("H/D leng : %x PROTO leng : %x \n",ah->arp_hdl,ah->arp_prl);
                                 printf("OPERATION : %x \n", ah->arp_op);
@@ -275,12 +275,18 @@ int main(){
                                        );
         // temp header struct for storing the fucking shit
         struct arp_header * new_ah;
-        
-        memcpy(&new_ah->arp_sha,&ah->arp_dha,sizeof(ah->arp_dha));
-        memcpy(&new_ah->arp_dha,&ah->arp_sha,sizeof(ah->arp_sha));
-        memcpy(&new_ah->arp_spa,&ah->arp_dpa,sizeof(ah->arp_dpa));
-        memcpy(&new_ah->arp_dpa,&ah->arp_spa,sizeof(ah->arp_spa));
+	
+  	new_ah = (void*)malloc(sizeof(struct arp_header));
+	printf ("***  1  ***\n");
+        memcpy(new_ah->arp_sha,ah->arp_dha,sizeof(ah->arp_dha));
+	printf ("***  2  ***\n");
+        memcpy(new_ah->arp_dha,ah->arp_sha,sizeof(ah->arp_sha));
+	printf ("***  3  ***\n");
+        memcpy(new_ah->arp_spa,ah->arp_dpa,sizeof(ah->arp_dpa));
+	printf ("***  4  ***\n");
+        memcpy(new_ah->arp_dpa,ah->arp_spa,sizeof(ah->arp_spa));
        // &new_ah->arp_spa = (ah->arp_dpa);
+	printf ("***  after  ***\n");
        // &new_ah->arp_dha = (ah->arp_sha);
        // &new_ah->arp_dpa = (ah->arp_spa);
         //ah->arp_op = 2;
@@ -291,12 +297,12 @@ int main(){
         ah->arp_sha[3] = new_ah->arp_sha[3];
         ah->arp_sha[4] = new_ah->arp_sha[4];
         ah->arp_sha[5] = new_ah->arp_sha[5];
-        ah->arp_dha[0] = mac[0];
-        ah->arp_dha[1] = mac[1];
-        ah->arp_dha[2] = mac[2];
-        ah->arp_dha[3] = mac[3];
-        ah->arp_dha[4] = mac[4];
-        ah->arp_dha[5] = mac[5];
+        ah->arp_dha[0] = new_ah->arp_dha[0];
+        ah->arp_dha[1] = new_ah->arp_dha[1];
+        ah->arp_dha[2] = new_ah->arp_dha[2];
+        ah->arp_dha[3] = new_ah->arp_dha[3];
+        ah->arp_dha[4] = new_ah->arp_dha[4];
+        ah->arp_dha[5] = new_ah->arp_dha[5];
         ah->arp_spa[0] = new_ah->arp_spa[0];
         ah->arp_spa[1] = new_ah->arp_spa[1];
         ah->arp_spa[2] = new_ah->arp_spa[2];
@@ -307,10 +313,61 @@ int main(){
         ah->arp_dpa[3] = new_ah->arp_dpa[3];
         
         
+					printf("buffer is---------------- %s \n",(char*)ah);
+                                printf("H/D TYPE : %x PROTO TYPE : %x \n",ah->arp_hd,ah->arp_pr);
+                                printf("H/D leng : %x PROTO leng : %x \n",ah->arp_hdl,ah->arp_prl);
+                                printf("OPERATION : %x \n", ah->arp_op);
+                                printf("SENDER MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                                       ah->arp_sha[0],
+                                       ah->arp_sha[1],
+                                       ah->arp_sha[2],
+                                       ah->arp_sha[3],
+                                       ah->arp_sha[4],
+                                       ah->arp_sha[5]
+                                       );
+                                printf("SENDER IP address: %02d:%02d:%02d:%02d\n",
+                                       ah->arp_spa[0],
+                                       ah->arp_spa[1],
+                                       ah->arp_spa[2],
+                                       ah->arp_spa[3]
+                                       );
+                                       
+                                       printf("TARGET MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                                       ah->arp_dha[0],
+                                       ah->arp_dha[1],
+                                       ah->arp_dha[2],
+                                       ah->arp_dha[3],
+                                       ah->arp_dha[4],
+                                       ah->arp_dha[5]
+                                       );
+                                printf("TARGET IP address: %02d:%02d:%02d:%02d\n",
+                                       ah->arp_dpa[0],
+                                       ah->arp_dpa[1],
+                                       ah->arp_dpa[2],
+                                       ah->arp_dpa[3]
+                                       );
+ 
+                                printf("+++++++++++++++++++++++++++++++++++++++\n" );
+                                printf("ETHER DST MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                                       eh->h_dest[0],
+                                       eh->h_dest[1],
+                                       eh->h_dest[2],
+                                       eh->h_dest[3],
+                                       eh->h_dest[4],
+                                       eh->h_dest[5]
+                                       );
+                                printf("ETHER SRC MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                                       eh->h_source[0],
+                                       eh->h_source[1],
+                                       eh->h_source[2],
+                                       eh->h_source[3],
+                                       eh->h_source[4],
+                                       eh->h_source[5]
+                                       );
 			
 			
 		printf("Setting up buffer to send...");
-		send(packet_socket ,buffer,1500,0);
+		send(packet_socket ,buffer,BUF_SIZE,0);
 		printf("Sent the packet back.");	
 		
        //send appropriate response, or forward it to others
@@ -338,7 +395,7 @@ int main(){
 		void * icmp_type = etherhead + 38;
 		char * k = (char *) icmp_type;
 		*k = 0;
-		send(packet_socket ,buffer,1500,0);
+		send(packet_socket ,buffer,BUF_SIZE,0);
 		 	
 		
         // send appropriate ICMP response
@@ -348,7 +405,6 @@ int main(){
  
         printf("ICMP response: sending something back?\n");
     }
-
     printf("ifindex = %d\n", recvaddr.sll_ifindex);
     printf("arp count = %d\n", arpcount);
     printf("icmp count = %d\n", icmpcount);
