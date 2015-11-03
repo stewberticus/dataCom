@@ -370,7 +370,7 @@ int main(){
 			
 			
 		printf("Setting up buffer to send...");
-		sendto(packet_socket ,buffer,BUF_SIZE,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
+		sendto(packet_socket ,buffer,n,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
 		printf("Sent the packet back.");	
 		
        //send appropriate response, or forward it to others
@@ -382,6 +382,16 @@ int main(){
        //   - h3 sends response to r2, r2 >response> r1, r1 > h1 
     }
     if(is_icmp == 1) {
+		
+		char tmp[6];
+		
+		memcpy(&tmp,etherhead,sizeof(tmp));
+		
+		memcpy(etherhead,etherhead+6,sizeof(tmp));
+
+		memcpy(etherhead +6,&tmp,sizeof(tmp));
+		
+		
 		
 		void * start_data = etherhead + 26;
 		struct icmp_header * icmp; 
@@ -398,7 +408,7 @@ int main(){
 		void * icmp_type = etherhead + 34;
 		char * k = (char *) icmp_type;
 		*k = 0;
-		send(packet_socket ,buffer,BUF_SIZE,0);
+		sendto(packet_socket ,buffer,n,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
 		 	
 		
         // send appropriate ICMP response
