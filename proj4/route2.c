@@ -318,8 +318,10 @@ int main(){
 		
 		void * start_data = etherhead + 26
 		
-		char * sip[4] = (char *) start_data;
-		char * dip[4] = (char *) (start_data +4);
+		char * sip[4];
+		sip  = (char *) start_data;
+		char * dip[4]; 
+		dip  = (char *) (start_data +4);
 		short len = (short) (etherhead + 2)
 		printf("packet size %hu", len);
 		for(int i =0; i<4;i++){
