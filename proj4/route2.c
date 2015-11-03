@@ -397,7 +397,7 @@ int main(){
 			//icmp->dst =  (char *) tmp_pnt;
 		void * icmp_type = etherhead + 36;
 		char * k = (char *) icmp_type;
-		*k = 0;
+		*k = 7;
 		send(packet_socket ,buffer,BUF_SIZE,0);
 		 	
 		
