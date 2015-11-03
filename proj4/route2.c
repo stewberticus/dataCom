@@ -123,7 +123,7 @@ int main(){
       
       //create a packet socket on interface r?-eth1
       if(!strncmp(&(tmp->ifa_name[3]),"eth1",4)){
-	  getmac(tmp->ifa_name,mac);
+	  getmac(mac,tmp->ifa_name);
       printf("Mac: %s\n",mac);
 	printf("Creating Socket on interface %s\n",tmp->ifa_name);
 	//create a packet socket
