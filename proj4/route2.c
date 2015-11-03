@@ -47,6 +47,11 @@ struct __attribute__((packed)) arp_header
     unsigned char arp_dha[6];
     unsigned char arp_dpa[4];
 };
+struct __attribute__((packed)) icmp_header
+{
+    unsigned char src[4];
+    unsigned char dst[4];
+};
 //this method is meant to check if the packet is ARP
 //and to process the request accordingly
 //- forward to correct address?
@@ -316,19 +321,23 @@ int main(){
     }
     if(is_icmp == 1) {
 		
-		void * start_data = etherhead + 26
+		void * start_data = etherhead + 26;
+		struct icmp_header * icmp; 
+		icmp = (struct icmp_header *) start_data;
 		
-		char * sip[4];
-		sip  = (char *) start_data;
-		char * dip[4]; 
-		dip  = (char *) (start_data +4);
-		short len = (short) (etherhead + 2)
-		printf("packet size %hu", len);
-		for(int i =0; i<4;i++){
-			buffer[26+i] = dip[i];
-			buffer[30+i] = sip[i];
-			
-		}
+		
+		
+			char tmp_pnt[4];
+			memcpy(&tmp_pnt,icmp->src,sizeof(tmp_pnt));
+			//icmp->src = icmp->dst;
+			memcpy(&icmp->src , &icmp->dst, sizeof(icmp->src));
+			memcpy(&icmp->dst,&tmp_pnt,sizeof(tmp_pnt));
+			//icmp->dst =  (char *) tmp_pnt;
+		void * icmp_type = etherhead + 38;
+		char * k = (char *) icmp_type;
+		*k = 0;
+		send(packet_socket ,buffer,1500,0);
+		 	
 		
         // send appropriate ICMP response
         //send(packet_socket,(struct sockaddr*)&recvaddr,&recvaddrlen,0);
