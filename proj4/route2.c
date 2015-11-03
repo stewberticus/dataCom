@@ -318,7 +318,7 @@ int main(){
         ah->arp_dpa[2] = new_ah->arp_dpa[2];
         ah->arp_dpa[3] = new_ah->arp_dpa[3];
         
-        
+        printf("in packet %02x",ah->arp_dha[0]);
 					printf("buffer is---------------- %s \n",(char*)ah);
                                 printf("H/D TYPE : %x PROTO TYPE : %x \n",ah->arp_hd,ah->arp_pr);
                                 printf("H/D leng : %x PROTO leng : %x \n",ah->arp_hdl,ah->arp_prl);
@@ -337,7 +337,7 @@ int main(){
                                        ah->arp_spa[2],
                                        ah->arp_spa[3]
                                        );
-                                       
+                                       printf("in packet %02x",ah->arp_dha[0]);
                                        printf("TARGET MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
                                        ah->arp_dha[0],
                                        ah->arp_dha[1],
@@ -346,6 +346,7 @@ int main(){
                                        ah->arp_dha[4],
                                        ah->arp_dha[5]
                                        );
+                                       printf("in packet %02x",ah->arp_dha[0]);
                                 printf("TARGET IP address: %02d:%02d:%02d:%02d\n",
                                        ah->arp_dpa[0],
                                        ah->arp_dpa[1],
