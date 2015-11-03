@@ -125,8 +125,8 @@ int main(){
       if(!strncmp(&(tmp->ifa_name[3]),"eth1",4)){
 	  getmac(mac,tmp->ifa_name);
 	  int j =0;
-	  for(j,j<6,j++){
-		printf("Mac: %02x\n",mac[i]);
+	  for(j;j<6;j++){
+		printf("Mac: %02x\n",mac[j]);
 	  }
 	printf("Creating Socket on interface %s\n",tmp->ifa_name);
 	//create a packet socket
