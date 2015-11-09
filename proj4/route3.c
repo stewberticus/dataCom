@@ -108,6 +108,8 @@ int main(){
 
   void* buffer = NULL;
   int packet_socket;
+  fd_set sockets;
+  FD_ZERO(&sockets);
   //get list of interfaces (actually addresses)
   struct ifaddrs *ifaddr, *tmp;
     //gets all of the addresses of the network interfaces on your system
@@ -132,7 +134,8 @@ int main(){
     if(tmp->ifa_addr->sa_family==AF_PACKET){
       printf("Interface: %s\n",tmp->ifa_name);
       
-      //create a packet socket on interface r?-eth1
+      //creat res records from cache correctly after TTL    5
+      //Socket timeouts implementedea packet socket on interface r?-eth1
       if(!strncmp(&(tmp->ifa_name[3]),"eth1",4)){
 	  getmac(mac,tmp->ifa_name);
 	  int j =0;
@@ -168,6 +171,7 @@ int main(){
 	if(bind(packet_socket,tmp->ifa_addr,sizeof(struct sockaddr_ll))==-1){
 	  perror("bind");
 	}
+    FD_SET(packet_socket,&sockets);
       }
     }
   }
@@ -190,353 +194,368 @@ int main(){
     
     struct sockaddr_ll recvaddr;
     int recvaddrlen=sizeof(struct sockaddr_ll);
-    //we can use recv, since the addresses are in the packet, but we
-    //use recvfrom because it gives us an easy way to determine if
-    //this packet is incoming or outgoing (when using ETH_P_ALL, we
-    //see packets in both directions. Only outgoing can be seen when
-    //using a packet socket with some specific protocol)
-    //
-    //recvfrom - ensure only looking at incoming packet
-    //skip all outgoing packets
-    int n = recvfrom(packet_socket, buffer, 1500,0,(struct sockaddr*)&recvaddr, &recvaddrlen);
-    //ignore outgoing packets (we can't disable some from being sent
-    //by the OS automatically, for example ICMP port unreachable
-    //messages, so we will just ignore them here)
-    if(recvaddr.sll_pkttype==PACKET_OUTGOING)
-      continue;
-    //start processing all others
-    printf("Got a %d byte packet\n", n);
-    
-    //what else to do is up to you, you can send packets with send,
-    //just like we used for TCP sockets (or you can use sendto, but it
-    //is not necessary, since the headers, including all addresses,
-    //need to be in the buffer you are sending)
-    //
-	
-    if(htons(eh->h_proto) == 0x806) {
-        printf("0x806! YAY\n");
-    }
 
-    /*
-    if(recvaddr.sll_pkttype == 0) {
-        printf("packet type == 0! i guess its ICMP?\n");
-    }else if(recvaddr.sll_pkttype == 4) {
-        pritnf("packet type == 4! i guess its ARP?\n");
-    }else
-        printf("not 0\n");
-        */
+    fd_set tmp_set = sockets;
+    select(FD_SETSIZE, &tmp_set, NULL,NULL,NULL);
 
-    printf("sll_protocol: %x\n", recvaddr.sll_protocol);
-    //printf("arp hardware type: %d\n", recvaddr.sll_hatype);
-    
-    int is_arp = 0;
-    is_arp = process_arp_packet(&recvaddr, &arpcount);
-    int is_icmp = 0;
-    is_icmp = process_icmp_packet(&recvaddr, &icmpcount);
+    int i;
+    for (i = 0; i < FD_SETSIZE; i++) {
+        if(FD_ISSET(i,&tmp_set)){
+            if(i==packet_socket){
+                int clientsocket = accept(packet_socket,(struct sockaddr*)&recvaddr,sizeof(packet_socket));
+                FD_SET(clientsocket,&sockets);
+             } else {
+                //we can use recv, since the addresses are in the packet, but we
+                //use recvfrom because it gives us an easy way to determine if
+                //this packet is incoming or outgoing (when using ETH_P_ALL, we
+                //see packets in both directions. Only outgoing can be seen when
+                //using a packet socket with some specific protocol)
+                //
+                //recvfrom - ensure only looking at incoming packet
+                //skip all outgoing packets
+                int n = recvfrom(packet_socket, buffer, 1500,0,(struct sockaddr*)&recvaddr, &recvaddrlen);
+                //ignore outgoing packets (we can't disable some from being sent
+                //by the OS automatically, for example ICMP port unreachable
+                //messages, so we will just ignore them here)
+                if(recvaddr.sll_pkttype==PACKET_OUTGOING)
+                  continue;
+                //start processing all others
+                printf("Got a %d byte packet\n", n);
+                
+                //what else to do is up to you, you can send packets with send,
+                //just like we used for TCP sockets (or you can use sendto, but it
+                //is not necessary, since the headers, including all addresses,
+                //need to be in the buffer you are sending)
+                //
+                
+                if(htons(eh->h_proto) == 0x806) {
+                    printf("0x806! YAY\n");
+                }
 
-    //trying to check the ip header checksum
-    //do we check the IP checksum, or the ICMP checksum
-    // +28 or +9 or ...
-    void * ttl_location = etherhead  + 28;
-    //void * hdr_checksum = etherhead + 11;
-    // +32 or +11 or ...
-    void * hdr_checksum = ttl_location + 32;
-    char * ttl = (char * ) ttl_location;
-    char * checksum = (char *) hdr_checksum;
+                /*
+                if(recvaddr.sll_pkttype == 0) {
+                    printf("packet type == 0! i guess its ICMP?\n");
+                }else if(recvaddr.sll_pkttype == 4) {
+                    pritnf("packet type == 4! i guess its ARP?\n");
+                }else
+                    printf("not 0\n");
+                    */
 
-    //printf("ip ttl is ---------%s \n", ttl); 
-    //printf("ip header checksum is ---------%s \n", checksum);
+                printf("sll_protocol: %x\n", recvaddr.sll_protocol);
+                //printf("arp hardware type: %d\n", recvaddr.sll_hatype);
+                
+                int is_arp = 0;
+                is_arp = process_arp_packet(&recvaddr, &arpcount);
+                int is_icmp = 0;
+                is_icmp = process_icmp_packet(&recvaddr, &icmpcount);
 
-    /* Trying to use the below code as a basis for the ttl and checksum
-     *
-		void * start_data = etherhead + 26;
-		struct icmp_header * icmp; 
-		icmp = (struct icmp_header *) start_data;
-		
-		
-		
-			char tmp_pnt[4];
-			memcpy(&tmp_pnt,icmp->src,sizeof(tmp_pnt));
-			//icmp->src = icmp->dst;
-			memcpy(&icmp->src , &icmp->dst, sizeof(icmp->src));
-			memcpy(&icmp->dst,&tmp_pnt,sizeof(tmp_pnt));
-			//icmp->dst =  (char *) tmp_pnt;
-		void * icmp_type = etherhead + 34;
-		char * k = (char *) icmp_type;
-		*k = 0;
-    *
-    */
+                //trying to check the ip header checksum
+                //do we check the IP checksum, or the ICMP checksum
+                // +28 or +9 or ...
+                void * ttl_location = etherhead  + 28;
+                //void * hdr_checksum = etherhead + 11;
+                // +32 or +11 or ...
+                void * hdr_checksum = ttl_location + 32;
+                char * ttl = (char * ) ttl_location;
+                char * checksum = (char *) hdr_checksum;
 
-    
+                //printf("ip ttl is ---------%s \n", ttl); 
+                //printf("ip header checksum is ---------%s \n", checksum);
 
-    if(is_arp == 1) {
-      
-		
-	  
-			ah =(struct arp_header *) (etherhead+14);
-					printf("buffer is---------------- %s \n",(char*)ah);
-                                printf("H/D TYPE : %x PROTO TYPE : %x \n",ah->arp_hd,ah->arp_pr);
-                                printf("H/D leng : %x PROTO leng : %x \n",ah->arp_hdl,ah->arp_prl);
-                                printf("OPERATION : %x \n", ah->arp_op);
-                                printf("SENDER MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                                       ah->arp_sha[0],
-                                       ah->arp_sha[1],
-                                       ah->arp_sha[2],
-                                       ah->arp_sha[3],
-                                       ah->arp_sha[4],
-                                       ah->arp_sha[5]
-                                       );
-                                printf("SENDER IP address: %02d:%02d:%02d:%02d\n",
-                                       ah->arp_spa[0],
-                                       ah->arp_spa[1],
-                                       ah->arp_spa[2],
-                                       ah->arp_spa[3]
-                                       );
-                                       
-                                       printf("TARGET MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                                       ah->arp_dha[0],
-                                       ah->arp_dha[1],
-                                       ah->arp_dha[2],
-                                       ah->arp_dha[3],
-                                       ah->arp_dha[4],
-                                       ah->arp_dha[5]
-                                       );
-                                printf("TARGET IP address: %02d:%02d:%02d:%02d\n",
-                                       ah->arp_dpa[0],
-                                       ah->arp_dpa[1],
-                                       ah->arp_dpa[2],
-                                       ah->arp_dpa[3]
-                                       );
- 
-                                printf("+++++++++++++++++++++++++++++++++++++++\n" );
-                                printf("ETHER DST MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                                       eh->h_dest[0],
-                                       eh->h_dest[1],
-                                       eh->h_dest[2],
-                                       eh->h_dest[3],
-                                       eh->h_dest[4],
-                                       eh->h_dest[5]
-                                       );
-                                printf("ETHER SRC MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                                       eh->h_source[0],
-                                       eh->h_source[1],
-                                       eh->h_source[2],
-                                       eh->h_source[3],
-                                       eh->h_source[4],
-                                       eh->h_source[5]
-                                       );
-        // temp header struct for storing the fucking shit
-        struct arp_header * new_ah;
-	
-  	new_ah = (void*)malloc(sizeof(struct arp_header));
-	printf ("***  1  ***\n");
-        memcpy(new_ah->arp_sha,ah->arp_dha,sizeof(ah->arp_dha));
-	printf ("***  2  ***\n");
-        memcpy(new_ah->arp_dha,ah->arp_sha,sizeof(ah->arp_sha));
-	printf ("***  3  ***\n");
-        memcpy(new_ah->arp_spa,ah->arp_dpa,sizeof(ah->arp_dpa));
-	printf ("***  4  ***\n");
-        memcpy(new_ah->arp_dpa,ah->arp_spa,sizeof(ah->arp_spa));
-       // &new_ah->arp_spa = (ah->arp_dpa);
-	printf ("***  after  ***\n");
-       // &new_ah->arp_dha = (ah->arp_sha);
-       // &new_ah->arp_dpa = (ah->arp_spa);
-        //ah->arp_op = 2;
-        
-        ah->arp_sha[0] = mac[0];
-        ah->arp_sha[1] = mac[1];
-        ah->arp_sha[2] = mac[2];
-        ah->arp_sha[3] = mac[3];
-        ah->arp_sha[4] = mac[4];
-        ah->arp_sha[5] = mac[5];
-        ah->arp_dha[0] = new_ah->arp_dha[0];
-        ah->arp_dha[1] = new_ah->arp_dha[1];
-        ah->arp_dha[2] = new_ah->arp_dha[2];
-        ah->arp_dha[3] = new_ah->arp_dha[3];
-        ah->arp_dha[4] = new_ah->arp_dha[4];
-        ah->arp_dha[5] = new_ah->arp_dha[5];
-        ah->arp_spa[0] = new_ah->arp_spa[0];
-        ah->arp_spa[1] = new_ah->arp_spa[1];
-        ah->arp_spa[2] = new_ah->arp_spa[2];
-        ah->arp_spa[3] = new_ah->arp_spa[3];
-        ah->arp_dpa[0] = new_ah->arp_dpa[0];
-        ah->arp_dpa[1] = new_ah->arp_dpa[1];
-        ah->arp_dpa[2] = new_ah->arp_dpa[2];
-        ah->arp_dpa[3] = new_ah->arp_dpa[3];
-        
-        
-					printf("buffer is---------------- %s \n",(char*)ah);
-                                printf("H/D TYPE : %x PROTO TYPE : %x \n",ah->arp_hd,ah->arp_pr);
-                                printf("H/D leng : %x PROTO leng : %x \n",ah->arp_hdl,ah->arp_prl);
-                                printf("OPERATION : %x \n", ah->arp_op);
-                                printf("SENDER MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                                       ah->arp_sha[0],
-                                       ah->arp_sha[1],
-                                       ah->arp_sha[2],
-                                       ah->arp_sha[3],
-                                       ah->arp_sha[4],
-                                       ah->arp_sha[5]
-                                       );
-                                printf("SENDER IP address: %02d:%02d:%02d:%02d\n",
-                                       ah->arp_spa[0],
-                                       ah->arp_spa[1],
-                                       ah->arp_spa[2],
-                                       ah->arp_spa[3]
-                                       );
-                                       
-                                       printf("TARGET MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                                       ah->arp_dha[0],
-                                       ah->arp_dha[1],
-                                       ah->arp_dha[2],
-                                       ah->arp_dha[3],
-                                       ah->arp_dha[4],
-                                       ah->arp_dha[5]
-                                       );
-                                printf("TARGET IP address: %02d:%02d:%02d:%02d\n",
-                                       ah->arp_dpa[0],
-                                       ah->arp_dpa[1],
-                                       ah->arp_dpa[2],
-                                       ah->arp_dpa[3]
-                                       );
- 
-                                printf("+++++++++++++++++++++++++++++++++++++++\n" );
-                                printf("ETHER DST MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                                       eh->h_dest[0],
-                                       eh->h_dest[1],
-                                       eh->h_dest[2],
-                                       eh->h_dest[3],
-                                       eh->h_dest[4],
-                                       eh->h_dest[5]
-                                       );
-                                printf("ETHER SRC MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                                       eh->h_source[0],
-                                       eh->h_source[1],
-                                       eh->h_source[2],
-                                       eh->h_source[3],
-                                       eh->h_source[4],
-                                       eh->h_source[5]
-                                       );
-			
-			
-		printf("Setting up buffer to send...");
-		sendto(packet_socket ,buffer,n,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
-		printf("Sent the packet back.");	
-		
-       //send appropriate response, or forward it to others
-       //
-       //Just realized! we may get a ARP response back from other router
-       //which we'd have to forward to the host who asked
-       //example: h1 ping h3
-       //   - we forward request from h1 to r2, r2 > h3
-       //   - h3 sends response to r2, r2 >response> r1, r1 > h1 
-    }
-    if(is_icmp == 1) {
-		
-		char tmp[6];
-		
-		memcpy(&tmp,etherhead,sizeof(tmp));
-		
-		memcpy(etherhead,etherhead+6,sizeof(tmp));
+                /* Trying to use the below code as a basis for the ttl and checksum
+                 *
+                    void * start_data = etherhead + 26;
+                    struct icmp_header * icmp; 
+                    icmp = (struct icmp_header *) start_data;
+                    
+                    
+                    
+                        char tmp_pnt[4];
+                        memcpy(&tmp_pnt,icmp->src,sizeof(tmp_pnt));
+                        //icmp->src = icmp->dst;
+                        memcpy(&icmp->src , &icmp->dst, sizeof(icmp->src));
+                        memcpy(&icmp->dst,&tmp_pnt,sizeof(tmp_pnt));
+                        //icmp->dst =  (char *) tmp_pnt;
+                    void * icmp_type = etherhead + 34;
+                    char * k = (char *) icmp_type;
+                    *k = 0;
+                *
+                */
 
-		memcpy(etherhead +6,&tmp,sizeof(tmp));
-		
-		 
-		struct ipheader * iph;
-		iph = (struct ipheader *) (etherhead + 14);
+                
 
-		printf("ip_header ip_ttl = %d\n", iph->ip_ttl);
-		printf("ip_header ip_len  = %d\n", iph->ip_len);
-		
-		printf("ip_header ip_cheksum = %x\n", iph->ip_sum);
-		
-		unsigned short * checksumhead = etherhead + 14;
-		unsigned short answer = 0;
-		int chck_sum = 0;
-		int i = 14;
-		for(i; i<34; i+=2){
-		  if(!(i == 24 || i == 25)){
-		    printf("%x\n",*checksumhead);
-		    chck_sum = chck_sum + *checksumhead;
-		    checksumhead ++;
-		  }else
-		    checksumhead ++;
-		    
-		}
-		chck_sum = (chck_sum >> 16) + (chck_sum & 0xffff); 
-		chck_sum += (chck_sum >> 16);
-		/* add carry */
-		answer = ~chck_sum;  
-		/* truncate to 16 bits */
-		printf("OUR ip_header ip_cheksum = %x\n", answer);
-		if( answer != iph->ip_sum){
-		 continue ;
-		}
-		if( iph -> ip_ttl > 1)
-		iph -> ip_ttl --; 
-		else
-		printf("send ttyl error");
-		
-		checksumhead = etherhead + 14;
-		answer = 0;
-		chck_sum = 0;
-		i = 14;
-		for(i; i<34; i+=2){
-		  if(!(i == 24 || i == 25)){
-		    printf("%x\n",*checksumhead);
-		    chck_sum = chck_sum + *checksumhead;
-		    checksumhead ++;
-		  }else
-		    checksumhead ++;  
-		}
-		chck_sum = (chck_sum >> 16) + (chck_sum & 0xffff); 
-		chck_sum += (chck_sum >> 16);
-		answer = ~chck_sum;  
-		
-		
-		
-		printf("OUR  NEW ip_header ip_cheksum = %x\n", answer);
-		iph-> ip_sum = answer;
-		
-		// file IO stuff
-		 char dest_ip[20];
-		 char next_hop[20];
-		 char interface[20];
-		 
-		FILE *fp; 
-		fp = fopen(".//r1-table.txt","r");
-		fscanf(fp,"%s %s %s", dest_ip, next_hop, interface);
-		
-		printf("ip_dest %s\n", dest_ip);
-		printf("next_hop = %s\n", next_hop);
-		printf("interface = %s\n", interface);
+                if(is_arp == 1) {
+                  
+                    
+                  
+                        ah =(struct arp_header *) (etherhead+14);
+                                printf("buffer is---------------- %s \n",(char*)ah);
+                                            printf("H/D TYPE : %x PROTO TYPE : %x \n",ah->arp_hd,ah->arp_pr);
+                                            printf("H/D leng : %x PROTO leng : %x \n",ah->arp_hdl,ah->arp_prl);
+                                            printf("OPERATION : %x \n", ah->arp_op);
+                                            printf("SENDER MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                                                   ah->arp_sha[0],
+                                                   ah->arp_sha[1],
+                                                   ah->arp_sha[2],
+                                                   ah->arp_sha[3],
+                                                   ah->arp_sha[4],
+                                                   ah->arp_sha[5]
+                                                   );
+                                            printf("SENDER IP address: %02d:%02d:%02d:%02d\n",
+                                                   ah->arp_spa[0],
+                                                   ah->arp_spa[1],
+                                                   ah->arp_spa[2],
+                                                   ah->arp_spa[3]
+                                                   );
+                                                   
+                                                   printf("TARGET MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                                                   ah->arp_dha[0],
+                                                   ah->arp_dha[1],
+                                                   ah->arp_dha[2],
+                                                   ah->arp_dha[3],
+                                                   ah->arp_dha[4],
+                                                   ah->arp_dha[5]
+                                                   );
+                                            printf("TARGET IP address: %02d:%02d:%02d:%02d\n",
+                                                   ah->arp_dpa[0],
+                                                   ah->arp_dpa[1],
+                                                   ah->arp_dpa[2],
+                                                   ah->arp_dpa[3]
+                                                   );
+             
+                                            printf("+++++++++++++++++++++++++++++++++++++++\n" );
+                                            printf("ETHER DST MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                                                   eh->h_dest[0],
+                                                   eh->h_dest[1],
+                                                   eh->h_dest[2],
+                                                   eh->h_dest[3],
+                                                   eh->h_dest[4],
+                                                   eh->h_dest[5]
+                                                   );
+                                            printf("ETHER SRC MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                                                   eh->h_source[0],
+                                                   eh->h_source[1],
+                                                   eh->h_source[2],
+                                                   eh->h_source[3],
+                                                   eh->h_source[4],
+                                                   eh->h_source[5]
+                                                   );
+                    // temp header struct for storing the fucking shit
+                    struct arp_header * new_ah;
+                
+                new_ah = (void*)malloc(sizeof(struct arp_header));
+                printf ("***  1  ***\n");
+                    memcpy(new_ah->arp_sha,ah->arp_dha,sizeof(ah->arp_dha));
+                printf ("***  2  ***\n");
+                    memcpy(new_ah->arp_dha,ah->arp_sha,sizeof(ah->arp_sha));
+                printf ("***  3  ***\n");
+                    memcpy(new_ah->arp_spa,ah->arp_dpa,sizeof(ah->arp_dpa));
+                printf ("***  4  ***\n");
+                    memcpy(new_ah->arp_dpa,ah->arp_spa,sizeof(ah->arp_spa));
+                   // &new_ah->arp_spa = (ah->arp_dpa);
+                printf ("***  after  ***\n");
+                   // &new_ah->arp_dha = (ah->arp_sha);
+                   // &new_ah->arp_dpa = (ah->arp_spa);
+                    //ah->arp_op = 2;
+                    
+                    ah->arp_sha[0] = mac[0];
+                    ah->arp_sha[1] = mac[1];
+                    ah->arp_sha[2] = mac[2];
+                    ah->arp_sha[3] = mac[3];
+                    ah->arp_sha[4] = mac[4];
+                    ah->arp_sha[5] = mac[5];
+                    ah->arp_dha[0] = new_ah->arp_dha[0];
+                    ah->arp_dha[1] = new_ah->arp_dha[1];
+                    ah->arp_dha[2] = new_ah->arp_dha[2];
+                    ah->arp_dha[3] = new_ah->arp_dha[3];
+                    ah->arp_dha[4] = new_ah->arp_dha[4];
+                    ah->arp_dha[5] = new_ah->arp_dha[5];
+                    ah->arp_spa[0] = new_ah->arp_spa[0];
+                    ah->arp_spa[1] = new_ah->arp_spa[1];
+                    ah->arp_spa[2] = new_ah->arp_spa[2];
+                    ah->arp_spa[3] = new_ah->arp_spa[3];
+                    ah->arp_dpa[0] = new_ah->arp_dpa[0];
+                    ah->arp_dpa[1] = new_ah->arp_dpa[1];
+                    ah->arp_dpa[2] = new_ah->arp_dpa[2];
+                    ah->arp_dpa[3] = new_ah->arp_dpa[3];
+                    
+                    
+                                printf("buffer is---------------- %s \n",(char*)ah);
+                                            printf("H/D TYPE : %x PROTO TYPE : %x \n",ah->arp_hd,ah->arp_pr);
+                                            printf("H/D leng : %x PROTO leng : %x \n",ah->arp_hdl,ah->arp_prl);
+                                            printf("OPERATION : %x \n", ah->arp_op);
+                                            printf("SENDER MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                                                   ah->arp_sha[0],
+                                                   ah->arp_sha[1],
+                                                   ah->arp_sha[2],
+                                                   ah->arp_sha[3],
+                                                   ah->arp_sha[4],
+                                                   ah->arp_sha[5]
+                                                   );
+                                            printf("SENDER IP address: %02d:%02d:%02d:%02d\n",
+                                                   ah->arp_spa[0],
+                                                   ah->arp_spa[1],
+                                                   ah->arp_spa[2],
+                                                   ah->arp_spa[3]
+                                                   );
+                                                   
+                                                   printf("TARGET MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                                                   ah->arp_dha[0],
+                                                   ah->arp_dha[1],
+                                                   ah->arp_dha[2],
+                                                   ah->arp_dha[3],
+                                                   ah->arp_dha[4],
+                                                   ah->arp_dha[5]
+                                                   );
+                                            printf("TARGET IP address: %02d:%02d:%02d:%02d\n",
+                                                   ah->arp_dpa[0],
+                                                   ah->arp_dpa[1],
+                                                   ah->arp_dpa[2],
+                                                   ah->arp_dpa[3]
+                                                   );
+             
+                                            printf("+++++++++++++++++++++++++++++++++++++++\n" );
+                                            printf("ETHER DST MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                                                   eh->h_dest[0],
+                                                   eh->h_dest[1],
+                                                   eh->h_dest[2],
+                                                   eh->h_dest[3],
+                                                   eh->h_dest[4],
+                                                   eh->h_dest[5]
+                                                   );
+                                            printf("ETHER SRC MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
+                                                   eh->h_source[0],
+                                                   eh->h_source[1],
+                                                   eh->h_source[2],
+                                                   eh->h_source[3],
+                                                   eh->h_source[4],
+                                                   eh->h_source[5]
+                                                   );
+                        
+                        
+                    printf("Setting up buffer to send...");
+                    sendto(packet_socket ,buffer,n,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
+                    printf("Sent the packet back.");	
+                    
+                   //send appropriate response, or forward it to others
+                   //
+                   //Just realized! we may get a ARP response back from other router
+                   //which we'd have to forward to the host who asked
+                   //example: h1 ping h3
+                   //   - we forward request from h1 to r2, r2 > h3
+                   //   - h3 sends response to r2, r2 >response> r1, r1 > h1 
+                }
+                if(is_icmp == 1) {
+                    
+                    char tmp[6];
+                    
+                    memcpy(&tmp,etherhead,sizeof(tmp));
+                    
+                    memcpy(etherhead,etherhead+6,sizeof(tmp));
 
-		
-		
-		
-		void * start_data = etherhead + 26;
-		struct icmp_header * icmp; 
-		icmp = (struct icmp_header *) start_data;
-		
-		
-		
-			char tmp_pnt[4];
-			memcpy(&tmp_pnt,icmp->src,sizeof(tmp_pnt));
-			//icmp->src = icmp->dst;
-			memcpy(&icmp->src , &icmp->dst, sizeof(icmp->src));
-			memcpy(&icmp->dst,&tmp_pnt,sizeof(tmp_pnt));
-			//icmp->dst =  (char *) tmp_pnt;
-		void * icmp_type = etherhead + 34;
-		char * k = (char *) icmp_type;
-		*k = 0;
-		sendto(packet_socket ,buffer,n,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
-		 	
-		
-        // send appropriate ICMP response
-        //send(packet_socket,(struct sockaddr*)&recvaddr,&recvaddrlen,0);
-        //int nsize = sendto(packet_socket, buffer, 1500,0,
-        //        (struct sockaddr*)&recvaddr, &recvaddrlen);
- 
-        printf("ICMP response: sending something back?\n");
+                    memcpy(etherhead +6,&tmp,sizeof(tmp));
+                    
+                     
+                    struct ipheader * iph;
+                    iph = (struct ipheader *) (etherhead + 14);
+
+                    printf("ip_header ip_ttl = %d\n", iph->ip_ttl);
+                    printf("ip_header ip_len  = %d\n", iph->ip_len);
+                    
+                    printf("ip_header ip_cheksum = %x\n", iph->ip_sum);
+                    
+                    unsigned short * checksumhead = etherhead + 14;
+                    unsigned short answer = 0;
+                    int chck_sum = 0;
+                    int i = 14;
+                    for(i; i<34; i+=2){
+                      if(!(i == 24 || i == 25)){
+                        printf("%x\n",*checksumhead);
+                        chck_sum = chck_sum + *checksumhead;
+                        checksumhead ++;
+                      }else
+                        checksumhead ++;
+                        
+                    }
+                    chck_sum = (chck_sum >> 16) + (chck_sum & 0xffff); 
+                    chck_sum += (chck_sum >> 16);
+                    /* add carry */
+                    answer = ~chck_sum;  
+                    /* truncate to 16 bits */
+                    printf("OUR ip_header ip_cheksum = %x\n", answer);
+                    if( answer != iph->ip_sum){
+                     continue ;
+                    }
+                    if( iph -> ip_ttl > 1)
+                    iph -> ip_ttl --; 
+                    else
+                    printf("send ttyl error");
+                    
+                    checksumhead = etherhead + 14;
+                    answer = 0;
+                    chck_sum = 0;
+                    i = 14;
+                    for(i; i<34; i+=2){
+                      if(!(i == 24 || i == 25)){
+                        printf("%x\n",*checksumhead);
+                        chck_sum = chck_sum + *checksumhead;
+                        checksumhead ++;
+                      }else
+                        checksumhead ++;  
+                    }
+                    chck_sum = (chck_sum >> 16) + (chck_sum & 0xffff); 
+                    chck_sum += (chck_sum >> 16);
+                    answer = ~chck_sum;  
+                    
+                    
+                    
+                    printf("OUR  NEW ip_header ip_cheksum = %x\n", answer);
+                    iph-> ip_sum = answer;
+                    
+                    // file IO stuff
+                     char dest_ip[20];
+                     char next_hop[20];
+                     char interface[20];
+                     
+                    FILE *fp; 
+                    fp = fopen(".//r1-table.txt","r");
+                    fscanf(fp,"%s %s %s", dest_ip, next_hop, interface);
+                    
+                    printf("ip_dest %s\n", dest_ip);
+                    printf("next_hop = %s\n", next_hop);
+                    printf("interface = %s\n", interface);
+
+                    
+                    
+                    
+                    void * start_data = etherhead + 26;
+                    struct icmp_header * icmp; 
+                    icmp = (struct icmp_header *) start_data;
+                    
+                    
+                    
+                        char tmp_pnt[4];
+                        memcpy(&tmp_pnt,icmp->src,sizeof(tmp_pnt));
+                        //icmp->src = icmp->dst;
+                        memcpy(&icmp->src , &icmp->dst, sizeof(icmp->src));
+                        memcpy(&icmp->dst,&tmp_pnt,sizeof(tmp_pnt));
+                        //icmp->dst =  (char *) tmp_pnt;
+                    void * icmp_type = etherhead + 34;
+                    char * k = (char *) icmp_type;
+                    *k = 0;
+                    sendto(packet_socket ,buffer,n,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
+                        
+                    
+                    // send appropriate ICMP response
+                    //send(packet_socket,(struct sockaddr*)&recvaddr,&recvaddrlen,0);
+                    //int nsize = sendto(packet_socket, buffer, 1500,0,
+                    //        (struct sockaddr*)&recvaddr, &recvaddrlen);
+             
+                    printf("ICMP response: sending something back?\n");
+                }
+                FD_CLR(i,&sockets);
+            }
+        }
     }
     printf("ifindex = %d\n", recvaddr.sll_ifindex);
     printf("arp count = %d\n", arpcount);
