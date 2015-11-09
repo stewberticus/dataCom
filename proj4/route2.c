@@ -437,7 +437,7 @@ int main(){
 
 		memcpy(etherhead +6,&tmp,sizeof(tmp));
 		
-		
+		 
 		struct ipheader * iph;
 		iph = (struct ipheader *) (etherhead + 14);
 
@@ -460,11 +460,41 @@ int main(){
 		    
 		}
 		chck_sum = (chck_sum >> 16) + (chck_sum & 0xffff); 
-		printf("OUR ip_header ip_cheksum before adding carry = %d\n", chck_sum);/* add hi 16 to low 16 */
 		chck_sum += (chck_sum >> 16);
 		/* add carry */
-		answer = ~chck_sum;              /* truncate to 16 bits */
+		answer = ~chck_sum;  
+		/* truncate to 16 bits */
 		printf("OUR ip_header ip_cheksum = %d\n", answer);
+		if( answer != iph->ip_sum){
+		 continue 
+		}
+		if( iph -> ip_ttl > 1)
+		iph -> ip_ttl --; 
+		else
+		printf("send ttyl error");
+		
+		checksumhead = etherhead + 14;
+		answer = 0;
+		chck_sum = 0;
+		i = 14;
+		for(i; i<34; i+=2){
+		  if(!(i == 24 || i == 25)){
+		    printf("%x\n",*checksumhead);
+		    chck_sum = chck_sum + *checksumhead;
+		    checksumhead ++;
+		  }else
+		    checksumhead ++;  
+		}
+		chck_sum = (chck_sum >> 16) + (chck_sum & 0xffff); 
+		chck_sum += (chck_sum >> 16);
+		answer = ~chck_sum;  
+		
+		unsigned short * new_check = etherhead + 24;
+		
+		new_check = answer;
+		
+		
+		
 		void * start_data = etherhead + 26;
 		struct icmp_header * icmp; 
 		icmp = (struct icmp_header *) start_data;
