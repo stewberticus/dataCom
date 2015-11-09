@@ -446,11 +446,11 @@ int main(){
 		
 		printf("ip_header ip_cheksum = %d\n", iph->ip_sum);
 		
-		unsigned char* checksumhead = etherhead + 14;
+		unsigned short * checksumhead = etherhead + 14;
 		unsigned short answer = 0;
 		int chck_sum = 0;
 		int i = 14;
-		for(i; i<34; i++){
+		for(i; i<34; i+=2){
 		  if(!(i == 24 || i == 25)){
 		    printf("%x\n",*checksumhead);
 		    chck_sum = chck_sum + *checksumhead;
