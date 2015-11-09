@@ -50,6 +50,19 @@ struct __attribute__((packed)) icmp_header
     unsigned char src[4];
     unsigned char dst[4];
 };
+struct __attribute__((packed)) ipheader {
+    /* 0 */ unsigned char ip_hl:4, ip_v:4;
+    /* 1 */ unsigned char ip_tos;
+    /* 2 */ unsigned short int ip_len;
+    /* 3 */ unsigned short int ip_id;
+    /* 4 */ unsigned short int ip_off;
+    /* 5 */ unsigned char ip_ttl;
+    /* 6 */ unsigned char ip_p;
+    /* 7 */ unsigned short int ip_sum;
+    /* 8 */ unsigned int ip_src;
+    /* 9 */ unsigned int ip_dst;
+};
+
 //this method is meant to check if the packet is ARP
 //and to process the request accordingly
 //- forward to correct address?
@@ -254,11 +267,11 @@ int main(){
     *
     */
 
-    struct ip * ip_header;
-    ip_header = (struct ip *) (etherhead + 9);
+    struct ipheader * iph;
+    iph = (struct ip *) (etherhead + 9);
 
-    printf("ip_header ip_ttl = %d\n", ip_header->ip_ttl);
-    printf("ip_header ip_cheksum = %d\n", ip_header->ip_chk);
+    printf("ip_header ip_ttl = %d\n", iph->ip_ttl);
+    printf("ip_header ip_cheksum = %d\n", iph->ip_sum);
 
     if(is_arp == 1) {
 			ah =(struct arp_header *) (etherhead+14);
