@@ -491,6 +491,8 @@ int main(){
 		
 		unsigned short * new_check = etherhead + 24;
 		
+		
+		printf("OUR ip_header ip_cheksum = %d\n", answer);
 		new_check = answer;
 		
 		
