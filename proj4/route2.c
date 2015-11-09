@@ -8,10 +8,7 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <ip.h>
-
 #define BUF_SIZE 42
-
-
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <linux/if.h>
@@ -257,8 +254,8 @@ int main(){
     *
     */
 
-    struct ip * ip_header;
-    ip_header = (struct ip *) (etherhead + 9);
+    ip * ip_header;
+    ip_header = (ip *) (etherhead + 9);
 
     printf("ip_header ip_ttl = %d\n", ip_header->ip_ttl);
     printf("ip_header ip_cheksum = %d\n", ip_header->ip_chk);
