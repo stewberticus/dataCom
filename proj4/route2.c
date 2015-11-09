@@ -450,7 +450,7 @@ int main(){
 		unsigned short answer = 0;
 		int chck_sum = 0;
 		int i = 14;
-		for(i; i<36; i++){
+		for(i; i<34; i++){
 		  if(!(i == 24 || i == 25)){
 		    printf("%x\n",*checksumhead);
 		    chck_sum = chck_sum + *checksumhead;
