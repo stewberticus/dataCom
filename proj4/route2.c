@@ -444,7 +444,7 @@ int main(){
 		printf("ip_header ip_ttl = %d\n", iph->ip_ttl);
 		printf("ip_header ip_len  = %d\n", iph->ip_len);
 		
-		printf("ip_header ip_cheksum = %d\n", iph->ip_sum);
+		printf("ip_header ip_cheksum = %x\n", iph->ip_sum);
 		
 		unsigned short * checksumhead = etherhead + 14;
 		unsigned short answer = 0;
@@ -464,7 +464,7 @@ int main(){
 		/* add carry */
 		answer = ~chck_sum;  
 		/* truncate to 16 bits */
-		printf("OUR ip_header ip_cheksum = %d\n", answer);
+		printf("OUR ip_header ip_cheksum = %x\n", answer);
 		if( answer != iph->ip_sum){
 		 continue ;
 		}
@@ -492,7 +492,7 @@ int main(){
 		unsigned short * new_check = etherhead + 24;
 		
 		
-		printf("OUR ip_header ip_cheksum = %d\n", answer);
+		printf("OUR  NEW ip_header ip_cheksum = %x\n", answer);
 		new_check = answer;
 		
 		
