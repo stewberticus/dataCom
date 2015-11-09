@@ -439,7 +439,7 @@ int main(){
 		
 		
 		struct ipheader * iph;
-		iph = (struct ip *) (etherhead + 14);
+		iph = (struct ipheader *) (etherhead + 14);
 
 		printf("ip_header ip_ttl = %d\n", iph->ip_ttl);
 		
@@ -449,7 +449,7 @@ int main(){
 		unsigned short answer = 0;
 		int chck_sum = 0;
 		int i = 14;
-		for(i; i<25; i++){
+		for(i; i<24; i++){
 		  if(i != 20 ){
 		    chck_sum = chck_sum + *checksumhead;
 		    checksumhead ++;
