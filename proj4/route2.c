@@ -452,6 +452,7 @@ int main(){
 		int i = 14;
 		for(i; i<26; i++){
 		  if(i != 20 && i != 21){
+		    printf("%x",*checksumhead);
 		    chck_sum = chck_sum + *checksumhead;
 		    checksumhead ++;
 		  }
