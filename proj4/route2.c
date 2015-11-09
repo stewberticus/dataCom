@@ -495,9 +495,9 @@ int main(){
 		iph-> ip_sum = answer;
 		
 		// file IO stuff
-		 char * dest_ip[20];
-		 char * next_hop[20];
-		 char * interface[20];
+		 char dest_ip[20];
+		 char next_hop[20];
+		 char interface[20];
 		 
 		FILE *fp; 
 		fp = fopen(".//r1-table.txt","r");
