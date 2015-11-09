@@ -455,7 +455,8 @@ int main(){
 		    printf("%x\n",*checksumhead);
 		    chck_sum = chck_sum + *checksumhead;
 		    checksumhead ++;
-		  }
+		  }else
+		    printf("wtf");
 		}
 		chck_sum = (chck_sum >> 16) + (chck_sum & 0xffff); 
 		printf("OUR ip_header ip_cheksum before adding carry = %d\n", chck_sum);/* add hi 16 to low 16 */
