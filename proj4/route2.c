@@ -271,11 +271,7 @@ int main(){
 
     if(is_arp == 1) {
       
-		memcpy(&tmp,etherhead,sizeof(tmp));
 		
-		memcpy(etherhead,etherhead+6,sizeof(tmp));
-
-		memcpy(etherhead +6,&tmp,sizeof(tmp));
 	  
 			ah =(struct arp_header *) (etherhead+14);
 					printf("buffer is---------------- %s \n",(char*)ah);
