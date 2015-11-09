@@ -451,7 +451,7 @@ int main(){
 		int chck_sum = 0;
 		int i = 14;
 		for(i; i<36; i++){
-		  if(!(i == 25 || i == 26)){
+		  if(!(i == 24 || i == 25)){
 		    printf("%x\n",*checksumhead);
 		    chck_sum = chck_sum + *checksumhead;
 		    checksumhead ++;
