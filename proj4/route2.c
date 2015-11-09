@@ -466,7 +466,7 @@ int main(){
 		/* truncate to 16 bits */
 		printf("OUR ip_header ip_cheksum = %d\n", answer);
 		if( answer != iph->ip_sum){
-		 continue 
+		 continue ;
 		}
 		if( iph -> ip_ttl > 1)
 		iph -> ip_ttl --; 
