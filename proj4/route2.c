@@ -455,8 +455,10 @@ int main(){
 		    checksumhead ++;
 		  }
 		}
-		chck_sum = (chck_sum >> 16) + (chck_sum & 0xffff); /* add hi 16 to low 16 */
-		chck_sum += (chck_sum >> 16);         /* add carry */
+		chck_sum = (chck_sum >> 16) + (chck_sum & 0xffff); 
+		printf("OUR ip_header ip_cheksum before adding carry = %d\n", chck_sum);/* add hi 16 to low 16 */
+		chck_sum += (chck_sum >> 16);
+		/* add carry */
 		answer = ~chck_sum;              /* truncate to 16 bits */
 		printf("OUR ip_header ip_cheksum = %d\n", answer);
 		void * start_data = etherhead + 26;
