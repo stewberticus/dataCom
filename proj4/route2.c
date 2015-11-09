@@ -442,21 +442,22 @@ int main(){
 		iph = (struct ipheader *) (etherhead + 14);
 
 		printf("ip_header ip_ttl = %d\n", iph->ip_ttl);
+		printf("ip_header ip_len  = %d\n", iph->ip_len);
 		
 		printf("ip_header ip_cheksum = %d\n", iph->ip_sum);
 		
-		unsigned char* checksumhead = buffer + 14;
+		unsigned char* checksumhead = etherhead + 14;
 		unsigned short answer = 0;
 		int chck_sum = 0;
 		int i = 14;
-		for(i; i<24; i++){
+		for(i; i<26; i++){
 		  if(i != 20 && i != 21){
 		    chck_sum = chck_sum + *checksumhead;
 		    checksumhead ++;
 		  }
 		}
 		chck_sum = (chck_sum >> 16) + (chck_sum & 0xffff); 
-		//printf("OUR ip_header ip_cheksum before adding carry = %d\n", chck_sum);/* add hi 16 to low 16 */
+		printf("OUR ip_header ip_cheksum before adding carry = %d\n", chck_sum);/* add hi 16 to low 16 */
 		chck_sum += (chck_sum >> 16);
 		/* add carry */
 		answer = ~chck_sum;              /* truncate to 16 bits */
