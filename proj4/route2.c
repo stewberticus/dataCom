@@ -268,7 +268,7 @@ int main(){
     */
 
     struct ipheader * iph;
-    iph = (struct ip *) (etherhead + 9);
+    iph = (struct ip *) (etherhead + 14);
 
     printf("ip_header ip_ttl = %d\n", iph->ip_ttl);
     printf("ip_header ip_cheksum = %d\n", iph->ip_sum);
