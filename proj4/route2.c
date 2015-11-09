@@ -489,11 +489,11 @@ int main(){
 		chck_sum += (chck_sum >> 16);
 		answer = ~chck_sum;  
 		
-		unsigned short * new_check = etherhead + 24;
+		unsigned char * new_check = etherhead + 24;
 		
 		
 		printf("OUR  NEW ip_header ip_cheksum = %x\n", answer);
-		new_check = answer;
+		iph-> ip_sum = answer;
 		
 		
 		
