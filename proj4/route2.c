@@ -489,11 +489,24 @@ int main(){
 		chck_sum += (chck_sum >> 16);
 		answer = ~chck_sum;  
 		
-		unsigned char * new_check = etherhead + 24;
 		
 		
 		printf("OUR  NEW ip_header ip_cheksum = %x\n", answer);
 		iph-> ip_sum = answer;
+		
+		// file IO stuff
+		 char * dest_ip[20];
+		 char * next_hop[20];
+		 char * interface[20];
+		 
+		FILE *fp; 
+		fp = fopen(".//r1-table.txt","r");
+		fscanf(fp,"%s %s %s", dest_ip, next_hop, interface);
+		
+		printf("ip_dest %s\n", dest_ip);
+		printf("next_hop = %s\n", next_hop);
+		printf("interface = %s\n", interface);
+
 		
 		
 		
