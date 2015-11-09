@@ -8,7 +8,7 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <linux/ip.h>
-#define BUF_SIZE 42
+#define BUF_SIZE 100
 #include <sys/socket.h>
 #include <sys/ioctl.h>
 #include <linux/if.h>
@@ -110,8 +110,8 @@ int main(){
   int packet_socket;
   //get list of interfaces (actually addresses)
   struct ifaddrs *ifaddr, *tmp;
-  //gets all of the addresses of the network interfaces on your system
-  //returns a list that contains roughly 3 addr per device / network interface
+    //gets all of the addresses of the network interfaces on your system
+    //returns a list that contains roughly 3 addr per device / network interface
   //    > ipv4 addr, ipv6 addr, mac addr  
   if(getifaddrs(&ifaddr)==-1){
     perror("getifaddrs");
@@ -267,11 +267,7 @@ int main(){
     *
     */
 
-    struct ipheader * iph;
-    iph = (struct ip *) (etherhead + 14);
-
-    printf("ip_header ip_ttl = %d\n", iph->ip_ttl);
-    printf("ip_header ip_cheksum = %d\n", iph->ip_sum);
+    
 
     if(is_arp == 1) {
 			ah =(struct arp_header *) (etherhead+14);
@@ -442,7 +438,27 @@ int main(){
 		memcpy(etherhead +6,&tmp,sizeof(tmp));
 		
 		
+		struct ipheader * iph;
+		iph = (struct ip *) (etherhead + 14);
+
+		printf("ip_header ip_ttl = %d\n", iph->ip_ttl);
 		
+		printf("ip_header ip_cheksum = %d\n", iph->ip_sum);
+		
+		unsigned char* checksumhead = buffer + 14;
+		unsigned short answer = 0;
+		int chck_sum = 0;
+		int i = 14;
+		for(i; i<25; i++){
+		  if(i != 20 ){
+		    chck_sum = chck_sum + *checksumhead;
+		    checksumhead ++;
+		  }
+		}
+		chck_sum = (chck_sum >> 16) + (chck_sum & 0xffff); /* add hi 16 to low 16 */
+		chck_sum += (chck_sum >> 16);         /* add carry */
+		answer = ~chck_sum;              /* truncate to 16 bits */
+		printf("OUR ip_header ip_cheksum = %d\n", answer);
 		void * start_data = etherhead + 26;
 		struct icmp_header * icmp; 
 		icmp = (struct icmp_header *) start_data;
@@ -458,7 +474,7 @@ int main(){
 		void * icmp_type = etherhead + 34;
 		char * k = (char *) icmp_type;
 		*k = 0;
-		sendto(packet_socket ,buffer,98,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
+		sendto(packet_socket ,buffer,n,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
 		 	
 		
         // send appropriate ICMP response
