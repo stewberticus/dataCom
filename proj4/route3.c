@@ -24,7 +24,7 @@ void getmac(char * mac, char * interface)
   strcpy(s.ifr_name, interface);
   if (0 == ioctl(fd, SIOCGIFHWADDR, &s)) {
     int i;
-    for (i = 0; i < 6; ++i){
+    for (i = 1; i < 7; ++i){
       printf(" %02x", (unsigned char) s.ifr_addr.sa_data[i]);
       mac[i] = s.ifr_addr.sa_data[i];
     }
