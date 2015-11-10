@@ -423,7 +423,7 @@ int main(){
                         
                         
                     printf("Setting up buffer to send...");
-                    sendto(i ,buffer,n,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
+                    send(i ,buffer,n,0);
                     printf("Sent the packet back.");	
                     
                    //send appropriate response, or forward it to others
