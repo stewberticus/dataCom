@@ -106,7 +106,7 @@ int process_icmp_packet(struct sockaddr_ll * recvaddr, int * count) {
 int main(){
   unsigned char mac[6];
 
-  unsigned char mac_addrs[4][6]; 
+  unsigned char mac_addrs[4][7]; 
 
   void* buffer = NULL;
   int packet_socket;
@@ -142,8 +142,8 @@ int main(){
       //Socket timeouts implementedea packet socket on interface r?-eth1
       if(!strncmp(&(tmp->ifa_name[3]),"eth",3)){
 	  getmac(mac_addrs[q],tmp->ifa_name);
-	  int j =0;
-	  for(j;j<6;j++){
+	  int j =1;
+	  for(j;j<7;j++){
 		printf("Mac: %02x\n",mac_addrs[q][j]);
 	  }
 	printf("Creating Socket on interface %s\n",tmp->ifa_name);
@@ -175,7 +175,8 @@ int main(){
 	if(bind(packet_socket,tmp->ifa_addr,sizeof(struct sockaddr_ll))==-1){
 	  perror("bind");
 	}
-    FD_SET(packet_socket,&sockets);
+	mac_addrs[q][0] = packet_socket;
+       FD_SET(packet_socket,&sockets);
       }
     q++;
     }
@@ -239,7 +240,12 @@ int main(){
                     printf("packet type == 0! i guess its ICMP?\n");
                 }else if(recvaddr.sll_pkttype == 4) {
                     pritnf("packet type == 4! i guess its ARP?\n");
-                }else
+                }elseah->arp_dha[0] = new_ah->arp_dha[0];
+                    ah->arp_dha[1] = new_ah->arp_dha[1];
+                    ah->arp_dha[2] = new_ah->arp_dha[2];
+                    ah->arp_dha[3] = new_ah->arp_dha[3];
+                    ah->arp_dha[4] = new_ah->arp_dha[4];
+                    ah->arp_dha[5] 
                     printf("not 0\n");
                     */
 
@@ -268,7 +274,12 @@ int main(){
                  *
                     void * start_data = etherhead + 26;
                     struct icmp_header * icmp; 
-                    icmp = (struct icmp_header *) start_data;
+                    icmp = (struct icmp_header *) ah->arp_dha[0] = new_ah->arp_dha[0];
+                    ah->arp_dha[1] = new_ah->arp_dha[1];
+                    ah->arp_dha[2] = new_ah->arp_dha[2];
+                    ah->arp_dha[3] = new_ah->arp_dha[3];
+                    ah->arp_dha[4] = new_ah->arp_dha[4];
+                    ah->arp_dha[5] start_data;
                     
                     
                     
@@ -308,7 +319,12 @@ int main(){
                                                    ah->arp_spa[1],
                                                    ah->arp_spa[2],
                                                    ah->arp_spa[3]
-                                                   );
+                                                 ah->arp_dha[0] = new_ah->arp_dha[0];
+                    ah->arp_dha[1] = new_ah->arp_dha[1];
+                    ah->arp_dha[2] = new_ah->arp_dha[2];
+                    ah->arp_dha[3] = new_ah->arp_dha[3];
+                    ah->arp_dha[4] = new_ah->arp_dha[4];
+                    ah->arp_dha[5]   );
                                                    
                                                    printf("TARGET MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
                                                    ah->arp_dha[0],
@@ -360,13 +376,19 @@ int main(){
                    // &new_ah->arp_dpa = (ah->arp_spa);
                     //ah->arp_op = 2;
                     
-		    int iface = 2;
-                    ah->arp_sha[0] = mac_addrs[iface][0];
-                    ah->arp_sha[1] = mac_addrs[iface][1];
-                    ah->arp_sha[2] = mac_addrs[iface][2];
-                    ah->arp_sha[3] = mac_addrs[iface][3];
-                    ah->arp_sha[4] = mac_addrs[iface][4];
-                    ah->arp_sha[5] = mac_addrs[iface][5];
+		    int iface = 3;
+		    for( iface; iface >= 0; iface --;){
+		     if(mac_addrs[iface][0] == i ) {
+		       break;
+		     } 
+		      
+		    }
+                    ah->arp_sha[0] = mac_addrs[iface][1];
+                    ah->arp_sha[1] = mac_addrs[iface][2];
+                    ah->arp_sha[2] = mac_addrs[iface][3];
+                    ah->arp_sha[3] = mac_addrs[iface][4];
+                    ah->arp_sha[4] = mac_addrs[iface][5];
+                    ah->arp_sha[5] = mac_addrs[iface][6];
                     ah->arp_dha[0] = new_ah->arp_dha[0];
                     ah->arp_dha[1] = new_ah->arp_dha[1];
                     ah->arp_dha[2] = new_ah->arp_dha[2];
