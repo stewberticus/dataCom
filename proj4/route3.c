@@ -319,7 +319,7 @@ int main(){
                 printf ("***  after  ***\n");
                    // &new_ah->arp_dha = (ah->arp_sha);
                    // &new_ah->arp_dpa = (ah->arp_spa);
-                    //ah->arp_op = 2;
+                    ah->arp_op = (unsigned short) 2 ;
                     
 		    int iface = 3;
 		    for( iface; iface >= 0; iface --){
