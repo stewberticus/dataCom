@@ -473,9 +473,9 @@ int main(){
                     unsigned short * checksumhead = etherhead + 14;
                     unsigned short answer = 0;
                     int chck_sum = 0;
-                    int i = 14;
-                    for(i; i<34; i+=2){
-                      if(!(i == 24 || i == 25)){
+                    int p = 14;
+                    for(p; p<34; p+=2){
+                      if(!(p == 24 || p == 25)){
                         printf("%x\n",*checksumhead);
                         chck_sum = chck_sum + *checksumhead;
                         checksumhead ++;
@@ -500,9 +500,9 @@ int main(){
                     checksumhead = etherhead + 14;
                     answer = 0;
                     chck_sum = 0;
-                    i = 14;
-                    for(i; i<34; i+=2){
-                      if(!(i == 24 || i == 25)){
+                    p = 14;
+                    for(p; p<34; p+=2){
+                      if(!(p == 24 || p == 25)){
                         printf("%x\n",*checksumhead);
                         chck_sum = chck_sum + *checksumhead;
                         checksumhead ++;
