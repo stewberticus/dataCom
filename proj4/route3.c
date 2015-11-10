@@ -348,12 +348,18 @@ int main(){
                     ah->arp_dpa[1] = new_ah->arp_dpa[1];
                     ah->arp_dpa[2] = new_ah->arp_dpa[2];
                     ah->arp_dpa[3] = new_ah->arp_dpa[3];
-		    eh->h_dest[0] = mac_addrs[iface][1];
-		    eh->h_dest[1] = mac_addrs[iface][2];
-		    eh->h_dest[2] = mac_addrs[iface][3];
-		    eh->h_dest[3] = mac_addrs[iface][4];
-		    eh->h_dest[4] = mac_addrs[iface][5];
-		    eh->h_dest[5] = mac_addrs[iface][6];
+		    eh->h_dest[0] = eh->h_source[0]
+		    eh->h_dest[1] = eh->h_source[1]
+		    eh->h_dest[2] = eh->h_source[2]
+		    eh->h_dest[3] = eh->h_source[3]
+		    eh->h_dest[4] = eh->h_source[4]
+		    eh->h_dest[5] = eh->h_source[5]
+		    eh->h_source[0] = mac_addrs[iface][1];
+		    eh->h_source[1] = mac_addrs[iface][2];
+		    eh->h_source[2] = mac_addrs[iface][3];
+		    eh->h_source[3] = mac_addrs[iface][4];
+		    eh->h_source[4] = mac_addrs[iface][5];
+		    eh->h_source[5] = mac_addrs[iface][6];
                     
                     
                                 printf("buffer is---------------- %s \n",(char*)ah);
