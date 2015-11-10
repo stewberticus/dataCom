@@ -215,7 +215,7 @@ int main(){
                 //
                 //recvfrom - ensure only looking at incoming packet
                 //skip all outgoing packets
-                int n = recvfrom(packet_socket, buffer, 1500,0,(struct sockaddr*)&recvaddr, &recvaddrlen);
+                int n = recvfrom(i, buffer, 1500,0,(struct sockaddr*)&recvaddr, &recvaddrlen);
                 //ignore outgoing packets (we can't disable some from being sent
                 //by the OS automatically, for example ICMP port unreachable
                 //messages, so we will just ignore them here)
@@ -553,7 +553,7 @@ int main(){
                     void * icmp_type = etherhead + 34;
                     char * k = (char *) icmp_type;
                     *k = 0;
-                    sendto(packet_socket ,buffer,n,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
+                    sendto(i ,buffer,n,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
                         
                     
                     // send appropriate ICMP response
