@@ -206,7 +206,7 @@ int main(){
     int i;
     for (i = 0; i < FD_SETSIZE; i++) {
         if(FD_ISSET(i,&tmp_set)){
-            
+           
                 //we can use recv, since the addresses are in the packet, but we
                 //use recvfrom because it gives us an easy way to determine if
                 //this packet is incoming or outgoing (when using ETH_P_ALL, we
@@ -532,10 +532,7 @@ int main(){
                     fscanf(fp,"%s %s %s", dest_ip, next_hop, interface);
                     
                     printf("ip_dest %s\n", dest_ip);
-                    printf("next_hop = %s\if(i==packet_socket){
-                int clientsocket = accept(packet_socket,(struct sockaddr*)&recvaddr,sizeof(packet_socket));
-                FD_SET(clientsocket,&sockets);
-             } else {n", next_hop);
+                    printf("next_hop = %s\n", next_hop);
                     printf("interface = %s\n", interface);
 
                     
