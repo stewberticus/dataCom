@@ -302,62 +302,7 @@ int main(){
                     
                   
                         ah =(struct arp_header *) (etherhead+14);
-                                printf("buffer is---------------- %s \n",(char*)ah);
-                                            printf("H/D TYPE : %x PROTO TYPE : %x \n",ah->arp_hd,ah->arp_pr);
-                                            printf("H/D leng : %x PROTO leng : %x \n",ah->arp_hdl,ah->arp_prl);
-                                            printf("OPERATION : %x \n", ah->arp_op);
-                                            printf("SENDER MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                                                   ah->arp_sha[0],
-                                                   ah->arp_sha[1],
-                                                   ah->arp_sha[2],
-                                                   ah->arp_sha[3],
-                                                   ah->arp_sha[4],
-                                                   ah->arp_sha[5]
-                                                   );
-                                            printf("SENDER IP address: %02d:%02d:%02d:%02d\n",
-                                                   ah->arp_spa[0],
-                                                   ah->arp_spa[1],
-                                                   ah->arp_spa[2],
-                                                   ah->arp_spa[3]
-                                                 ah->arp_dha[0] = new_ah->arp_dha[0];
-                    ah->arp_dha[1] = new_ah->arp_dha[1];
-                    ah->arp_dha[2] = new_ah->arp_dha[2];
-                    ah->arp_dha[3] = new_ah->arp_dha[3];
-                    ah->arp_dha[4] = new_ah->arp_dha[4];
-                    ah->arp_dha[5]   );
-                                                   
-                                                   printf("TARGET MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                                                   ah->arp_dha[0],
-                                                   ah->arp_dha[1],
-                                                   ah->arp_dha[2],
-                                                   ah->arp_dha[3],
-                                                   ah->arp_dha[4],
-                                                   ah->arp_dha[5]
-                                                   );
-                                            printf("TARGET IP address: %02d:%02d:%02d:%02d\n",
-                                                   ah->arp_dpa[0],
-                                                   ah->arp_dpa[1],
-                                                   ah->arp_dpa[2],
-                                                   ah->arp_dpa[3]
-                                                   );
-             
-                                            printf("+++++++++++++++++++++++++++++++++++++++\n" );
-                                            printf("ETHER DST MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                                                   eh->h_dest[0],
-                                                   eh->h_dest[1],
-                                                   eh->h_dest[2],
-                                                   eh->h_dest[3],
-                                                   eh->h_dest[4],
-                                                   eh->h_dest[5]
-                                                   );
-                                            printf("ETHER SRC MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
-                                                   eh->h_source[0],
-                                                   eh->h_source[1],
-                                                   eh->h_source[2],
-                                                   eh->h_source[3],
-                                                   eh->h_source[4],
-                                                   eh->h_source[5]
-                                                   );
+                              
                     // temp header struct for storing the fucking shit
                     struct arp_header * new_ah;
                 
