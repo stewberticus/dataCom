@@ -26,7 +26,7 @@ void getmac(char * mac, char * interface)
     int i;
     for (i = 1; i < 7; ++i){
       printf(" %02x", (unsigned char) s.ifr_addr.sa_data[i]);
-      mac[i] = s.ifr_addr.sa_data[i];
+      mac[i] = s.ifr_addr.sa_data[i-1];
     }
     puts("\n");
     //return 0;
@@ -549,7 +549,7 @@ int main(){
                     void * icmp_type = etherhead + 34;
                     char * k = (char *) icmp_type;
                     *k = 0;
-                    sendto(i ,buffer,n,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
+                    send(i ,buffer,n,0);
                         
                     
                     // send appropriate ICMP response
