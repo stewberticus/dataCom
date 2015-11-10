@@ -320,12 +320,18 @@ int main(){
                    // &new_ah->arp_dha = (ah->arp_sha);
                    // &new_ah->arp_dpa = (ah->arp_spa);
                     ah->arp_op = (unsigned short) htons(2) ;
-                    
+                    int gogogo= 0;
 		    int iface = 3;
 		    for( iface; iface >= 0; iface --){
 		     if(mac_addrs[iface][0] == i ) {
+		       gogogo = 1;
 		       break;
 		     } 
+		       
+		    }
+		    if(!gogogo){
+		     // stop
+		      continue;
 		      
 		    }
                     ah->arp_sha[0] = mac_addrs[iface][1];
