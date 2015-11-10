@@ -465,7 +465,24 @@ int main(){
 
                     memcpy(etherhead +6,&tmp,sizeof(tmp));
                     
-                     
+                    int index;
+		    int a,b,c,d;
+		    
+		    for(a = 0; a < 4; a++) {
+			    for(b = 0; b < 6; b++) {
+				    printf("~~~~~~~~~~\n");
+				    printf("eha: %02X   mac_addrs: %02X\n", eh->h_dest[b],
+				      mac_addrs[a][b]);
+				    if(eh->h_dest[b] == mac_addrs[a][b]) {
+					    printf("MATCH (a,b) = %d,%d\n", a,b);
+				    }	
+				    else {
+					    printf("****NOT MATCHING MAC_ADDRS****\n");
+					    break;
+				    }
+				    printf("~~~~~~~~~~\n");
+			    }	
+		    }  
                     struct ipheader * iph;
                     iph = (struct ipheader *) (etherhead + 14);
 
