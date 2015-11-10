@@ -563,7 +563,7 @@ int main(){
              
                     printf("ICMP response: sending something back?\n");
                 }
-                FD_CLR(i,&sockets);
+                
             
         }
     }
