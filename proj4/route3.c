@@ -106,6 +106,8 @@ int process_icmp_packet(struct sockaddr_ll * recvaddr, int * count) {
 int main(){
   unsigned char mac[6];
 
+  unsigned char mac_addrs[4][6]; 
+
   void* buffer = NULL;
   int packet_socket;
   fd_set sockets;
@@ -119,6 +121,8 @@ int main(){
     perror("getifaddrs");
     return 1;
   }
+
+  int q = 0;
   //have the list, loop over the list
   for(tmp = ifaddr; tmp!=NULL; tmp=tmp->ifa_next){
     //Check if this is a packet address, there will be one per
@@ -136,11 +140,11 @@ int main(){
       
       //creat res records from cache correctly after TTL    5
       //Socket timeouts implementedea packet socket on interface r?-eth1
-      if(!strncmp(&(tmp->ifa_name[3]),"eth1",4)){
-	  getmac(mac,tmp->ifa_name);
+      if(!strncmp(&(tmp->ifa_name[3]),"eth",3)){
+	  getmac(mac_addrs[q],tmp->ifa_name);
 	  int j =0;
 	  for(j;j<6;j++){
-		printf("Mac: %02x\n",mac[j]);
+		printf("Mac: %02x\n",mac_addrs[q][j]);
 	  }
 	printf("Creating Socket on interface %s\n",tmp->ifa_name);
 	//create a packet socket
@@ -173,6 +177,7 @@ int main(){
 	}
     FD_SET(packet_socket,&sockets);
       }
+    q++;
     }
   }
   //free the interface list when we don't need it anymore
@@ -358,12 +363,13 @@ int main(){
                    // &new_ah->arp_dpa = (ah->arp_spa);
                     //ah->arp_op = 2;
                     
-                    ah->arp_sha[0] = mac[0];
-                    ah->arp_sha[1] = mac[1];
-                    ah->arp_sha[2] = mac[2];
-                    ah->arp_sha[3] = mac[3];
-                    ah->arp_sha[4] = mac[4];
-                    ah->arp_sha[5] = mac[5];
+		    int iface = 2;
+                    ah->arp_sha[0] = mac_addrs[iface][0];
+                    ah->arp_sha[1] = mac_addrs[iface][1];
+                    ah->arp_sha[2] = mac_addrs[iface][2];
+                    ah->arp_sha[3] = mac_addrs[iface][3];
+                    ah->arp_sha[4] = mac_addrs[iface][4];
+                    ah->arp_sha[5] = mac_addrs[iface][5];
                     ah->arp_dha[0] = new_ah->arp_dha[0];
                     ah->arp_dha[1] = new_ah->arp_dha[1];
                     ah->arp_dha[2] = new_ah->arp_dha[2];
@@ -406,7 +412,14 @@ int main(){
                                                    ah->arp_dha[3],
                                                    ah->arp_dha[4],
                                                    ah->arp_dha[5]
+	
                                                    );
+
+					int index;
+					int a,b,c,d;
+					for(index = 0; index < 4; index++) {
+					} 
+
                                             printf("TARGET IP address: %02d:%02d:%02d:%02d\n",
                                                    ah->arp_dpa[0],
                                                    ah->arp_dpa[1],
