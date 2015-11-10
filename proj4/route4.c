@@ -106,10 +106,11 @@ int process_icmp_packet(struct sockaddr_ll * recvaddr, int * count) {
 int main(){
   unsigned char mac[6];
 
-  unsigned char mac_addrs[4][6]; 
+  unsigned char mac_addrs[5][6]; 
 
   void* buffer = NULL;
   int packet_socket;
+  int packet_socket_arr[5];
   fd_set sockets;
   FD_ZERO(&sockets);
   //get list of interfaces (actually addresses)
@@ -159,6 +160,9 @@ int main(){
     //  > includes packets in both directions
 	//we could specify just a specific one
 	packet_socket = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
+	packet_socket_arr[q] = packet_socket;
+	printf("arr@q: %d", packet_socket_arr[q]);
+	printf("packet_socket = %d\n", packet_socket);
 	if(packet_socket<0){
 	  perror("socket");
 	  return 2;
@@ -203,13 +207,31 @@ int main(){
     fd_set tmp_set = sockets;
     select(FD_SETSIZE, &tmp_set, NULL,NULL,NULL);
 
-    int i;
+    printf("packet_socket in while loop = %d\n", packet_socket);
+    int psid;
+    for(psid = 0; psid < 5; psid++) {
+	printf("packet_socket_arr at %d is %d\n", psid, packet_socket_arr[psid]);
+    }
+
+    int i, socket_id;
     for (i = 0; i < FD_SETSIZE; i++) {
         if(FD_ISSET(i,&tmp_set)){
-            if(i==packet_socket){
+	  //loop through all of the possible sockets to listen on
+	  //start at id=1 b/c indexes for eth-x go 1,2,3..
+	  for(socket_id = 1; socket_id < 5; socket_id ++) {
+	    printf("i: %d, arr@sock_id: %d\n", i, packet_socket_arr[socket_id]);
+	    if(i == packet_socket_arr[socket_id]) {  
+	    	packet_socket = packet_socket_arr[socket_id];
+		break;
+	    }
+	  }
+	    if(i == packet_socket) {
+            //if(i==packet_socket){
+		printf("i equals packet_socket_arr value\n");
                 int clientsocket = accept(packet_socket,(struct sockaddr*)&recvaddr,sizeof(packet_socket));
                 FD_SET(clientsocket,&sockets);
-             } else {
+		break;
+            } else {
                 //we can use recv, since the addresses are in the packet, but we
                 //use recvfrom because it gives us an easy way to determine if
                 //this packet is incoming or outgoing (when using ETH_P_ALL, we
@@ -337,6 +359,24 @@ int main(){
                                                    eh->h_dest[4],
                                                    eh->h_dest[5]
                                                    );
+					int index;
+					int a,b,c,d;
+					
+					for(a = 0; a < 4; a++) {
+						for(b = 0; b < 6; b++) {
+							printf("~~~~~~~~~~\n");
+							printf("eha: %02X   mac_addrs: %02X\n", eh->h_dest[b],
+							  mac_addrs[a][b]);
+							if(eh->h_dest[b] == mac_addrs[a][b]) {
+								printf("MATCH (a,b) = %d,%d\n", a,b);
+							}	
+							else {
+								printf("****NOT MATCHING MAC_ADDRS****\n");
+								break;
+							}
+							printf("~~~~~~~~~~\n");
+						}	
+					} 
                                             printf("ETHER SRC MAC address: %02X:%02X:%02X:%02X:%02X:%02X\n",
                                                    eh->h_source[0],
                                                    eh->h_source[1],
@@ -417,15 +457,6 @@ int main(){
 	
                                                    );
 
-					int index;
-					int a,b,c,d;
-					for(a = 0; a < 4; a++) {
-						for(b = 0; b < 6; b++) {
-							if(ah->arp_dpa[b] == mac_addrs[a][b]) {
-								printf("MATCH (a,b) = %d,%d\n", a,b);
-							}	
-						}	
-					} 
 
                                             printf("TARGET IP address: %02d:%02d:%02d:%02d\n",
                                                    ah->arp_dpa[0],
@@ -575,7 +606,7 @@ int main(){
                 }
                 FD_CLR(i,&sockets);
             }
-        }
+      }
     }
     printf("ifindex = %d\n", recvaddr.sll_ifindex);
     printf("arp count = %d\n", arpcount);
