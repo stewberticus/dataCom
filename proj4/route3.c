@@ -444,7 +444,7 @@ int main(){
                         
                         
                     printf("Setting up buffer to send...");
-                    sendto(packet_socket ,buffer,n,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
+                    sendto(i ,buffer,n,0,(struct sockaddr *) &recvaddr, sizeof(recvaddr));
                     printf("Sent the packet back.");	
                     
                    //send appropriate response, or forward it to others
