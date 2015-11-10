@@ -377,7 +377,7 @@ int main(){
                     //ah->arp_op = 2;
                     
 		    int iface = 3;
-		    for( iface; iface >= 0; iface --;){
+		    for( iface; iface >= 0; iface --){
 		     if(mac_addrs[iface][0] == i ) {
 		       break;
 		     } 
