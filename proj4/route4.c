@@ -572,11 +572,14 @@ int main(){
                 ptr_sub = sub_dest_ip;
                 ptr_ip = bytes_ip; 
 
+                printf("sub_dest_ip[0] = %s\n", sub_dest_ip[0]);
+
                 while(ptr_sub != '\0' && ptr_ip != '\0') {
+                    printf("ptr_sub: %c \t ptr_ip: %c", ptr_sub, ptr_ip);
                     if(ptr_ip == ".") 
                         continue;
                     else {
-                        if(*ptr_ip != *ptr_sub)  {
+                        if((*ptr_ip) != (*ptr_sub))  {
                             matches = 0;
                             break;
                         }
