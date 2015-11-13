@@ -574,7 +574,7 @@ int main(){
 
 
                 while(ptr_sub != '\0' && ptr_ip != '\0') {
-                    printf("ptr_sub: %c \t ptr_ip: %c", ptr_sub, ptr_ip);
+                    printf("ptr_sub: %c \t ptr_ip: %c", *ptr_sub, *ptr_ip);
                     if(ptr_ip == ".") 
                         continue;
                     else {
