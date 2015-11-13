@@ -530,6 +530,8 @@ int main(){
                      char interface[20];
                      
 		    printf("ip_dst = %d\n", iph->ip_dst);
+		    printf("htons ip_dst = %d\n", htons(iph->ip_dst));
+		  
 		    char bytes_ip [4];
 		    bytes_ip[0] = iph->ip_dst & 0xFF;
 		    bytes_ip[1] = (iph->ip_dst >> 8) & 0xFF;
@@ -537,6 +539,8 @@ int main(){
 		    //bytes_ip[3] = (iph->ip_dst >> 24) & 0xFF;
 		    printf("ip_dst as char[] = %d.%d.%d\n",
 		      bytes_ip[0], bytes_ip[1], bytes_ip[2]); //, bytes_ip[3]);
+		    int sumof_bytes_ip = bytes_ip[0] + bytes_ip[1] + bytes_ip[2];	
+		    printf("sum of bytes_ip = %d\m", sumof_bytes_ip);
 		    printf("ip_dst as char[] = %s\n", bytes_ip);
                     FILE *fp; 
                     fp = fopen(".//r1-table.txt","r");
@@ -576,7 +580,8 @@ int main(){
 			}
 			
 			printf("atoi dest_ip = %d\n", atoi(dest_ip));
-		  	if(bytes_ip == sub_dest_ip) 
+		  	//if(bytes_ip == sub_dest_ip) 
+			if(dest_ip_int == htons(iph->ip_dst))
 				printf("ip dest matches\n");	
 			else
 				printf("ip dest NO MATCH\n");
