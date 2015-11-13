@@ -468,74 +468,104 @@ int main(){
 				    printf("~~~~~~~~~~\n");
 			    }	
 		    }  
-                    struct ipheader * iph;
-                    iph = (struct ipheader *) (etherhead + 14);
+            struct ipheader * iph;
+            iph = (struct ipheader *) (etherhead + 14);
 
-                    printf("ip_header ip_ttl = %d\n", iph->ip_ttl);
-                    printf("ip_header ip_len  = %d\n", iph->ip_len);
-                    
-                    printf("ip_header ip_cheksum = %x\n", iph->ip_sum);
-                    
-                    unsigned short * checksumhead = etherhead + 14;
-                    unsigned short answer = 0;
-                    int chck_sum = 0;
-                    int p = 14;
-                    for(p; p<34; p+=2){
-                      if(!(p == 24 || p == 25)){
-                        printf("%x\n",*checksumhead);
-                        chck_sum = chck_sum + *checksumhead;
-                        checksumhead ++;
-                      }else
-                        checksumhead ++;
-                        
-                    }
-                    chck_sum = (chck_sum >> 16) + (chck_sum & 0xffff); 
-                    chck_sum += (chck_sum >> 16);
-                    /* add carry */
-                    answer = ~chck_sum;  
-                    /* truncate to 16 bits */
-                    printf("OUR ip_header ip_cheksum = %x\n", answer);
-                    if( answer != iph->ip_sum){
-                     continue ;
-                    }
-                    if( iph -> ip_ttl > 1)
-                    iph -> ip_ttl --; 
-                    else
-                    printf("send ttyl error");
-                    
-                    checksumhead = etherhead + 14;
-                    answer = 0;
-                    chck_sum = 0;
-                    p = 14;
-                    for(p; p<34; p+=2){
-                      if(!(p == 24 || p == 25)){
-                        printf("%x\n",*checksumhead);
-                        chck_sum = chck_sum + *checksumhead;
-                        checksumhead ++;
-                      }else
-                        checksumhead ++;  
-                    }
-                    chck_sum = (chck_sum >> 16) + (chck_sum & 0xffff); 
-                    chck_sum += (chck_sum >> 16);
-                    answer = ~chck_sum;  
-                    
-                    
-                    
-                    printf("OUR  NEW ip_header ip_cheksum = %x\n", answer);
-                    iph-> ip_sum = answer;
-                    
-                    // file IO stuff
-                     char dest_ip[20];
-                     char next_hop[20];
-                     char interface[20];
+            printf("ip_header ip_ttl = %d\n", iph->ip_ttl);
+            printf("ip_header ip_len  = %d\n", iph->ip_len);
+            
+            printf("ip_header ip_cheksum = %x\n", iph->ip_sum);
+            
+            unsigned short * checksumhead = etherhead + 14;
+            unsigned short answer = 0;
+            int chck_sum = 0;
+            int p = 14;
+            for(p; p<34; p+=2){
+              if(!(p == 24 || p == 25)){
+                printf("%x\n",*checksumhead);
+                chck_sum = chck_sum + *checksumhead;
+                checksumhead ++;
+              }else
+                checksumhead ++;
+                
+            }
+            chck_sum = (chck_sum >> 16) + (chck_sum & 0xffff); 
+            chck_sum += (chck_sum >> 16);
+            /* add carry */
+            answer = ~chck_sum;  
+            /* truncate to 16 bits */
+            printf("OUR ip_header ip_cheksum = %x\n", answer);
+            if( answer != iph->ip_sum){
+             continue ;
+            }
+            if( iph -> ip_ttl > 1)
+            iph -> ip_ttl --; 
+            else
+            printf("send ttyl error");
+            
+            checksumhead = etherhead + 14;
+            answer = 0;
+            chck_sum = 0;
+            p = 14;
+            for(p; p<34; p+=2){
+              if(!(p == 24 || p == 25)){
+                printf("%x\n",*checksumhead);
+                chck_sum = chck_sum + *checksumhead;
+                checksumhead ++;
+              }else
+                checksumhead ++;  
+            }
+            chck_sum = (chck_sum >> 16) + (chck_sum & 0xffff); 
+            chck_sum += (chck_sum >> 16);
+            answer = ~chck_sum;  
+            
+            
+            
+            printf("OUR  NEW ip_header ip_cheksum = %x\n", answer);
+            iph-> ip_sum = answer;
+            
+            // file IO stuff
+             char dest_ip[20];
+             char next_hop[20];
+             char interface[20];
                      
 		    printf("ip_dst = %d\n", iph->ip_dst);
 		    printf("htons ip_dst = %d\n", htons(iph->ip_dst));
+
+            int binIP[32];
+            int binStart = (htonl(iph->ip_dst) >> 8) << 8;
+            printf("START binStart = %d\n", binStart);
+            int x = 1;
+            int y;
+            while(binStart != 0) {
+                binIP[x++] = binStart %2 ;
+                binStart = binStart / 2;
+            }
+            printf ("SECOND: ");
+            for(y = x -1; y > 0; y--) {
+                printf("%d", binIP[y]);
+            }
+
+            int dst_ip0, dst_ip1, dst_ip2, dst_ip3;
 		  
-		    unsigned char *  bytes_ip [4];
+		    char *  bytes_ip [4];
 		    bytes_ip[0] = iph->ip_dst & 0xFF;
 		    bytes_ip[1] = (iph->ip_dst >> 8) & 0xFF;
 		    bytes_ip[2] = (iph->ip_dst >> 16) & 0xFF;
+            char dst_ip_str[11]="";
+            char tmp2[3];
+            /*
+            sprintf(tmp2, "%d", bytes_ip[0]);
+            dst_ip_str += tmp;
+            dst_ip+str += ".";
+            sprintf(tmp2, "%d", bytes_ip[1]);
+            dst_ip_str += tmp;
+            dst_ip+str += ".";
+            sprintf(tmp2, "%d", bytes_ip[2]);
+            dst_ip_str += tmp;
+            */
+            //char dst_ip_str = itoa(bytes_ip[0]) + "." + itoa(bytes_ip[1])
+             //   + itoa(bytes_ip[2]);
 		    //bytes_ip[3] = (iph->ip_dst >> 24) & 0xFF;
 		    printf("ip_dst as char[] = %d.%d.%d\n",
 		      bytes_ip[0], bytes_ip[1], bytes_ip[2]); //, bytes_ip[3]);
@@ -570,19 +600,17 @@ int main(){
                 char * ptr_sub;
                 char * ptr_ip;
                 ptr_sub = sub_dest_ip;
-                ptr_ip = bytes_ip; 
+                ptr_ip = dst_ip_str; 
 
 
                 while(ptr_sub != '\0' && ptr_ip != '\0') {
                     printf("ptr_sub: %c \t ptr_ip: %c", *ptr_sub, *ptr_ip);
-                    if(ptr_ip == ".") 
-                        continue;
-                    else {
-                        if((*ptr_ip) != (*ptr_sub))  {
-                            matches = 0;
-                            break;
-                        }
+                    if((*ptr_ip) != (*ptr_sub))  {
+                        matches = 0;
+                        break;
                     }
+                    ptr_sub++;
+                    ptr_ip++;
                 }
 
                     //if(!strncmp(scanned[strtok_id][0], bytes_ip[strtok_id],3)){
