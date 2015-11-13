@@ -532,15 +532,15 @@ int main(){
 		    printf("ip_dst = %d\n", iph->ip_dst);
 		    printf("htons ip_dst = %d\n", htons(iph->ip_dst));
 		  
-		    char bytes_ip [4];
+		    unsigned char *  bytes_ip [4];
 		    bytes_ip[0] = iph->ip_dst & 0xFF;
 		    bytes_ip[1] = (iph->ip_dst >> 8) & 0xFF;
 		    bytes_ip[2] = (iph->ip_dst >> 16) & 0xFF;
 		    //bytes_ip[3] = (iph->ip_dst >> 24) & 0xFF;
 		    printf("ip_dst as char[] = %d.%d.%d\n",
 		      bytes_ip[0], bytes_ip[1], bytes_ip[2]); //, bytes_ip[3]);
-		    int sumof_bytes_ip = bytes_ip[0] + bytes_ip[1] + bytes_ip[2];	
-		    printf("sum of bytes_ip = %d\m", sumof_bytes_ip);
+		    //int sumof_bytes_ip = bytes_ip[0] + bytes_ip[1] + bytes_ip[2];	
+		    //printf("sum of bytes_ip = %d\m", sumof_bytes_ip);
 		    printf("ip_dst as char[] = %s\n", bytes_ip);
                     FILE *fp; 
                     fp = fopen(".//r1-table.txt","r");
@@ -563,17 +563,15 @@ int main(){
                 int dest_ip_int = 0;
                 char * ip_strtok;
                 ip_strtok = strtok(sub_dest_ip,".");
-                int strtok_id = 3;
+                int strtok_id = 0;
+                int matches = 1;
                 while(ip_strtok != NULL) {
-                    if(strtok_id == 3)
-                        dest_ip_int += atoi(ip_strtok) * 16777216;
-                    else if(strtok_id == 2)
-                        dest_ip_int += atoi(ip_strtok) * 65536;
-                    else if(strtok_id == 1) 
-                        dest_ip_int += atoi(ip_strtok) * 256;
-                    else
-                        dest_ip_int += atoi(ip_strtok);
-                    strtok_id --;
+                    if(ip_strtok != bytes_ip[strtok_id]) { 
+                        matches = 0;
+                        break;
+                    }
+
+                    strtok_id ++;
                     //dest_ip_str = ip_str;
                     printf("%s\n", ip_strtok);
                     ip_strtok = strtok(NULL, ".");
@@ -584,8 +582,11 @@ int main(){
 		  
 
                 //if(bytes_ip == sub_dest_ip) 
-                if(dest_ip_int == htons(iph->ip_dst))
+                //if(dest_ip_int == htons(iph->ip_dst))
+                if(matches == 1) {
                     printf("ip dest matches\n");	
+                    break;
+                }
                 else
                     printf("ip dest NO MATCH\n");
                 //if(dest_ip == iph->ip_dst) 
