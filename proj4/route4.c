@@ -529,16 +529,24 @@ int main(){
                      char next_hop[20];
                      char interface[20];
                      
+		    printf("ip_dst = %d\n", iph->ip_dst);
                     FILE *fp; 
                     fp = fopen(".//r1-table.txt","r");
-                    fscanf(fp,"%s %s %s", dest_ip, next_hop, interface);
-                    
-                    printf("ip_dest %s\n", dest_ip);
-                    printf("next_hop = %s\n", next_hop);
-                    printf("interface = %s\n", interface);
-
-                    
-                    
+		    while (fscanf(fp, "%s %s %s", dest_ip, next_hop,
+		      interface) != EOF) {
+			printf("---\n");
+			printf("ip_dest %s\n", dest_ip);
+			strncpy(dest_ip, dest_ip, 8);
+			printf("new ip_dest %s\n", dest_ip);
+			if(dest_ip == iph->ip_dst) 
+				printf("dest matches\n");
+			else
+				printf("no match\n");
+			printf("next_hop = %s\n", next_hop);
+			printf("interface = %s\n", interface);
+		    }
+		    printf("Done reading file.\n");
+                    //fscanf(fp,"%s %s %s", dest_ip, next_hop, interface);
                     
                     void * start_data = etherhead + 26;
                     struct icmp_header * icmp; 
