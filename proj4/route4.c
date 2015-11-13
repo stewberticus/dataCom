@@ -580,7 +580,9 @@ int main(){
                 }
                 
                 printf("dest_ip_int =  %d\n", dest_ip_int);
-                
+                printf("htons ip_dst = %d\n", htons(iph->ip_dst));
+		  
+
                 //if(bytes_ip == sub_dest_ip) 
                 if(dest_ip_int == htons(iph->ip_dst))
                     printf("ip dest matches\n");	
