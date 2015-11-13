@@ -548,50 +548,51 @@ int main(){
 		    while (fscanf(fp, "%s %s %s", dest_ip, next_hop,
 		      interface) != EOF) {
 	
-			printf("file dest_ip %s\n", dest_ip);
-			char sub_dest_ip[7];
-			memcpy(sub_dest_ip, &dest_ip[0], 6);
-			sub_dest_ip[6] = '\0';
-			//strncpy(dest_ip, dest_ip, 5);
-			//printf("file new ip_dest %s\n", dest_ip);
-			printf("file new sub_dest_ip %s\n", sub_dest_ip);
+                printf("file dest_ip %s\n", dest_ip);
+                char sub_dest_ip[7];
+                memcpy(sub_dest_ip, &dest_ip[0], 6);
+                sub_dest_ip[6] = '\0';
+                //strncpy(dest_ip, dest_ip, 5);
+                //printf("file new ip_dest %s\n", dest_ip);
+                printf("file new sub_dest_ip %s\n", sub_dest_ip);
 
-			//printf("sub_dest_ip[0] = %s\n", sub_dest_ip[0]);
-			//printf("sub_dest_ip[1] = %s\n", sub_dest_ip[1]);
-			//printf("sub_dest_ip[2] = %s\n", sub_dest_ip[2]);
+                //printf("sub_dest_ip[0] = %s\n", sub_dest_ip[0]);
+                //printf("sub_dest_ip[1] = %s\n", sub_dest_ip[1]);
+                //printf("sub_dest_ip[2] = %s\n", sub_dest_ip[2]);
 
-			int dest_ip_int = 0;
-			char * ip_strtok;
-			ip_strtok = strtok(sub_dest_ip,".");
-			int strtok_id = 3;
-			while(ip_strtok != NULL) {
-				if(strtok_id == 3)
-					dest_ip_int += atoi(ip_strtok) * 16777216;
-				else if(strtok_id == 2)
-					dest_ip_int += atoi(ip_strtok) * 65536;
-				else if(strtok_id == 1) 
-					dest_ip_int += atoi(ip_strtok) * 256;
-				else
-					dest_ip_int += atoi(ip_strtok);
-				strtok_id --;
-				//dest_ip_str = ip_str;
-				printf("%s\n", ip_strtok);
-				ip_strtok = strtok(NULL, ".");
-			}
-			
-			printf("atoi dest_ip = %d\n", atoi(dest_ip));
-		  	//if(bytes_ip == sub_dest_ip) 
-			if(dest_ip_int == htons(iph->ip_dst))
-				printf("ip dest matches\n");	
-			else
-				printf("ip dest NO MATCH\n");
-			//if(dest_ip == iph->ip_dst) 
-			//	printf("dest matches\n");
-			//else
-			//	printf("no match\n");
-			printf("next_hop = %s\n", next_hop);
-			printf("interface = %s\n", interface);
-			printf("\n");
+                int dest_ip_int = 0;
+                char * ip_strtok;
+                ip_strtok = strtok(sub_dest_ip,".");
+                int strtok_id = 3;
+                while(ip_strtok != NULL) {
+                    if(strtok_id == 3)
+                        dest_ip_int += atoi(ip_strtok) * 16777216;
+                    else if(strtok_id == 2)
+                        dest_ip_int += atoi(ip_strtok) * 65536;
+                    else if(strtok_id == 1) 
+                        dest_ip_int += atoi(ip_strtok) * 256;
+                    else
+                        dest_ip_int += atoi(ip_strtok);
+                    strtok_id --;
+                    //dest_ip_str = ip_str;
+                    printf("%s\n", ip_strtok);
+                    ip_strtok = strtok(NULL, ".");
+                }
+                
+                printf("dest_ip_int =  %d\n", dest_ip_int);
+                
+                //if(bytes_ip == sub_dest_ip) 
+                if(dest_ip_int == htons(iph->ip_dst))
+                    printf("ip dest matches\n");	
+                else
+                    printf("ip dest NO MATCH\n");
+                //if(dest_ip == iph->ip_dst) 
+                //	printf("dest matches\n");
+                //else
+                //	printf("no match\n");
+                printf("next_hop = %s\n", next_hop);
+                printf("interface = %s\n", interface);
+                printf("\n");
 		    }
 		    printf("---Done reading file---\n");
                     //fscanf(fp,"%s %s %s", dest_ip, next_hop, interface);
