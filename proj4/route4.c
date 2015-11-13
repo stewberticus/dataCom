@@ -562,27 +562,29 @@ int main(){
 
                 int dest_ip_int = 0;
                 char * ip_strtok;
-                ip_strtok = strtok(sub_dest_ip,".");
+                //ip_strtok = strtok(sub_dest_ip,".");
                 int strtok_id = 0;
                 int matches = 1;
                 char scanned [3][3];
-                scanf(sub_dest_ip, "%s.%s.%s", scanned[0][0], 
-                    scanned[1][0], scanned[2][0]); 
-
-                while(strtok_id < 3) {
-                //while(ip_strtok != NULL) {
-
-                    if(!strncmp(scanned[strtok_id][0], bytes_ip[strtok_id],3)){
-                        matches = 0;
-                        break;
-                    }
-
-                    strtok_id ++;
-                    //dest_ip_str = ip_str;
-                    printf("%s\n", ip_strtok);
-                    ip_strtok = strtok(NULL, ".");
-                }
                 
+                char * ptr_sub;
+                char * ptr_ip;
+                ptr_sub = sub_dest_ip;
+                ptr_ip = bytes_ip; 
+
+                while(ptr_sub != '\0' && ptr_ip != '\0') {
+                    if(ptr_ip == ".") 
+                        continue;
+                    else {
+                        if(*ptr_ip != *ptr_sub)  {
+                            matches = 0;
+                            break;
+                        }
+                    }
+                }
+
+                    //if(!strncmp(scanned[strtok_id][0], bytes_ip[strtok_id],3)){
+
                 printf("dest_ip_int =  %d\n", dest_ip_int);
                 printf("htons ip_dst = %d\n", htons(iph->ip_dst));
 		  
