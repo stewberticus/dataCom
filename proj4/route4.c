@@ -569,7 +569,8 @@ int main(){
                 scanf(sub_dest_ip, "%s.%s.%s", scanned[0], scanned[1], 
                     scanned[2]); 
 
-                while(ip_strtok != NULL) {
+                while(strtok_id < 3) {
+                //while(ip_strtok != NULL) {
 
                     if(!strncmp(scanned[strtok_id], bytes_ip[strtok_id],3)){
                         matches = 0;
