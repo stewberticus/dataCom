@@ -590,7 +590,7 @@ int main(){
 
                 //printf("dest_ip[0] is %s\n", dest_ip[0]);
                 int c = 0;
-                while(c < 9) {
+                while(c < 8) {
                     binStart2_ip[c] = dest_ip[c];
                     c++;
                 }
