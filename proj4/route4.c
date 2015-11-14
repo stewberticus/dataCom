@@ -609,7 +609,6 @@ int main(){
 
 
                 /* END NEW */
-
                 /*
                 char sub_dest_ip[7];
                 memcpy(sub_dest_ip, &dest_ip[0], 6);
