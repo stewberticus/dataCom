@@ -608,7 +608,6 @@ int main(){
 
                 //if(dst_ip_sum == 
 
-
                 /* END NEW */
                 /*
                 char sub_dest_ip[7];
