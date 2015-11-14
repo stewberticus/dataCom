@@ -590,7 +590,8 @@ int main(){
 
                 int c = 0;
                 while(c < 9) {
-                    binStart2_ip[c] = dest_ip[c];
+                    //binStart2_ip[c] = dest_ip[c];
+                    printf("dest_ip[c%d] = %s", c, dest_ip[c]);
                 }
 
                 int matches = 1;
