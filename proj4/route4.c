@@ -551,7 +551,7 @@ int main(){
                 binIP[x++] = binStart %2 ;
                 binStart = binStart / 2;
             }
-            printf("y is %d", y);
+            printf("x is %d", x);
             printf ("SECOND: ");
             for(y = x -1; y > 0; y--) {
                 printf("%d", binIP[y]);
