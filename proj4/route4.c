@@ -525,7 +525,7 @@ int main(){
             iph-> ip_sum = answer;
             
             // file IO stuff
-             char dest_ip[20];
+             char * dest_ip[20];
              char next_hop[20];
              char interface[20];
                      
@@ -588,7 +588,7 @@ int main(){
                 printf("next_hop = %s\n", next_hop);
                 printf("interface = %s\n", interface);
 
-                printf("dest_ip[0] is %s\n", dest_ip[0]);
+                //printf("dest_ip[0] is %s\n", dest_ip[0]);
                 int c = 0;
                 while(c < 9) {
                     //binStart2_ip[c] = dest_ip[c];
@@ -599,7 +599,7 @@ int main(){
                 int dst_ip_sum;
                 int z;
                 dst_ip0 = 0;
-                dst_ip0 = atoi(strtok(dest_ip, "."));
+                dst_ip0 = atoi(strtok(*dest_ip, "."));
                 printf("%d\n", dst_ip0);
                 dst_ip1 = 0;
                 dst_ip1 = atoi(strtok(NULL, "."));
