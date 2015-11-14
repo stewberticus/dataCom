@@ -584,6 +584,8 @@ int main(){
 	
                 /* START NEW */
                 printf("file dest_ip %s\n", dest_ip);
+                printf("next_hop = %s\n", next_hop);
+                printf("interface = %s\n", interface);
 
                 int matches = 1;
                 int dst_ip0, dst_ip1, dst_ip2, dst_ip3;
@@ -684,11 +686,11 @@ int main(){
                 //	printf("dest matches\n");
                 //else
                 //	printf("no match\n");
-                printf("next_hop = %s\n", next_hop);
-                printf("interface = %s\n", interface);
                 printf("\n");
 		    }
 		    printf("---Done reading file---\n");
+            printf("Confirmed target is htonl %d\n\t next_hop is %s,interface is %s", binStart2, next_hop, interface);
+                    //interface = %d\n", dest_ip, next_hop
                     //fscanf(fp,"%s %s %s", dest_ip, next_hop, interface);
                     
                     void * start_data = etherhead + 26;
