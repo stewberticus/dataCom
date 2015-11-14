@@ -602,7 +602,7 @@ int main(){
                 printf("%d\n", dst_ip3);
 
                 dst_ip_sum = 0;
-                dst_ip_sum = (dst_ip0 * 1777216) + (dst_ip1 * 65536) 
+                dst_ip_sum = (dst_ip0 * 16777216) + (dst_ip1 * 65536) 
                     + (dst_ip2 * 256) + dst_ip3;
                 printf("IP SUM: %d\n", dst_ip_sum);
 
