@@ -540,6 +540,22 @@ int main(){
 		    bytes_ip[2] = (iph->ip_dst >> 16) & 0xFF;
             char dst_ip_str[11]="";
             char tmp2[3];
+
+            //ip_dst to binary integer
+            int binIP[32];
+            int binStart = (htonl(iph->ip_dst) >> 8) << 8;
+            printf("START binStart = %d\n", binStart);
+            int x = 1;
+            int y;
+            while(binStart != 0) {
+                binIP[x++] = binStart %2 ;
+                binStart = binStart / 2;
+            }
+            printf ("SECOND: ");
+            for(y = x -1; y > 0; y--) {
+                printf("%d", binIP[y]);
+            }
+
             /*
             sprintf(tmp2, "%d", bytes_ip[0]);
             dst_ip_str += tmp;
@@ -566,41 +582,28 @@ int main(){
 	
                 /* START NEW */
                 printf("file dest_ip %s\n", dest_ip);
-                int binIP[32];
-                int binStart = (htonl(iph->ip_dst) >> 8) << 8;
-                printf("START binStart = %d\n", binStart);
-                int x = 1;
-                int y;
-                while(binStart != 0) {
-                    binIP[x++] = binStart %2 ;
-                    binStart = binStart / 2;
-                }
-                printf ("SECOND: ");
-                for(y = x -1; y > 0; y--) {
-                    printf("%d", binIP[y]);
-                }
 
                 int matches = 1;
                 int dst_ip0, dst_ip1, dst_ip2, dst_ip3;
                 int dst_ip_sum;
                 int z;
-                    dst_ip0 = 0;
-                    dst_ip0 = atoi(strtok(dest_ip, "."));
-                    printf("%d\n", dst_ip0);
-                    dst_ip1 = 0;
-                    dst_ip1 = atoi(strtok(NULL, "."));
-                    printf("%d\n", dst_ip1);
-                    dst_ip2 = 0;
-                    dst_ip2 = atoi(strtok(NULL, "."));
-                    printf("%d\n", dst_ip2);
-                    dst_ip3 = 0;
-                    dst_ip3 = atoi(strtok(NULL, "."));
-                    printf("%d\n", dst_ip3);
+                dst_ip0 = 0;
+                dst_ip0 = atoi(strtok(dest_ip, "."));
+                printf("%d\n", dst_ip0);
+                dst_ip1 = 0;
+                dst_ip1 = atoi(strtok(NULL, "."));
+                printf("%d\n", dst_ip1);
+                dst_ip2 = 0;
+                dst_ip2 = atoi(strtok(NULL, "."));
+                printf("%d\n", dst_ip2);
+                dst_ip3 = 0;
+                dst_ip3 = atoi(strtok(NULL, "."));
+                printf("%d\n", dst_ip3);
 
-                    dst_ip_sum = 0;
-                    dst_ip_sum = (dst_ip0 * 1777216) + (dst_ip1 * 65536) 
-                        + (dst_ip2 * 256) + dst_ip3;
-                    printf("IP SUM: %d\n", dst_ip_sum);
+                dst_ip_sum = 0;
+                dst_ip_sum = (dst_ip0 * 1777216) + (dst_ip1 * 65536) 
+                    + (dst_ip2 * 256) + dst_ip3;
+                printf("IP SUM: %d\n", dst_ip_sum);
 
                 //if(dst_ip_sum == 
 
