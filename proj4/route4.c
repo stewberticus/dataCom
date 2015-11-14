@@ -541,6 +541,7 @@ int main(){
             char dst_ip_str[11]="";
             char tmp2[3];
 
+            char binStart2_ip[8];
             //ip_dst to binary integer
             int binIP[32];
             int binStart = (htonl(iph->ip_dst) >> 8) << 8;
@@ -586,6 +587,11 @@ int main(){
                 printf("file dest_ip %s\n", dest_ip);
                 printf("next_hop = %s\n", next_hop);
                 printf("interface = %s\n", interface);
+
+                int c = 0;
+                while(c < 9) {
+                    binStart2_ip[c] = dest_ip[c];
+                }
 
                 int matches = 1;
                 int dst_ip0, dst_ip1, dst_ip2, dst_ip3;
@@ -690,8 +696,8 @@ int main(){
 		    }
 		    printf("---Done reading file---\n");
             printf("Confirmed tager is htonl %d, or %s\n", 
-                    binStart2, next_hop);
-            printf("\tnext_hop is %s, interface is %s\n",
+                    binStart2, binStart2_ip);
+            printf("\tnext_hop is %s\ninterface is %s\n",
                     next_hop, interface);
                     //interface = %d\n", dest_ip, next_hop
                     //fscanf(fp,"%s %s %s", dest_ip, next_hop, interface);
