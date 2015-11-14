@@ -544,6 +544,7 @@ int main(){
             //ip_dst to binary integer
             int binIP[32];
             int binStart = (htonl(iph->ip_dst) >> 8) << 8;
+            int binStart2 = binStart;
             printf("START binStart = %d\n", binStart);
             int x = 1;
             int y;
@@ -605,7 +606,11 @@ int main(){
                 dst_ip_sum = (dst_ip0 * 16777216) + (dst_ip1 * 65536) 
                     + (dst_ip2 * 256) + dst_ip3;
                 printf("IP SUM: %d\n", dst_ip_sum);
+                printf("binStart2: %d\n", binStart2);
 
+                matches = (dst_ip_sum == binStart2) ? 1 : 0;
+
+                /*
                 int binIP2[32];
                 //int binStart = (htonl(iph->ip_dst) >> 8) << 8;
                 //printf("START binStart = %d\n", binStart);
@@ -620,6 +625,7 @@ int main(){
                 for(y2 = x2 -1; y2 > 0; y2--) {
                     printf("%d", binIP2[y2]);
                 }
+                */
 
                 //TODO: COMPARE binIP WITH binIP2
 
