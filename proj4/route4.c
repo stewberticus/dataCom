@@ -551,11 +551,12 @@ int main(){
                 binIP[x++] = binStart %2 ;
                 binStart = binStart / 2;
             }
-            printf("x is %d", x);
+            printf("x is %d\n", x);
             printf ("SECOND: ");
             for(y = x -1; y > 0; y--) {
                 printf("%d", binIP[y]);
             }
+            printf("\nbinIP[0] is %d\n", binIP[0]);
 
             /*
             sprintf(tmp2, "%d", bytes_ip[0]);
