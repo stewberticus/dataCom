@@ -556,7 +556,6 @@ int main(){
             for(y = x -1; y > 0; y--) {
                 printf("%d", binIP[y]);
             }
-            printf("\nbinIP[0] is %d\n", binIP[0]);
 
             /*
             sprintf(tmp2, "%d", bytes_ip[0]);
@@ -607,6 +606,22 @@ int main(){
                     + (dst_ip2 * 256) + dst_ip3;
                 printf("IP SUM: %d\n", dst_ip_sum);
 
+                int binIP2[32];
+                //int binStart = (htonl(iph->ip_dst) >> 8) << 8;
+                //printf("START binStart = %d\n", binStart);
+                int x2 = 1;
+                int y2;
+                while(dst_ip_sum != 0) {
+                    binIP2[x2++] = dst_ip_sum %2 ;
+                    dst_ip_sum = dst_ip_sum / 2;
+                }
+                printf("x2 is %d\n", x2);
+                printf ("IP SUM SECOND: ");
+                for(y2 = x2 -1; y2 > 0; y2--) {
+                    printf("%d", binIP2[y2]);
+                }
+
+                //TODO: COMPARE binIP WITH binIP2
 
                 //if(dst_ip_sum == 
 
