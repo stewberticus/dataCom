@@ -576,7 +576,7 @@ int main(){
 		    printf("ip_dst as char[] = %s\n", bytes_ip);
                     FILE *fp; 
                     fp = fopen(".//r1-table.txt","r");
-		    printf("---Start reading routing table - r1 ---");
+		    printf("---Start reading routing table - r1 ---\n");
 		    while (fscanf(fp, "%s %s %s", dest_ip, next_hop,
 		      interface) != EOF) {
 	
@@ -604,6 +604,7 @@ int main(){
                 dst_ip_sum = (dst_ip0 * 1777216) + (dst_ip1 * 65536) 
                     + (dst_ip2 * 256) + dst_ip3;
                 printf("IP SUM: %d\n", dst_ip_sum);
+
 
                 //if(dst_ip_sum == 
 
@@ -653,7 +654,7 @@ int main(){
                 //if(dest_ip_int == htons(iph->ip_dst))
                 if(matches == 1) {
                     printf("ip dest matches\n");	
-                    break;
+                    //break;
                 }
                 else
                     printf("ip dest NO MATCH\n");
