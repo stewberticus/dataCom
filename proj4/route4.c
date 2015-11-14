@@ -689,7 +689,10 @@ int main(){
                 printf("\n");
 		    }
 		    printf("---Done reading file---\n");
-            printf("Confirmed target is htonl %d\n\t next_hop is %s,interface is %s", binStart2, next_hop, interface);
+            printf("Confirmed tager is htonl %d, or %s\n", 
+                    binStart2, next_hop);
+            printf("\tnext_hop is %s, interface is %s\n",
+                    next_hop, interface);
                     //interface = %d\n", dest_ip, next_hop
                     //fscanf(fp,"%s %s %s", dest_ip, next_hop, interface);
                     
@@ -699,12 +702,12 @@ int main(){
                     
                     
                     
-                        char tmp_pnt[4];
-                        memcpy(&tmp_pnt,icmp->src,sizeof(tmp_pnt));
-                        //icmp->src = icmp->dst;
-                        memcpy(&icmp->src , &icmp->dst, sizeof(icmp->src));
-                        memcpy(&icmp->dst,&tmp_pnt,sizeof(tmp_pnt));
-                        //icmp->dst =  (char *) tmp_pnt;
+                    char tmp_pnt[4];
+                    memcpy(&tmp_pnt,icmp->src,sizeof(tmp_pnt));
+                    //icmp->src = icmp->dst;
+                    memcpy(&icmp->src , &icmp->dst, sizeof(icmp->src));
+                    memcpy(&icmp->dst,&tmp_pnt,sizeof(tmp_pnt));
+                    //icmp->dst =  (char *) tmp_pnt;
                     void * icmp_type = etherhead + 34;
                     char * k = (char *) icmp_type;
                     *k = 0;
