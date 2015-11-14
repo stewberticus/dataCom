@@ -588,10 +588,10 @@ int main(){
                 printf("next_hop = %s\n", next_hop);
                 printf("interface = %s\n", interface);
 
+                printf("dest_ip[0] is %s\n", dest_ip[0]);
                 int c = 0;
                 while(c < 9) {
                     //binStart2_ip[c] = dest_ip[c];
-                    printf("dest_ip[c%d] = %s", c, dest_ip[c]);
                 }
 
                 int matches = 1;
