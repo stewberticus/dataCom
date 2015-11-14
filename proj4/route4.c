@@ -499,9 +499,9 @@ int main(){
              continue ;
             }
             if( iph -> ip_ttl > 1)
-            iph -> ip_ttl --; 
+                iph -> ip_ttl --; 
             else
-            printf("send ttyl error");
+                printf("send ttyl error");
             
             checksumhead = etherhead + 14;
             answer = 0;
@@ -637,8 +637,6 @@ int main(){
                 }
                 */
 
-                //TODO: COMPARE binIP WITH binIP2
-
                 //if(dst_ip_sum == 
 
                 /* END NEW */
@@ -676,8 +674,6 @@ int main(){
                     ptr_ip++;
                 }
 
-                    //if(!strncmp(scanned[strtok_id][0], bytes_ip[strtok_id],3)){
-
                 printf("dest_ip_int =  %d\n", dest_ip_int);
                 printf("htons ip_dst = %d\n", htons(iph->ip_dst));
 		        */ 
@@ -687,8 +683,7 @@ int main(){
                 if(matches == 1) {
                     printf("ip dest MATCHEs - stop looking\n");	
                     break;
-                }
-                else
+                } else
                     printf("ip dest NO MATCH - keep going\n");
                 //if(dest_ip == iph->ip_dst) 
                 //	printf("dest matches\n");
@@ -697,13 +692,12 @@ int main(){
                 printf("\n");
 		    }
 		    printf("---Done reading file---\n");
-            printf("Confirmed tager is htonl %d, or %s\n", 
-                    binStart2, binStart2_ip);
-            printf("\tnext_hop is %s\ninterface is %s\n",
-                    next_hop, interface);
-                    //interface = %d\n", dest_ip, next_hop
-                    //fscanf(fp,"%s %s %s", dest_ip, next_hop, interface);
-                    
+              if(maches == 0) {
+                //still no matches, send an ICMP error message
+                //TODO
+              printf("ICMP destinaion unreachable (network unreachable\n");
+              } else {
+                //continue normally
                     void * start_data = etherhead + 26;
                     struct icmp_header * icmp; 
                     icmp = (struct icmp_header *) start_data;
@@ -720,24 +714,23 @@ int main(){
                     char * k = (char *) icmp_type;
                     *k = 0;
                     send(i ,buffer,n,0);
-                        
                     
                     // send appropriate ICMP response
-                    //send(packet_socket,(struct sockaddr*)&recvaddr,&recvaddrlen,0);
                     //int nsize = sendto(packet_socket, buffer, 1500,0,
                     //        (struct sockaddr*)&recvaddr, &recvaddrlen);
              
                     printf("ICMP response: sending something back?\n");
-                }
+              } // ends else (matches) 
+            } // ends (is_icmp ==1 )
                 
             
-        }
-    }
+        } // ends if(FD_ISSET(i,&tmp_set))
+    } // ends for loop
     printf("ifindex = %d\n", recvaddr.sll_ifindex);
     printf("arp count = %d\n", arpcount);
     printf("icmp count = %d\n", icmpcount);
 
-  }
+  } // ends while loop
   //exit
   return 0;
 }
