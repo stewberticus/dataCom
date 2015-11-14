@@ -675,11 +675,11 @@ int main(){
                 //if(bytes_ip == sub_dest_ip) 
                 //if(dest_ip_int == htons(iph->ip_dst))
                 if(matches == 1) {
-                    printf("ip dest matches\n");	
-                    //break;
+                    printf("ip dest MATCHEs - stop looking\n");	
+                    break;
                 }
                 else
-                    printf("ip dest NO MATCH\n");
+                    printf("ip dest NO MATCH - keep going\n");
                 //if(dest_ip == iph->ip_dst) 
                 //	printf("dest matches\n");
                 //else
