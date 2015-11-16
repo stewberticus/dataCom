@@ -580,7 +580,8 @@ int main(){
                     FILE *fp; 
                     fp = fopen(".//r1-table.txt","r");
 		    printf("---Start reading routing table - r1 ---\n");
-		    while (fscanf(fp, "%s %s %s", dest_ip, next_hop,
+		    int matches;
+            while (fscanf(fp, "%s %s %s", dest_ip, next_hop,
 		      interface) != EOF) {
 	
                 /* START NEW */
@@ -595,7 +596,7 @@ int main(){
                     c++;
                 }
 
-                int matches = 1;
+                matches = 1;
                 int dst_ip0, dst_ip1, dst_ip2, dst_ip3;
                 int dst_ip_sum;
                 int z;
