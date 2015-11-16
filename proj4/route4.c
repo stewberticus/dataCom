@@ -693,7 +693,7 @@ int main(){
                 printf("\n");
 		    }
 		    printf("---Done reading file---\n");
-              if(maches == 0) {
+              if(matches == 0) {
                 //still no matches, send an ICMP error message
                 //TODO
               printf("ICMP destinaion unreachable (network unreachable\n");
