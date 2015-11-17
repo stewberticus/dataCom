@@ -1,0 +1,38 @@
+can use whatever language we want
+
+up to our code to make sure can recover UDP packets (lost, out of order)
+
+file exchange over server
+part 1: assume no problems
+part 2: intentionally introduce erros into network, 
+        and make part 1 still work with errors
+
+trivial solution: only ever send 1 packet at a time...
+    packets can't get out of order
+^ sacrifices efficiency
+^ disallowed
+
+should be doing:
+
+X1 2 3 4 5 6 7 8 9 10
+   [        ]
+have a window
+send first 5 packets of window
+wait for aknowledgements (get 1, move window to include 6)
+    (get 3, don't move window yet)
+good solution if don't get a response: set a timer
+    after a certain time, send a new copy
+can use packet numbers, if assume packets are same size
+
+sudo mn -x
+
+h1 ping h2
+
+on switch window:
+    tc qdisc add dev <dev> root netem loss <X.Y%> 
+    tc qdisc add dev s1-eth1 root netem loss 50%
+
+these commands only work on outgoing packets, not ingoing
+if do both "dev s1-eth1" and "dev s1-eth2", then both directions
+
+
