@@ -4,6 +4,7 @@ import thread
 
 def clientconnection(c, addr):
     while True:
+        print "in clientconnection - while true"
         #receive 1024 bytes for the filename
         l = c.recv(1024)
         if not l:
@@ -48,13 +49,15 @@ except Exception:
 	quit()                # Reserve the passed port for your service.
 serv_sock.bind((this_machine_name, port))        # Bind to the port
    # Open a temp file to store the data
-serv_sock.listen(1)                 # Now wait for client connection.
+#serv_sock.listen(1)                 # Now wait for client connection.
 
 while True:
     try:
         #returns a socket and the adress we are connected to
-        c, addr = serv_sock.accept()     # Establish connection with client.
-        #print 'Connected to', addr       # Confirm correct client
+        #c, addr = serv_sock.accept()    # Establish connection with client.
+        #c, addr = serv_sock.recvfrom(1024)
+        c,addr = serv_sock.recvfrom(1024)
+        print 'Connected to', addr       # Confirm correct client
         thread.start_new_thread(clientconnection, (c, addr))
     except Exception as e:
         print e
