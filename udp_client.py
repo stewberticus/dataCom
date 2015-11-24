@@ -34,7 +34,7 @@ while True:
         quit()
     print 'Sending...'
     s.send(b)
-    l = s.recv(1024)
+    l,a = s.recvfrom(1024)
     if l=="*****":
         print("file not available")
         quit()
@@ -48,7 +48,7 @@ while True:
         #print "wrote a chunk"
         #print l
         try:
-            l = s.recv(1024)
+            l,a = s.recvfrom(1024)
         except Exception: 
            
     #	newfile.write(l)
