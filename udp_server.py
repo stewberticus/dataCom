@@ -15,23 +15,51 @@ def clientconnection(c, addr):
         #decode the raw byte using UTF8 
         filename = l.decode("utf-8")
         print filename
-        
+        awktidbits = []
+        filemorsels = []
+        c.settimeout(1.0)
+
         #open the file request 
         try:
             file = open(filename,'r')
-        
+            
         #read the file from disk in 1024 byte chunks 
-            l = file.read(1024)
+            l = file.read(1022)
+            ll = chr(0)
+            l += ll
+            l += ll 
+            filemorsels.append(l)
         except Exception:
             #something went wrong with the file need to tell the client 
             c.sendto("*****", addr)
             l = False
             file = False
         #while bytes to send
+        i = 1
+        startwindow = 0
+        endwindow = 5
         while(l):
-            c.sendto(l, addr)
-            #read next 1024
-            l = file.read(1024)
+            while(l and i < endwindow):
+                c.sendto(l, addr)
+                #read next 1024
+                l = file.read(1022)
+                if(l): 
+                    print type(l)
+                    ll = chr(i)
+                    l += ll
+                    l += ll
+                    filemorsels[i] = l
+                print "i", i
+                i+=1
+                if(i == 256):
+                    i = 0
+            while(1):
+                try:
+                    data, addr = c.recvfrom(l,addr)
+
+                except Exception:
+                    print "timeout!"
+                 
         if file:
             file.close()
         
