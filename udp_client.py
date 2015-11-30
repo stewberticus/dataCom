@@ -78,7 +78,7 @@ while True:
     #	newfile.write(l)
     #	print "inexpection"
     #	print l
-    print len(newfile)
+    #print len(newfile)
             
 #f.close()
 print "Done Recieving"
