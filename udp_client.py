@@ -1,6 +1,7 @@
 __author__ = 'alex.stuart,lauren.mills,Caleb.Stevenson'
 import socket               # Import socket module
 import select
+import struct 
 s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 
 try:
@@ -35,27 +36,50 @@ while True:
     print 'Sending...'
     s.send(b)
     l,a = s.recvfrom(1024)
+    #print l
     if l=="*****":
         print("file not available")
         quit()
     s.settimeout(1.0)
     #print "rec 1st"
     newfile = open(filename, 'ab')
-    while(l):
+    skip_write = False
+    done = False 
+    skip_count = 0
+    while(not done):
+        print skip_write
+        if not skip_write:
+	    newfile.write(l[3:])
+	    print len(l[3:])
         
+	    awk_num = l[0:3]
         
-        newfile.write(l)
+	    
+	    print " awk:" + awk_num
+	    s.send(awk_num)
         #print "wrote a chunk"
         #print l
         try:
+	    if skip_write:
+		skip_count += 1
+	    skip_write = False
+	    l = False
             l,a = s.recvfrom(1024)
-        except Exception: 
-           
+            if l:
+		skip_count = 0
+	    
+		
+        except Exception as e: 
+            skip_write = True
+            print skip_count
+            if skip_count > 5:
+		l = False
+		done = True
     #	newfile.write(l)
     #	print "inexpection"
     #	print l
-            l = False
-            pass
+    print len(newfile)
+            
 #f.close()
 print "Done Recieving"
 #print s.recv(1024)

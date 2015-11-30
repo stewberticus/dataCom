@@ -1,9 +1,10 @@
 __author__ = 'alex.stuart,Lauren.mills,Caleb Stevenson'
 import socket               # Import socket module
 import thread
+import struct
 
 # c is now serv_sock, addr is going to be the address of client
-def clientconnection(c, addr):
+def clientconnection(c):
     while True:
         #receive 1024 bytes for the filename
         #l = c.recv(1024)
@@ -14,9 +15,9 @@ def clientconnection(c, addr):
             break
         #decode the raw byte using UTF8 
         filename = l.decode("utf-8")
-        print filename
-        awktidbits = []
-        filemorsels = []
+        print "file:" + filename
+        awktidbits = [0] * 256
+        filemorsels = [0] * 256
         c.settimeout(1.0)
 
         #open the file request 
@@ -24,12 +25,15 @@ def clientconnection(c, addr):
             file = open(filename,'r')
             
         #read the file from disk in 1024 byte chunks 
-            l = file.read(1022)
-            ll = chr(0)
-            l += ll
-            l += ll 
+            l = file.read(1021)
+            ll = "000"
+            #print "awk num:" + ll
+            
+            ll += l 
+            #print "whole packet:" + ll
             filemorsels.append(l)
-        except Exception:
+        except Exception as e:
+	    print e
             #something went wrong with the file need to tell the client 
             c.sendto("*****", addr)
             l = False
@@ -38,27 +42,43 @@ def clientconnection(c, addr):
         i = 1
         startwindow = 0
         endwindow = 5
-        while(l):
+        no_timeout = True
+        while(ll):
+	    no_timeout = True
             while(l and i < endwindow):
-                c.sendto(l, addr)
+                c.sendto(ll, addr)
                 #read next 1024
-                l = file.read(1022)
-                if(l): 
-                    print type(l)
-                    ll = chr(i)
-                    l += ll
-                    l += ll
+                l = file.read(1021)
+                if(ll): 
+                    #print type(l)"%02d"%a
+                    ll = "%03d"%i
+                    #print "chr of i " + ll
+                    ll += l
                     filemorsels[i] = l
                 print "i", i
                 i+=1
                 if(i == 256):
                     i = 0
-            while(1):
+            while(no_timeout):
                 try:
-                    data, addr = c.recvfrom(l,addr)
+		    print "listening"
+		    data, addr = c.recvfrom(1024)
+		    print data
+		    resp_num = int(data)
+		    awktidbits[resp_num] = True
+		    for g in range(5):
+			if awktidbits[startwindow + g]:
+			    newstartwindow = startwindow+g
+			else:
+			    break
+		    startwindow = newstartwindow
+		    endwindow = startwindow + 5
+		    print startwindow
+		    print endwindow
 
                 except Exception:
                     print "timeout!"
+                    no_timeout = False
                  
         if file:
             file.close()
@@ -82,21 +102,8 @@ serv_sock.bind((this_machine_name, port))        # Bind to the port
    # Open a temp file to store the data
 #serv_sock.listen(1)                 # Now wait for client connection.
 
-while True:
-    try:
-        #returns a socket and the adress we are connected to
-        #c, addr = serv_sock.accept()    # Establish connection with client.
-        #c, addr = serv_sock.recvfrom(1024)
-        #c,addr = serv_sock.recvfrom(1024)
-        #print 'Connected to', addr       # Confirm correct client
-        #thread.start_new_thread(clientconnection, (c, addr))
-        addr = "n/a"
-        print "before connection"
-        #thread.start_new_thread(clientconnection, (serv_sock, addr))
-        clientconnection(serv_sock, addr)
-        #thread.start_new_thread(clientconnection, (serv_sock, serv_sock))
-    except Exception as e:
-        print e
-        print "Could not start thread"
+
+clientconnection(serv_sock)
+ 
 
 c.close()
