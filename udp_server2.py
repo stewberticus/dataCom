@@ -43,8 +43,11 @@ def clientconnection(c):
         startwindow = 0
         endwindow = 5
         no_timeout = True
+        reset = False
         while(ll):
 	    no_timeout = True
+            if not l and reset:
+                break
             while(l and i < endwindow):
                 c.sendto(ll, addr)
                 #read next 1024
@@ -62,19 +65,24 @@ def clientconnection(c):
             while(no_timeout):
                 try:
                     print "listening"
-		            data, addr = c.recvfrom(1024)
-		            print data
-		            resp_num = int(data)
-		            awktidbits[resp_num] = True
-		            for g in range(5):
-			            if awktidbits[startwindow + g]:
-			                newstartwindow = startwindow+g
-			            else:
-			                break
-		            startwindow = newstartwindow
-		            endwindow = startwindow + 5
-		            print startwindow
-		            print endwindow
+                    data, addr = c.recvfrom(1024)
+                    print data
+                    resp_num = int(data)
+                    awktidbits[resp_num] = True
+                    for g in range(5):
+                        if awktidbits[startwindow + g]:
+                            newstartwindow = startwindow+g
+                        else:
+                            break
+                    startwindow = newstartwindow
+                    endwindow = startwindow + 5
+                    print startwindow
+                    print endwindow
+                    print "i - 2 is ", i -2
+                    if i - 2 == startwindow:
+                        print "i is ", i
+                        reset = True
+                        break
 
                 except Exception:
                     print "timeout!"
@@ -84,6 +92,7 @@ def clientconnection(c):
             file.close()
         
         print "finished sending file"
+        break
     print 'Client ' + str(addr) + ' is no longer connected.'
 
 serv_sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)# Create a socket object
@@ -106,4 +115,4 @@ serv_sock.bind((this_machine_name, port))        # Bind to the port
 clientconnection(serv_sock)
  
 
-c.close()
+#c.close()
