@@ -107,7 +107,7 @@ try:
 except Exception:
 	print "not a valid port number"
 	quit()                # Reserve the passed port for your service.
-serv_sock.bind((this_machine_name, port))        # Bind to the port
+serv_sock.bind(("", port))        # Bind to the port
    # Open a temp file to store the data
 #serv_sock.listen(1)                 # Now wait for client connection.
 
