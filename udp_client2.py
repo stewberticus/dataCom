@@ -5,6 +5,8 @@ import struct
 s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 
 def checkchecksum(checksum, filedata):
+    print "checksum = ", checksum
+    print "calc sum = ", calcchecksum(filedata)
     if checksum != str(calcchecksum(filedata)):        
         return False
     else:

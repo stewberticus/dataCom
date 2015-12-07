@@ -14,6 +14,7 @@ def calcchecksum(filedata):
     for i in filedata:
         sum += ord(i)
     sum = sum % 1000
+    print "sum  ", sum
     return sum 
 
 
@@ -85,7 +86,7 @@ def clientconnection(c):
                 if(i == 256):
                     i = 0
                 checksum = calcchecksum(ll)
-                lll = ll + str(checksum)
+                lll = ll + "%03d"%checksum
             while(no_timeout):
                 try:
                     print "listening"
