@@ -76,6 +76,7 @@ def clientconnection(c):
                     l = file.read(1018)
                 #print type(l)"%02d"%a
                 ll = "%03d"%i
+                print "i is ", ll
                 #print "chr of i " + ll
                 ll += l
                 filemorsels[i] = l
