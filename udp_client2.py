@@ -50,16 +50,20 @@ while True:
     print 'Sending...'
     fileAckMatch = False
     b += calcchecksum(b)
+    s.settimeout(1.0)
     while not fileAckMatch:
         s.send(b)
-        l,a = s.recvfrom(1024)
+        try:
+            l,a = s.recvfrom(1024)
+        catch Exception as e:
+            continue
         fileAck = l[0:3]
         if not checkchecksum(l[-3:], l[:-3]):
             #do stuff
             print "Checksum's don't match!"
         else:
             print "checksum's match"
-            print l
+            #print l
             print fileAck
             if fileAck == "888":
                 print "file ack match"
