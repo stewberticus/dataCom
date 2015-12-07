@@ -101,7 +101,7 @@ while True:
                 if filemorsels[lastwrite_awk]:
                     i = lastwrite_awk
                     while filemorsels[i]:
-                        print "  ", filemorsels[i]
+                        print "  ", (if filemorsels[i])
                         newfile.write(filemorsels[i])
                         i+= 1 
                     lastwrite_awk = i
