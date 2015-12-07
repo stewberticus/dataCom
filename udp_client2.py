@@ -113,6 +113,7 @@ while True:
                 awk_num += calcchecksum(awk_num)
                 print "sending awk_num = ", awk_num
                 s.send(awk_num) 
+                print "sent ack "
                 #print "wrote a chunk"
                 #print l
         try:
@@ -126,7 +127,7 @@ while True:
             
         except Exception as e: 
             skip_write = True
-            print skip_count
+            print "skip_count is ", skip_count
             if skip_count > 5:
                 l = False
                 done = True
