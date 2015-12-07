@@ -97,9 +97,11 @@ while True:
                 awk_num = l[0:3]
                 print " awk:" + awk_num
                 filemorsels[int(awk_num)] = l[3:-3]
+                print "lastwrite_awk = ", lastwrite_awk
                 if filemorsels[lastwrite_awk]:
                     i = lastwrite_awk
                     while filemorsels[i]:
+                        print "  ", filemorsels[i]
                         newfile.write(filemorsels[i])
                         i+= 1 
                     lastwrite_awk = i
@@ -109,6 +111,7 @@ while True:
 
                 # need to include a checksum with the ack packet
                 awk_num += calcchecksum(awk_num)
+                print "sending awk_num = ", awk_num
                 s.send(awk_num) 
                 #print "wrote a chunk"
                 #print l
