@@ -7,7 +7,7 @@ import struct
 def checkchecksum(checksum, filedata):
     if checksum != str(calcchecksum(filedata)):            
         return False
-    else:
+   else:
         return True
 def calcchecksum(filedata):
     sum = 0 
@@ -24,7 +24,17 @@ def clientconnection(c):
         #receive 1024 bytes for the filename
         #l = c.recv(1024)
         print "Trying to connect"
-        l, addr = c.recvfrom(1024)
+        fileAckMatch = False
+        while not fileAckMatch:
+            l, addr = c.recvfrom(1024)
+            if not checkchecksum(l[-3:], l[:-3]):
+                continue
+            else:
+                print "Sending ack for filename"
+                fileAck = "888"
+                fileAck += calcchecksum(fileAck)
+                fileAckMatch = True
+                c.sendto(fileAck, addr) 
         print 'Connected to', addr       # Confirm correct client
         if not l:
             break

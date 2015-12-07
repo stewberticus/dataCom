@@ -48,7 +48,21 @@ while True:
         print "Exiting"
         quit()
     print 'Sending...'
-    s.send(b)
+    fileAckMatch = False
+    while not fileAckMatch:
+        s.send(b)
+        l,a = s.recvfrom(1024)
+        fileAck = l[0:3]
+        if not checkchecksum(l[-3:], l[:-3]):
+            #do stuff
+            print "Checksum's don't match!"
+        else:
+            print "checksum's match"
+            if fileAck == "888":
+                print "file ack match"
+                fileAckMatch = True
+            else:
+                print "file ack does not match"
     l,a = s.recvfrom(1024)
     #print l
     if l=="*****":
