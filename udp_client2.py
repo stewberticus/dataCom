@@ -59,6 +59,8 @@ while True:
             print "Checksum's don't match!"
         else:
             print "checksum's match"
+            print l
+            print fileAck
             if fileAck == "888":
                 print "file ack match"
                 fileAckMatch = True
