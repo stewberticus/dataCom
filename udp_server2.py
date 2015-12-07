@@ -97,7 +97,7 @@ def clientconnection(c):
                         if awktidbits[startwindow + g]:
                             newstartwindow = startwindow+g
                         else:
-                            i = startwindow
+                            i = newstartwindow
                             break
                     startwindow = newstartwindow
                     endwindow = startwindow + 5
