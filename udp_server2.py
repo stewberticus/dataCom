@@ -105,7 +105,7 @@ def clientconnection(c):
                 lll = ll + checksum
             while(no_timeout):
                 try:
-                    print "listening"
+                    print "Listening for Acks"
                     data, addr = c.recvfrom(1024)
                     print data
                     awkchecksum = checkchecksum(data[-3:], data[:-3])
@@ -115,7 +115,11 @@ def clientconnection(c):
                         resp_num = int(data[:-3])
                         awktidbits[resp_num] = True
 
+                    print "after if awkchecksum"
                     for g in range(5):
+                        print "g is ", g
+                        print "awktidbits[startwindow + g]"
+                        print "\t", awktidbits[startwindow + g]
                         if awktidbits[startwindow + g]:
                             newstartwindow = startwindow+g
                         else:
