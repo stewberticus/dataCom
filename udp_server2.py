@@ -15,7 +15,7 @@ def calcchecksum(filedata):
         sum += ord(i)
     sum = sum % 1000
     print "sum  ", sum
-    return sum 
+    return "%03d"%sum 
 
 
 # c is , addr is going to be the address of client

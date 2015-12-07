@@ -16,7 +16,7 @@ def calcchecksum(filedata):
     for i in filedata:
         sum += ord(i)
     sum = sum % 1000
-    return sum
+    return "%03d"%sum
 
 try:
 	host = raw_input("Enter IP address: ")
