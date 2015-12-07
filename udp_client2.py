@@ -78,7 +78,7 @@ while True:
                 filemorsels[awk_num] = l[3:-3]
                 if filemorsels[lastwrite_awk]:
                     i = lastwrite_awk
-                    while filemorsels[i]
+                    while filemorsels[i]:
                         newfile.write(filemorsels[i])
                         i+= 1 
                     lastwrite_awk = i
