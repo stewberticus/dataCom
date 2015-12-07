@@ -55,7 +55,7 @@ while True:
         s.send(b)
         try:
             l,a = s.recvfrom(1024)
-        catch Exception as e:
+        except Exception as e:
             continue
         fileAck = l[0:3]
         if not checkchecksum(l[-3:], l[:-3]):
