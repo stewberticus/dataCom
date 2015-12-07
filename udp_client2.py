@@ -79,18 +79,18 @@ while True:
                 try:
                     if skip_write:
                         skip_count += 1
-                        skip_write = False
-                        l = False
-                        l,a = s.recvfrom(1024)
+                    skip_write = False
+                    l = False
+                    l,a = s.recvfrom(1024)
                     if l:
                         skip_count = 0
             
                 except Exception as e: 
                     skip_write = True
                     print skip_count
-                if skip_count > 5:
-                    l = False
-                    done = True
+                    if skip_count > 5:
+                        l = False
+                        done = True
     #	newfile.write(l)
     #	print "inexpection"
     #	print l
