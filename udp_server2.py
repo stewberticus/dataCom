@@ -44,7 +44,7 @@ def clientconnection(c):
         if not l:
             break
         #decode the raw byte using UTF8 
-        filename = l.decode("utf-8")
+        filename[:-3] = l.decode("utf-8")
         print "file:" + filename
         awktidbits = [0] * 256
         filemorsels = [0] * 256
