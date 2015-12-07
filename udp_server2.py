@@ -86,7 +86,7 @@ def clientconnection(c):
                 if(i == 256):
                     i = 0
                 checksum = calcchecksum(ll)
-                lll = ll + "%03d"%checksum
+                lll = ll + checksum
             while(no_timeout):
                 try:
                     print "listening"
