@@ -97,17 +97,17 @@ def clientconnection(c):
                         if awktidbits[startwindow + g]:
                             newstartwindow = startwindow+g
                         else:
-                            i = newstartwindow
                             break
                     startwindow = newstartwindow
+                    i = startwindow
                     endwindow = startwindow + 5
                     print startwindow
                     print endwindow
                     print "i - 2 is ", i -2
-                    if i - 2 == startwindow:
-                        print "i is ", i
-                        reset = True
-                        break
+                    #if i - 2 == startwindow:
+                    #    print "i is ", i
+                    #    reset = True
+                    #    break
 
                 except Exception:
                     print "timeout!"
