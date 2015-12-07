@@ -75,7 +75,7 @@ while True:
     
                 awk_num = l[0:3]
                 print " awk:" + awk_num
-                filemorsels[awk_num] = l[3:-3]
+                filemorsels[int(awk_num)] = l[3:-3]
                 if filemorsels[lastwrite_awk]:
                     i = lastwrite_awk
                     while filemorsels[i]:
