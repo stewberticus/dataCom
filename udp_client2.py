@@ -66,7 +66,7 @@ while True:
                 fileAckMatch = True
             else:
                 print "file ack does not match"
-    #l,a = s.recvfrom(1024)
+    l,a = s.recvfrom(1024)
     #print l
     if l=="*****":
         print("file not available")
