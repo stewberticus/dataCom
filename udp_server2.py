@@ -108,12 +108,10 @@ def clientconnection(c):
                     print "listening"
                     data, addr = c.recvfrom(1024)
                     print data
-                    print "[-3:]"
-                    print "\t", data[-3:]
-                    print "[:-3]"
-                    print "\t", data[-3:]
                     awkchecksum = checkchecksum(data[-3:], data[:-3])
+                    print "awkchecksum = ", awkchecksum
                     if awkchecksum:
+                        print "if awkchecksum"
                         resp_num = int(data[:-3])
                         awktidbits[resp_num] = True
 
