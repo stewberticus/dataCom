@@ -38,6 +38,7 @@ def clientconnection(c):
                 print "Sending ack for filename"
                 fileAck = "888"
                 fileAck += calcchecksum(fileAck)
+                print "set fileAckMatch to true"
                 fileAckMatch = True
                 c.sendto(fileAck, addr) 
         print 'Connected to', addr       # Confirm correct client
@@ -107,8 +108,10 @@ def clientconnection(c):
                     print "listening"
                     data, addr = c.recvfrom(1024)
                     print data
-                    resp_num = int(data)
-                    awktidbits[resp_num] = True
+                    awkchecksum = checkchecksum(data[-3:], data[:-3])
+                    if awkchecksum:
+                        resp_num = int(data[:-3])
+                        awktidbits[resp_num] = True
                     for g in range(5):
                         if awktidbits[startwindow + g]:
                             newstartwindow = startwindow+g
@@ -124,6 +127,7 @@ def clientconnection(c):
                     #    print "i is ", i
                     #    reset = True
                     #    break
+
 
                 except Exception:
                     print "timeout!"
