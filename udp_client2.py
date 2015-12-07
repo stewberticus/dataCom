@@ -62,18 +62,18 @@ while True:
         print skip_write
         if not skip_write:
 
-            #if not checkchecksum(l[-3:], l[:-3]):
+            if not checkchecksum(l[-3:], l[:-3]):
                 #do stuff
                 print "Checksum's don't match!"
-            #else:
+            else:
                 print "checksum's match"
-	            newfile.write(l[3:-3])
-	            print len(l[3:])
-        
-	            awk_num = l[0:3]
-	            print " awk:" + awk_num
+                newfile.write(l[3:-3])
+                print len(l[3:])
+    
+                awk_num = l[0:3]
+                print " awk:" + awk_num
 
-	            s.send(awk_num)
+                s.send(awk_num)
                 #print "wrote a chunk"
                 #print l
                 try:
