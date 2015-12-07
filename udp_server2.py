@@ -111,16 +111,16 @@ def clientconnection(c):
                     awkchecksum = checkchecksum(data[-3:], data[:-3])
                     print "awkchecksum = ", awkchecksum
                     if awkchecksum:
-                        print "if awkchecksum"
+                        #print "if awkchecksum"
                         resp_num = int(data[:-3])
                         awktidbits[resp_num] = True
 
-                    print "after if awkchecksum"
+                    #print "after if awkchecksum"
                     for g in range(5):
-                        print "g is ", g
-                        print "startwindow is ", startwindow
-                        print "awktidbits[startwindow + g]"
-                        print "\t", awktidbits[startwindow + g]
+                        #print "g is ", g
+                        #print "startwindow is ", startwindow
+                        #print "awktidbits[startwindow + g]"
+                        #print "\t", awktidbits[startwindow + g]
                         if awktidbits[startwindow + g]:
                             newstartwindow = startwindow+g
                         else:

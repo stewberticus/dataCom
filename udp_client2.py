@@ -107,7 +107,9 @@ while True:
                 #we need to wait to write all the data
                 #newfile.write(l[3:-3])
 
-                s.send(awk_num)
+                # need to include a checksum with the ack packet
+                awk_num += calcchecksum(awk_num)
+                s.send(awk_num) 
                 #print "wrote a chunk"
                 #print l
         try:
