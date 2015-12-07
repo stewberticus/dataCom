@@ -49,6 +49,7 @@ while True:
         quit()
     print 'Sending...'
     fileAckMatch = False
+    b += calcchecksum(b)
     while not fileAckMatch:
         s.send(b)
         l,a = s.recvfrom(1024)
