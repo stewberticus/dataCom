@@ -27,9 +27,14 @@ def clientconnection(c):
         fileAckMatch = False
         while not fileAckMatch:
             l, addr = c.recvfrom(1024)
+            print l
+            print l[-3:]
+            print l[:-3]
             if not checkchecksum(l[-3:], l[:-3]):
+                print "checksum does not match"
                 continue
             else:
+                print "checksum does match"
                 print "Sending ack for filename"
                 fileAck = "888"
                 fileAck += calcchecksum(fileAck)
