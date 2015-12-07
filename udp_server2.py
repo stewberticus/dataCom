@@ -7,7 +7,7 @@ import struct
 def checkchecksum(checksum, filedata):
     if checksum != str(calcchecksum(filedata)):            
         return False
-   else:
+    else:
         return True
 def calcchecksum(filedata):
     sum = 0 
