@@ -118,6 +118,7 @@ def clientconnection(c):
                     print "after if awkchecksum"
                     for g in range(5):
                         print "g is ", g
+                        print "startwindow is ", startwindow
                         print "awktidbits[startwindow + g]"
                         print "\t", awktidbits[startwindow + g]
                         if awktidbits[startwindow + g]:
