@@ -4,6 +4,18 @@ import select
 import struct 
 s = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
 
+def checkchecksum(checksum, filedata):
+    if checksum != str(calcchecksum(filedata)):        
+        return False
+    else:
+        return True
+def calcchecksum(filedata):
+    sum = 0
+    for i in filedata:
+        sum += ord(i)
+    sum = sum % 1000
+    return sum
+
 try:
 	host = raw_input("Enter IP address: ")
 	#host = socket.gethostname()
@@ -49,32 +61,36 @@ while True:
     while(not done):
         print skip_write
         if not skip_write:
-	    newfile.write(l[3:])
-	    print len(l[3:])
+
+            if not checkchecksum(l[-3:], l[:-3]):
+                #do stuff
+                print "Checksum's don't match!"
+            else:
+                print "checksum's match"
+	            newfile.write(l[3:-3])
+	            print len(l[3:])
         
-	    awk_num = l[0:3]
-        
-	    
-	    print " awk:" + awk_num
-	    s.send(awk_num)
-        #print "wrote a chunk"
-        #print l
-        try:
-	    if skip_write:
-		skip_count += 1
-	    skip_write = False
-	    l = False
-            l,a = s.recvfrom(1024)
-            if l:
-		skip_count = 0
-	    
-		
-        except Exception as e: 
-            skip_write = True
-            print skip_count
-            if skip_count > 5:
-		l = False
-		done = True
+	            awk_num = l[0:3]
+	            print " awk:" + awk_num
+
+	            s.send(awk_num)
+                #print "wrote a chunk"
+                #print l
+                try:
+                    if skip_write:
+                        skip_count += 1
+                        skip_write = False
+                        l = False
+                        l,a = s.recvfrom(1024)
+                    if l:
+                        skip_count = 0
+            
+                except Exception as e: 
+                    skip_write = True
+                    print skip_count
+                if skip_count > 5:
+                    l = False
+                    done = True
     #	newfile.write(l)
     #	print "inexpection"
     #	print l

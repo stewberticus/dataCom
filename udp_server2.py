@@ -3,7 +3,21 @@ import socket               # Import socket module
 import thread
 import struct
 
-# c is now serv_sock, addr is going to be the address of client
+
+def checkchecksum(checksum, filedata):
+    if checksum != str(calcchecksum(filedata)):            
+        return False
+    else:
+        return True
+def calcchecksum(filedata):
+    sum = 0 
+    for i in filedata:
+        sum += ord(i)
+    sum = sum % 1000
+    return sum 
+
+
+# c is , addr is going to be the address of client
 def clientconnection(c):
     while True:
         #receive 1024 bytes for the filename
@@ -25,7 +39,7 @@ def clientconnection(c):
             file = open(filename,'r')
             
         #read the file from disk in 1024 byte chunks 
-            l = file.read(1021)
+            l = file.read(1018)
             ll = "000"
             #print "awk num:" + ll
             
@@ -44,24 +58,33 @@ def clientconnection(c):
         endwindow = 5
         no_timeout = True
         reset = False
+        # l is the data from the file
+        # ll is the ack number + the file data
+        # lll is the acknumber + filedata + checksum
         while(ll):
 	    no_timeout = True
             if not l and reset:
                 break
+            checksum = calcchecksum(ll)
+            lll = ll + str(checksum)
             while(l and i < endwindow):
-                c.sendto(ll, addr)
-                #read next 1024
-                l = file.read(1021)
-                if(ll): 
-                    #print type(l)"%02d"%a
-                    ll = "%03d"%i
-                    #print "chr of i " + ll
-                    ll += l
-                    filemorsels[i] = l
+                c.sendto(lll, addr)
+                if(filemorsels[i]):
+                    l = filemorsels[i]    
+                else:
+                    #read next 1024
+                    l = file.read(1018)
+                #print type(l)"%02d"%a
+                ll = "%03d"%i
+                #print "chr of i " + ll
+                ll += l
+                filemorsels[i] = l
                 print "i", i
                 i+=1
                 if(i == 256):
                     i = 0
+                checksum = calcchecksum(ll)
+                lll = ll + str(checksum)
             while(no_timeout):
                 try:
                     print "listening"
@@ -73,6 +96,7 @@ def clientconnection(c):
                         if awktidbits[startwindow + g]:
                             newstartwindow = startwindow+g
                         else:
+                            i = startwindow
                             break
                     startwindow = newstartwindow
                     endwindow = startwindow + 5
