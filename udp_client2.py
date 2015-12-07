@@ -60,6 +60,8 @@ while True:
     skip_write = False
     done = False 
     skip_count = 0
+    filemorsels = [0] * 256
+    lastwrite_awk = 0
     while(not done):
         print skip_write
         if not skip_write:
@@ -69,11 +71,20 @@ while True:
                 print "Checksum's don't match!"
             else:
                 print "checksum's match"
-                newfile.write(l[3:-3])
                 print len(l[3:])
     
                 awk_num = l[0:3]
                 print " awk:" + awk_num
+                filemorsels[awk_num] = l[3:-3]
+                if filemorsels[lastwrite_awk]:
+                    i = lastwrite_awk
+                    while filemorsels[i]
+                        newfile.write(filemorsels[i])
+                        i+= 1 
+                    lastwrite_awk = i
+                 
+                #we need to wait to write all the data
+                #newfile.write(l[3:-3])
 
                 s.send(awk_num)
                 #print "wrote a chunk"
