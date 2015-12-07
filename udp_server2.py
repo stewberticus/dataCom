@@ -14,7 +14,7 @@ def calcchecksum(filedata):
     for i in filedata:
         sum += ord(i)
     sum = sum % 1000
-    print "sum  ", sum
+    print "sum  %03d"%sum
     return "%03d"%sum 
 
 
