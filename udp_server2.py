@@ -85,6 +85,7 @@ def clientconnection(c):
                 break
             checksum = calcchecksum(ll)
             lll = ll + str(checksum)
+            timeoutcount = 0
             while(l and i < endwindow):
                 c.sendto(lll, addr)
                 if(filemorsels[i]):
