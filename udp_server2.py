@@ -110,55 +110,56 @@ def clientconnection(c):
                 checksum = calcchecksum(ll)
                 lll = ll + checksum
             while(no_timeout):
+                
+                print "Listening for Acks"
                 try:
-                    print "Listening for Acks"
                     data, addr = c.recvfrom(1024)
                     timeoutcount = 0
-                   
-                    print data
-                    awkchecksum = checkchecksum(data[-3:], data[:-3])
-                    print "awkchecksum = ", awkchecksum
-                    if awkchecksum:
-                        #print "if awkchecksum"
-                        resp_num = int(data[:-3])
-                        awktidbits[resp_num] = True
-
-                    #print "after if awkchecksum"
-                    for g in range(5):
-                        #print "g is ", g
-                        #print "startwindow is ", startwindow
-                        #print "awktidbits[startwindow + g]"
-                        #print "\t", awktidbits[startwindow + g]
-                        if awktidbits[startwindow + g]:
-                            newstartwindow = startwindow+g
-                        else:
-                            break
-                    startwindow = newstartwindow
-                    i = startwindow
-                    if not lastpacket:
-                        endwindow = startwindow + 5
-                    else:
-                        endwindow = lastpacket
-                    print startwindow
-                    print endwindow
-                    print "i - 2 is ", i -2
-                    # file sending should be complete, stop sending 
-                    # and reset
-                    # do we have all of our ack's back
-                    #if i == startwindow:
-                    #if i - 2 == startwindow:
-                    #    print "i is ", i
-                    #    reset = True
-                    #    break
-
-
-                except Exception:
+                 except Exception:
                     print "timeout!"
                     timeoutcount += 1
                     if timeoutcount == 5:
                         reset = True
                     no_timeout = False
-                 
+  
+                print data
+                awkchecksum = checkchecksum(data[-3:], data[:-3])
+                print "awkchecksum = ", awkchecksum
+                if awkchecksum:
+                    #print "if awkchecksum"
+                    resp_num = int(data[:-3])
+                    awktidbits[resp_num] = True
+
+                #print "after if awkchecksum"
+                for g in range(5):
+                    #print "g is ", g
+                    #print "startwindow is ", startwindow
+                    #print "awktidbits[startwindow + g]"
+                    #print "\t", awktidbits[startwindow + g]
+                    if awktidbits[startwindow + g]:
+                        newstartwindow = startwindow+g
+                    else:
+                        break
+                startwindow = newstartwindow
+                i = startwindow
+                if not lastpacket:
+                    endwindow = startwindow + 5
+                else:
+                    endwindow = lastpacket
+                print startwindow
+                print endwindow
+                print "i - 2 is ", i -2
+                # file sending should be complete, stop sending 
+                # and reset
+                # do we have all of our ack's back
+                #if i == startwindow:
+                #if i - 2 == startwindow:
+                #    print "i is ", i
+                #    reset = True
+                #    break
+
+
+                                 
         if file:
             file.close()
         
