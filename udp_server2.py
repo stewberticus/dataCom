@@ -76,7 +76,6 @@ def clientconnection(c):
         endwindow = 5
         no_timeout = True
         reset = False
-        timeoutcount = 0
         # l is the data from the file
         # ll is the ack number + the file data
         # lll is the acknumber + filedata + checksum
@@ -88,6 +87,7 @@ def clientconnection(c):
             lll = ll + str(checksum)
             while(i < endwindow):
                 c.sendto(lll, addr)
+                timeoutcount = 0
                 if(filemorsels[i]):
                     l = filemorsels[i]    
                 else:
