@@ -81,7 +81,7 @@ def clientconnection(c):
         # lll is the acknumber + filedata + checksum
         while(ll):
 	    no_timeout = True
-            if not l and reset:
+            if reset:
                 break
             checksum = calcchecksum(ll)
             lll = ll + str(checksum)
