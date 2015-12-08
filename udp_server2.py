@@ -87,6 +87,7 @@ def clientconnection(c):
             lll = ll + str(checksum)
             while(i < endwindow):
                 c.sendto(lll, addr)
+                print "sending"
                 timeoutcount = 0
                 if(filemorsels[i]):
                     l = filemorsels[i]    
