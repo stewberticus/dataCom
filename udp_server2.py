@@ -71,6 +71,7 @@ def clientconnection(c):
             file = False
         #while bytes to send
         i = 1
+        lastpacket = False
         startwindow = 0
         endwindow = 5
         no_timeout = True
@@ -85,13 +86,19 @@ def clientconnection(c):
                 break
             checksum = calcchecksum(ll)
             lll = ll + str(checksum)
-            while(l and i < endwindow):
+            while(i < endwindow):
                 c.sendto(lll, addr)
                 if(filemorsels[i]):
                     l = filemorsels[i]    
                 else:
-                    #read next 1024
-                    l = file.read(1018)
+                    try:
+                        #read next 1024
+                        l = file.read(1018)
+                        if not l:
+                            print "nothing left to read"
+                    except Exception:
+                        endwindow = i-1
+                        lastpacket = i -1
                 #print type(l)"%02d"%a
                 ll = "%03d"%i
                 print "i is ", ll
@@ -130,7 +137,10 @@ def clientconnection(c):
                             break
                     startwindow = newstartwindow
                     i = startwindow
-                    endwindow = startwindow + 5
+                    if not lastpacket:
+                        endwindow = startwindow + 5
+                    else:
+                        endwindow = lastpacket
                     print startwindow
                     print endwindow
                     print "i - 2 is ", i -2
