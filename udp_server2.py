@@ -131,10 +131,14 @@ def clientconnection(c):
                     print startwindow
                     print endwindow
                     print "i - 2 is ", i -2
+                    # file sending should be complete, stop sending 
+                    # and reset
+                    # do we have all of our ack's back
+                    if i == startwindow:
                     #if i - 2 == startwindow:
-                    #    print "i is ", i
-                    #    reset = True
-                    #    break
+                        print "i is ", i
+                        reset = True
+                        break
 
 
                 except Exception:
