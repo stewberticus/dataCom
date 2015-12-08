@@ -115,7 +115,6 @@ def clientconnection(c):
                 print "Listening for Acks"
                 try:
                     data, addr = c.recvfrom(1024)
-                    timeoutcount = 0
                 except Exception:
                     print "timeout!"
                     timeoutcount += 1
