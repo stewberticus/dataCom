@@ -135,14 +135,17 @@ def clientconnection(c):
                     # and reset
                     # do we have all of our ack's back
                     #if i == startwindow:
-                    if i - 2 == startwindow:
-                        print "i is ", i
-                        reset = True
-                        break
+                    #if i - 2 == startwindow:
+                    #    print "i is ", i
+                    #    reset = True
+                    #    break
 
 
                 except Exception:
                     print "timeout!"
+                    timeoutcount += 1
+                    if timeoutcount == 5:
+                        reset = True
                     no_timeout = False
                  
         if file:
