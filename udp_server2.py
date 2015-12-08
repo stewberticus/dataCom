@@ -95,8 +95,8 @@ def clientconnection(c):
                     l = file.read(1018)
                     if not l:
                         print "nothing left to read"
-                        endwindow = i-1
-                        lastpacket = i -1
+                        endwindow = i
+                        lastpacket = i
                 #print type(l)"%02d"%a
                 ll = "%03d"%i
                 print "i is ", ll
