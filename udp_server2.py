@@ -115,7 +115,7 @@ def clientconnection(c):
                 try:
                     data, addr = c.recvfrom(1024)
                     timeoutcount = 0
-                 except Exception:
+                except Exception:
                     print "timeout!"
                     timeoutcount += 1
                     if timeoutcount == 5:
