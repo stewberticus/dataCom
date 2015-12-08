@@ -82,6 +82,7 @@ def clientconnection(c):
         while(ll):
 	    no_timeout = True
             if reset:
+                ll = False
                 break
             checksum = calcchecksum(ll)
             lll = ll + str(checksum)
