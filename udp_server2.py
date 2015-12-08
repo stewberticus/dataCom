@@ -91,12 +91,10 @@ def clientconnection(c):
                 if(filemorsels[i]):
                     l = filemorsels[i]    
                 else:
-                    try:
-                        #read next 1024
-                        l = file.read(1018)
-                        if not l:
-                            print "nothing left to read"
-                    except Exception:
+                    #read next 1024
+                    l = file.read(1018)
+                    if not l:
+                        print "nothing left to read"
                         endwindow = i-1
                         lastpacket = i -1
                 #print type(l)"%02d"%a
