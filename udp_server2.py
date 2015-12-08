@@ -134,8 +134,8 @@ def clientconnection(c):
                     # file sending should be complete, stop sending 
                     # and reset
                     # do we have all of our ack's back
-                    if i == startwindow:
-                    #if i - 2 == startwindow:
+                    #if i == startwindow:
+                    if i - 2 == startwindow:
                         print "i is ", i
                         reset = True
                         break
