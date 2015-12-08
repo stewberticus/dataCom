@@ -71,7 +71,6 @@ def clientconnection(c):
             file = False
         #while bytes to send
         i = 1
-        lastsentack = i
         startwindow = 0
         endwindow = 5
         no_timeout = True
@@ -103,7 +102,6 @@ def clientconnection(c):
                 i+=1
                 if(i == 256):
                     i = 0
-                lastsentack = i
                 checksum = calcchecksum(ll)
                 lll = ll + checksum
             while(no_timeout):
@@ -146,14 +144,10 @@ def clientconnection(c):
 
                 except Exception:
                     print "timeout!"
-                    if lastsentack > i:
-                        print "Missing ack. Resend packet"
-                        c.sendto(lll, addr)
-                    else:
-                        timeoutcount += 1
-                        if timeoutcount == 5:
-                            reset = True
-                        no_timeout = False
+                    timeoutcount += 1
+                    if timeoutcount == 5:
+                        reset = True
+                    no_timeout = False
                  
         if file:
             file.close()
