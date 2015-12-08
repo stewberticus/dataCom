@@ -85,7 +85,6 @@ def clientconnection(c):
                 break
             checksum = calcchecksum(ll)
             lll = ll + str(checksum)
-            timeoutcount = 0
             while(l and i < endwindow):
                 c.sendto(lll, addr)
                 if(filemorsels[i]):
@@ -109,6 +108,8 @@ def clientconnection(c):
                 try:
                     print "Listening for Acks"
                     data, addr = c.recvfrom(1024)
+                    timeoutcount = 0
+                   
                     print data
                     awkchecksum = checkchecksum(data[-3:], data[:-3])
                     print "awkchecksum = ", awkchecksum
