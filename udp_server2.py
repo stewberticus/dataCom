@@ -132,6 +132,7 @@ def clientconnection(c):
                     awktidbits[resp_num] = True
 
                 #print "after if awkchecksum"
+                newstartwindow = startwindow
                 for g in range(5):
                     #print "g is ", g
                     #print "startwindow is ", startwindow
